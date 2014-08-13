@@ -15,6 +15,7 @@ var spStart, spEnd, sConnection;
 var placeStartMode = false;
 var placeEndMode = false;
 var cube, cameraCube, sceneCube;
+var floor;
 
 function loadSkybox() {
 	cameraCube = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
@@ -103,7 +104,8 @@ function initThree() {
 
 	// grid
 	//scene.add(createGrid(18, 8, 1));
-	scene.add(createFloor());
+	floor = createFloor();
+	scene.add(floor);
 
 	// measurement
 	var sphereGeometry = new THREE.SphereGeometry(0.05, 32, 32);
@@ -207,7 +209,7 @@ function render() {
 	});
 
 	if (placeStartMode || placeEndMode) {
-		var intersects = raycaster.intersectObject(pointcloud, true);
+		var intersects = raycaster.intersectObjects([pointcloud, floor], true);
 
 		if (intersects.length > 0) {
 			var I = intersects[0];
