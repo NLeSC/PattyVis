@@ -10,7 +10,10 @@
 	    "properties": {
 		    "pointcloud": "sites/SITE_162_cleaned_ALIGNED_DRIVE_1_V3/cloud_las.js",
 		    "description": "Pyramid",
-		    "thumbnail": ""
+		    "thumbnail": "",
+		    "site_context": "Funerary",
+                    "site_interpretation": "Funerary tower",
+                    "condition": "Damaged"
 	    },
 	    "bbox": [12.546372, 41.829228, 121.484, 12.546579, 41.829381, 144.177]
 	}],
