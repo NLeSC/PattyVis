@@ -20,7 +20,7 @@
 	    "type": "Feature",
 	    "geometry": {
 	    	"type": "Point",
-	    	"coordinates": [12.5464756318, 41.829304, 130]
+	    	"coordinates": [12.5464756318, 41.829304, 120.21]
 	    },
 	    "id": 13,
 	    "properties": {
@@ -31,7 +31,7 @@
                     "site_interpretation": "Unknown",
                     "condition": "Chipped"
 	    },
-	    "bbox":[12.546479, 41.828919, 12.546497, 41.828934]
+	    "bbox":[12.546479, 41.828919, 120, 12.546497, 41.828934, 120.42]
 	}],
 	"crs": {
             "type":"name",
