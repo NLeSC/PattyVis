@@ -1,0 +1,15 @@
+{
+	"type": "FeatureCollection",
+	"features": [{
+	    "type": "Feature",
+	    "geometry": {
+	    	"type": "Point",
+	    	"coordinates": [12.54637, 41.82922]
+	    },
+	    "id": 162,
+	    "properties": {
+		    "pointcloud": "sites/SITE_162_cleaned_ALIGNED_DRIVE_1_V3/cloud_las.js",
+		    "description": "Pyramid"
+	    }
+	}]
+}
