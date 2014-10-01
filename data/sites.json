@@ -4,23 +4,20 @@
 	    "type": "Feature",
 	    "geometry": {
 	    	"type": "Point",
-	    	"coordinates": [12.54637, 41.82922]
+	    	"coordinates": [12.5464756318, 41.829304, 130]
 	    },
 	    "id": 162,
 	    "properties": {
 		    "pointcloud": "sites/SITE_162_cleaned_ALIGNED_DRIVE_1_V3/cloud_las.js",
 		    "description": "Pyramid",
-            "site_context": "Funerary",
-            "site_interpretation": "Funerary tower",
-            "condition": "Damaged"
+		    "thumbnail": ""
 	    },
-	    "bbox": [12.546372003381027,41.829228015080353,12.546579260241520,41.829381286876547]
+	    "bbox": [12.546372, 41.829228, 121.484, 12.546579, 41.829381, 144.177]
 	}],
 	"crs": {
             "type":"name",
             "properties": {
             	"name": "EPSG:4326"
-            	
             }
 	}
 }
