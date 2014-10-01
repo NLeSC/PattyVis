@@ -15,3 +15,39 @@ Getting started (windows, from scratch)
 10. Type: "bower install"
 11. Type: "node server.js"
 12. Open browser, go to "http://localhost:8080/index.html"
+
+Getting started (Linux, Debain and Ubuntu based)
+-------------------------------------------------
+### Install git
+```
+sudo apt-get install git
+```
+### Install nodejs
+Follow instructions at joyents github website:
+https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#debian-and-ubuntu-based-linux-distributions
+
+### Install nodejs modules
+Install bower, connect and serve-static globally
+```
+sudo npm install -g bower connect serve-static
+```
+
+### Fetch git repository
+```
+git clone https://github.com/NLeSC/PattyVis
+```
+
+### setup with bower
+```
+cd PattyVis
+bower install
+```
+
+### start server
+```
+node server.js
+```
+
+### access with web browser
+Running app should be available at url:
+http://localhost:8000/
