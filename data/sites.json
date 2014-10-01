@@ -10,7 +10,7 @@
 	    "properties": {
 		    "pointcloud": "sites/SITE_162_cleaned_ALIGNED_DRIVE_1_V3/cloud_las.js",
 		    "description": "Pyramid",
-		    "thumbnail": "",
+		    "thumbnail": "https://static.panoramio.com.storage.googleapis.com/photos/large/76576765.jpg",
 		    "site_context": "Funerary",
                     "site_interpretation": "Funerary tower",
                     "condition": "Damaged"
