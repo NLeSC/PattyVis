@@ -16,7 +16,7 @@ Getting started (windows, from scratch)
 11. Type: "node server.js"
 12. Open browser, go to "http://localhost:8080/index.html"
 
-Getting started (Linux, Debain and Ubuntu based)
+Getting started (Linux, Debian and Ubuntu based)
 -------------------------------------------------
 ### Install git
 ```
