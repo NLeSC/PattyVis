@@ -1,2 +1,5 @@
 # bower stuff
 bower_components/*
+
+# local node moules
+node_modules/*
