@@ -15,6 +15,7 @@ var spStart, spEnd, sConnection;
 var placeStartMode = false;
 var placeEndMode = false;
 var cube, cameraCube, sceneCube;
+var floor;
 
 function loadSkybox() {
 	cameraCube = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
@@ -81,6 +82,9 @@ function initThree() {
 	renderer.autoClear = false;
 	document.body.appendChild(renderer.domElement);
 
+	// light
+	scene.add( new THREE.AmbientLight( 0xeef0ff ) );
+	
 	loadSkybox();
 
 	// pointcloud
@@ -99,7 +103,9 @@ function initThree() {
 	scene.add(pointcloud);
 
 	// grid
-	scene.add(createGrid(8, 8, 1));
+	//scene.add(createGrid(18, 8, 1));
+	floor = createFloor();
+	scene.add(floor);
 
 	// measurement
 	var sphereGeometry = new THREE.SphereGeometry(0.05, 32, 32);
@@ -157,6 +163,24 @@ function createGrid(width, length, spacing) {
 	return line;
 }
 
+function createFloor() {
+	var geometry = new THREE.PlaneGeometry(200, 200);
+	
+	geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2.0));
+	geometry.applyMatrix( new THREE.Matrix4().makeTranslation(0.0, -2.0, 0.0));
+	
+	var texture1 = THREE.ImageUtils.loadTexture( "resources/textures/GrassGreenTexture0004.jpg" );
+	texture1.anisotropy = 1;
+	texture1.wrapS = texture1.wrapT = THREE.RepeatWrapping;
+	texture1.repeat.set( 12, 12 );
+	var material1 = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texture1 } );
+	
+	var material = new THREE.MeshBasicMaterial({color: "green"});
+	
+	var mesh = new THREE.Mesh(geometry, material1);
+	return mesh;
+}
+
 function onDocumentMouseMove(event) {
 	event.preventDefault();
 
@@ -185,7 +209,7 @@ function render() {
 	});
 
 	if (placeStartMode || placeEndMode) {
-		var intersects = raycaster.intersectObject(pointcloud, true);
+		var intersects = raycaster.intersectObjects([pointcloud, floor], true);
 
 		if (intersects.length > 0) {
 			var I = intersects[0];
