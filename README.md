@@ -27,9 +27,9 @@ Follow instructions at joyents github website:
 https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#debian-and-ubuntu-based-linux-distributions
 
 ### Install nodejs modules
-Install bower, connect and serve-static globally
+Install bower globally
 ```
-sudo npm install -g bower connect serve-static
+sudo npm install -g bower
 ```
 
 ### Fetch git repository
@@ -41,6 +41,10 @@ git clone https://github.com/NLeSC/PattyVis
 ```
 cd PattyVis
 bower install
+```
+### Install locally connect and serve-static
+```
+npm install connect serve-static
 ```
 
 ### start server
