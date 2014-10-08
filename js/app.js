@@ -16,8 +16,19 @@ var placeStartMode = false;
 var placeEndMode = false;
 var cube, cameraCube, sceneCube;
 
+var firstperson;
+
+var useOculus = false;
+function getFov() {
+	if (useOculus) {
+		return 110;
+	} else {
+		return 75;
+	}
+}
+
 function loadSkybox() {
-	cameraCube = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 100000);
+	cameraCube = new THREE.PerspectiveCamera(getFov(), window.innerWidth / window.innerHeight, 1, 100000);
 	sceneCube = new THREE.Scene();
 
 	var path = "bower_components/potree/resources/textures/skybox/";
@@ -71,7 +82,7 @@ function initGUI() {
 
 function initThree() {
 	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+	camera = new THREE.PerspectiveCamera(getFov(), window.innerWidth / window.innerHeight, 0.1, 1000);
 
 	projector = new THREE.Projector();
 	raycaster = new THREE.Raycaster();
@@ -81,7 +92,12 @@ function initThree() {
 	renderer.autoClear = false;
 	document.body.appendChild(renderer.domElement);
 
+	//OculusRift
+	effect = new THREE.OculusRiftEffect( renderer, {worldScale: 100} );
+	effect.setSize( window.innerWidth, window.innerHeight );
+	
 	loadSkybox();
+	scene.add(sceneCube);
 
 	// pointcloud
 	pointcloudMaterial = new THREE.PointCloudMaterial({
@@ -131,7 +147,11 @@ function initThree() {
 	controls = new THREE.OrbitControls(camera, renderer.domElement);
 	controls.target.set(0, 3, 0);
 	camera.lookAt(controls.target);
+	
+	firstperson = new OculusFirstPersonControls(camera);
 
+	window.addEventListener('resize', onResize, false);
+	  
 	document.addEventListener('mousemove', onDocumentMouseMove, false);
 	renderer.domElement.addEventListener('click', onClick, false);
 }
@@ -157,6 +177,20 @@ function createGrid(width, length, spacing) {
 	return line;
 }
 
+function onResize() {
+	  if(!useOculus){
+	    windowHalf = new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2);
+	    aspectRatio = window.innerWidth / window.innerHeight;
+	   
+	    camera.aspect = aspectRatio;
+	    camera.updateProjectionMatrix();
+	   
+	    renderer.setSize(window.innerWidth, window.innerHeight);
+	  } else {
+	    effect.setSize(window.innerWidth, window.innerHeight);
+	  }
+	}
+
 function onDocumentMouseMove(event) {
 	event.preventDefault();
 
@@ -166,6 +200,9 @@ function onDocumentMouseMove(event) {
 
 function render() {
 	requestAnimationFrame(render);
+	
+	if (useOculus) firstperson.updateInput();
+
 
 	camera.updateMatrixWorld(true);
 
@@ -220,11 +257,13 @@ function render() {
 	document.getElementById("lblNumVisibleNodes").innerHTML = "visible nodes: " + numVisibleNodes;
 	document.getElementById("lblNumVisiblePoints").innerHTML = "visible points: " + Potree.utils.addCommas(numVisiblePoints);
 
-	// render skybox
-	cameraCube.rotation.copy(camera.rotation);
-	renderer.render(sceneCube, cameraCube);
-
-	renderer.render(scene, camera);
+	if (!useOculus) {
+	  //Non-Oculus rendering
+	  renderer.render(scene, camera);
+	} else {
+      //Rendering through the Oculus effect
+	  effect.render( scene, camera);
+    }
 };
 
 initThree();
@@ -247,4 +286,28 @@ function onClick() {
 
 	console.log(spStart.position);
 	console.log(spEnd.position);
+}
+
+function toggleOculus() {
+  useOculus = !useOculus;
+  onResize();
+  
+  if (!useOculus) {
+    camera.fov = 75;
+	camera.updateProjectionMatrix();
+	firstperson.disable();
+	  
+	camera.position.set(4, 6, 10);
+	controls.target.set(0, 3, 0);
+	controls.update();
+	camera.lookAt(controls.target);  
+	
+  } else {
+	camera.fov = 110;
+	camera.updateProjectionMatrix();
+	firstperson.enable();
+	
+  }
+
+  
 }

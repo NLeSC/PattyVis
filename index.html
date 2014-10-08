@@ -22,17 +22,24 @@
   <script src="bower_components/potree/src/utils.js"></script>
   <script src="bower_components/potree/src/LRU.js"></script>
   
+  <script src="js/OculusRiftEffect.js"></script>
+  <script src="js/OculusBridge.min.js"></script>
+  <script src="js/OculusFirstPersonControls.js"></script>
+  
   <input type="button" value="place start" 
     style="position:absolute; left: 10px; top: 10px; width: 100px; z-index: 100" 
     onclick="placeStart()">
   <input type="button" value="place end" 
     style="position:absolute; left: 10px; top: 40px; width: 100px; z-index: 100"
     onclick="placeEnd()">
+  <input type="button" value="toggle oculus" 
+    style="position:absolute; left: 10px; top: 70px; width: 100px; z-index: 100"
+    onclick="toggleOculus()">
     
   <div id="lblDistance" style="position: absolute; width: 20px; z-index: 100;">abc</div>
   
-  <div id="lblNumVisibleNodes" class="info" style="position: absolute; left: 10px; top: 80px; width: 400px;"></div>
-  <div id="lblNumVisiblePoints" class="info" style="position: absolute; left: 10px; top: 100px; width: 400px;"></div>
+  <div id="lblNumVisibleNodes" class="info" style="position: absolute; left: 10px; top: 110px; width: 400px;"></div>
+  <div id="lblNumVisiblePoints" class="info" style="position: absolute; left: 10px; top: 130px; width: 400px;"></div>
 
   <script type="text/javascript" src="js/app.js"></script>  
 </body>
