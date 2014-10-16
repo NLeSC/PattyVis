@@ -59,5 +59,13 @@
   <script src="bower_components/jquery/dist/jquery.min.js"></script>
   
   <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <script type="text/javascript">
+    $(document).ready(function(e) {
+        $.getJSON("data/sites.json" , function(result){
+            console.log(result);
+        });
+    });
+  </script>
 </body>
 </html>
