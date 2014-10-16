@@ -55,3 +55,8 @@ node server.js
 ### access with web browser
 Running app should be available at url:
 http://localhost:8000/
+
+# Mockup
+
+For mockup see https://wiki.esciencecenter.nl/index.php/Patty_Visualization
+
