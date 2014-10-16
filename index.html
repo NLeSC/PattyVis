@@ -36,8 +36,25 @@
                 </span>
             </div>
             <label for="search" style="background-color: grey;">Search object</label>
-            <div>
-                
+            <div id="search-results">
+                <div class="search-result">
+                    <div style="display: inline-block; vertical-align: top;">
+                        <img src="data/sites/13/IMG_0040.JPG" width="150">
+                    </div>
+                    <div style="display:inline-block;">
+                        <strong>Block</strong>
+                        <p>This is a block.</p>
+                    </div>
+                </div>
+                <div class="search-result">
+                    <div style="display: inline-block; vertical-align: top;">
+                        <img src="data/sites/162/P1120067.JPG" width="150">
+                    </div>
+                    <div style="display:inline-block;">
+                        <strong>Pyramid</strong>
+                        <p>This is a pyramid.</p>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-xs-6">
@@ -61,9 +78,14 @@
   <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
   <script type="text/javascript">
+    /* Read site data (to be displayed in search results box. */
     $(document).ready(function(e) {
         $.getJSON("data/sites.json" , function(result){
-            console.log(result);
+            for(var i=0; i<result.length; i++){
+
+
+            }
+          //$( "#search-results" ).html("<p>Search results</p>"); 
         });
     });
   </script>
