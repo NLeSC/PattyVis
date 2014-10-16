@@ -8,6 +8,7 @@
   }
 
 .container-fluid{
+    margin-top: 15px;
     position: absolute;
 }
 
@@ -22,7 +23,7 @@
 }
 
 #overhead-map{
-    margin-top: 80px;
+    margin-top: 65px;
     padding: 5px;
     background-color: #ffffff;
 }
