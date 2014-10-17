@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Project Patty Visualisation</title>
+
+    <!-- CSS -->
+    <link type="text/css" rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+</head>
+ <body style="margin: 0px; padding: 0px;">
+ 
+  <link type="text/css" rel="stylesheet" href="css/style.css">  
+   
+  <script src="bower_components/threejs/build/three.js"></script>
+  <!-- <script src="bower_components/potree/libs/three.js/build/three.js"></script> -->
+  <script src="bower_components/OrbitControls/index.js"></script>
+  <script src="bower_components/stats.js/build/stats.min.js"></script>
+  <script src="bower_components/dat-gui/build/dat.gui.min.js"></script>
+  
+  <script src="bower_components/potree/src/Potree.js"></script>
+  <script src="bower_components/potree/src/PointCloudOctree.js"></script>
+  <script src="bower_components/potree/src/PointCloudOctreeGeometry.js"></script>
+  <script src="bower_components/potree/src/loader/POCLoader.js"></script>
+  <script src="bower_components/potree/src/loader/PointAttributes.js"></script>
+  <script src="bower_components/potree/src/utils.js"></script>
+  <script src="bower_components/potree/src/LRU.js"></script>
+
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-3">
+            <div class="input-group">
+                <input type="text" class="form-control" id="search">
+                <div id="search-results">
+                    <div class="search-result">
+                        <div style="display: inline-block; vertical-align: top;">
+                            <img src="data/sites/13/IMG_0040.JPG" width="150">
+                        </div>
+                        <div style="display:inline-block;">
+                            <strong>Block</strong>
+                            <p>This is a block.</p>
+                        </div>
+                    </div>
+                    <div class="search-result">
+                        <div style="display: inline-block; vertical-align: top;">
+                            <img src="data/sites/162/P1120067.JPG" width="150">
+                        </div>
+                        <div style="display:inline-block;">
+                            <strong>Pyramid</strong>
+                            <p>This is a pyramid.</p>
+                        </div>
+                     </div>
+                </div>
+                <span class="input-group-btn" style="vertical-align: top;">
+                    <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                </span>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div id="lblDistance" style="z-index: 100;">abc</div>
+  
+            <div id="lblNumVisibleNodes" class="info"></div>
+            <div id="lblNumVisiblePoints" class="info"></div>
+            
+            <input type="button" value="place start" style="z-index: 100" onclick="placeStart()">
+            <input type="button" value="place end" style="z-index: 100" onclick="placeEnd()">
+        </div>
+        <div class="col-xs-3">
+            <span class="pull-right">
+            <div id="overhead-map">
+                <img src="data/sites/13/IMG_0040.JPG" width="200" height="200">
+            </div>
+            </span>
+        </div>
+      </div>
+   </div>
+
+  <script type="text/javascript" src="js/app.js"></script> 
+
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  
+  <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <script type="text/javascript">
+    /* Read site data (to be displayed in search results box. */
+    $(document).ready(function(e) {
+        $.getJSON("data/sites.json" , function(result){
+            for(var i=0; i<result.length; i++){
+
+
+            }
+          //$( "#search-results" ).html("<p>Search results</p>"); 
+        });
+    });
+  </script>
+</body>
+</html>
