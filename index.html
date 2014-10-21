@@ -5,15 +5,15 @@
 <title>Project Patty Visualisation</title>
 </head>
  <body style="margin: 0px; padding: 0px;">
- 
-  <link type="text/css" rel="stylesheet" href="css/style.css">  
-   
+
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+
   <script src="bower_components/threejs/build/three.js"></script>
   <!-- <script src="bower_components/potree/libs/three.js/build/three.js"></script> -->
   <script src="bower_components/OrbitControls/index.js"></script>
   <script src="bower_components/stats.js/build/stats.min.js"></script>
   <script src="bower_components/dat-gui/build/dat.gui.min.js"></script>
-  
+
   <script src="bower_components/potree/src/Potree.js"></script>
   <script src="bower_components/potree/src/PointCloudOctree.js"></script>
   <script src="bower_components/potree/src/PointCloudOctreeGeometry.js"></script>
@@ -28,19 +28,20 @@
   
   <input type="button" value="place start" 
     style="position:absolute; left: 10px; top: 10px; width: 100px; z-index: 100" 
+
     onclick="placeStart()">
-  <input type="button" value="place end" 
+  <input type="button" value="place end"
     style="position:absolute; left: 10px; top: 40px; width: 100px; z-index: 100"
     onclick="placeEnd()">
   <input type="button" value="toggle oculus" 
     style="position:absolute; left: 10px; top: 70px; width: 100px; z-index: 100"
     onclick="toggleOculus()">
-    
+
   <div id="lblDistance" style="position: absolute; width: 20px; z-index: 100;">abc</div>
-  
+
   <div id="lblNumVisibleNodes" class="info" style="position: absolute; left: 10px; top: 110px; width: 400px;"></div>
   <div id="lblNumVisiblePoints" class="info" style="position: absolute; left: 10px; top: 130px; width: 400px;"></div>
 
-  <script type="text/javascript" src="js/app.js"></script>  
+  <script type="text/javascript" src="js/app.js"></script>
 </body>
 </html>

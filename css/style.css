@@ -5,4 +5,26 @@
             2px -2px 2px black,
            -2px  2px 2px black,
            -2px -2px 2px black;
-  } 
+  }
+
+.container-fluid{
+    margin-top: 15px;
+    position: absolute;
+}
+
+#search-results{
+    margin-top: 50px;
+    background-color: #ffffff; 
+    opacity: 0.9; 
+    filter: alpha(opacity=90); /* For IE8 and earlier */
+}
+
+.search-result{
+    padding: 10px;
+}
+
+#overhead-map{
+    margin-top: 65px;
+    padding: 5px;
+    background-color: #ffffff;
+}
