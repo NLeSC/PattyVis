@@ -18,6 +18,8 @@ var cube, cameraCube, sceneCube;
 
 var firstperson;
 
+var pathcontrols;
+
 var useOculus = false;
 function getFov() {
 	if (useOculus) {
@@ -144,12 +146,16 @@ function initThree() {
 
 	// controls
 	camera.position.set(4, 6, 10);
-	controls = new THREE.OrbitControls(camera, renderer.domElement);
-	controls.target.set(0, 3, 0);
-	camera.lookAt(controls.target);
+	//controls = new THREE.OrbitControls(camera, renderer.domElement);
+	//controls.target.set(0, 3, 0);
+	//camera.lookAt(controls.target);
+	
 	
 	firstperson = new OculusFirstPersonControls(camera);
 
+	pathcontrols = PathControls(camera);
+
+	
 	window.addEventListener('resize', onResize, false);
 	  
 	document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -202,7 +208,6 @@ function render() {
 	requestAnimationFrame(render);
 	
 	if (useOculus) firstperson.updateInput();
-
 
 	camera.updateMatrixWorld(true);
 
