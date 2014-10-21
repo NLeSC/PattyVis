@@ -101,17 +101,17 @@
 
   <script type="text/javascript">
     var map = new ol.Map({
-    target: 'overhead-map',
-    layers: [
-      new ol.layer.Tile({
-        source: new ol.source.MapQuest({layer: 'sat'})
-      })
-    ],
-    view: new ol.View({
-      center: ol.proj.transform([12.5469185, 41.8286509], 'EPSG:4326', 'EPSG:3857'),
-      zoom: 10
-    })
-  });
+        target: 'overhead-map',
+        layers: [
+        new ol.layer.Tile({
+            source: new ol.source.MapQuest({layer: 'sat'})
+        })
+        ],
+        view: new ol.View({
+          center: ol.proj.transform([12.5469185, 41.8286509], 'EPSG:4326', 'EPSG:3857'),
+          zoom: 10
+        })
+    });
 </script>
 
 </body>
