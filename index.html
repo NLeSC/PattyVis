@@ -33,7 +33,7 @@
   <div class="container-fluid">
     <div class="row">
         <div class="col-xs-4">
-            <div class="form-group" ng-controller="SearchCtrl">
+            <div class="form-group clickable" ng-controller="SearchCtrl">
                 <div class="input-group">
                     <div class="glyphicon glyphicon-search input-group-addon"></div>
                     <input type="text" class="form-control" id="search" placeholder="Search..." ng-model="query">
@@ -53,19 +53,19 @@
             </div>
         </div>
         <div class="col-xs-5">
-            <div id="lblDistance" style="z-index: 100;">abc</div>
+            <div id="lblDistance" class="clickable" style="z-index: 100;">abc</div>
   
-            <div id="lblNumVisibleNodes" class="info"></div>
-            <div id="lblNumVisiblePoints" class="info"></div>
-            <div id="lblPosition" class="info"></div>
+            <div id="lblNumVisibleNodes" class="info clickable"></div>
+            <div id="lblNumVisiblePoints" class="info clickable"></div>
+            <div id="lblPosition" class="info clickable"></div>
             
-            <input type="button" value="place start" style="z-index: 100" onclick="placeStart()">
-            <input type="button" value="place end" style="z-index: 100" onclick="placeEnd()">
-            <input type="button" value="toggle oculus" style="z-index: 100" onclick="toggleOculus()">
+            <input type="button" value="place start" class="clickable" style="z-index: 100" onclick="placeStart()">
+            <input type="button" value="place end" class="clickable" style="z-index: 100" onclick="placeEnd()">
+            <input type="button" value="toggle oculus" class="clickable" style="z-index: 100" onclick="toggleOculus()">
         </div>
         <div class="col-xs-3">
             <span class="pull-right">
-            <div id="overhead-map">
+            <div id="overhead-map" class="clickable">
                 <img src="data/sites/13/IMG_0040.JPG" width="200" height="200">
             </div>
             </span>

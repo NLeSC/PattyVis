@@ -24,6 +24,10 @@
     padding: 10px;
 }
 
+.clickable{
+    pointer-events: all;
+}
+
 #overhead-map{
     margin-top: 65px;
     padding: 5px;
