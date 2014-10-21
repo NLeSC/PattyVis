@@ -1,7 +1,7 @@
 var defaultPointSize = 0.09;
 var defaultLOD = 12;
-var pointcloudPath = "Potree_Cleaned_rit1_take2/cloud.js";
-//var pointcloudPath = "bower_components/potree/resources/pointclouds/lion_takanawa/cloud_laz.js";
+//var pointcloudPath = "Potree_Cleaned_rit1_take2/cloud.js";
+var pointcloudPath = "bower_components/potree/resources/pointclouds/lion_takanawa/cloud_laz.js";
 
 var pointcloud;
 var skybox;
