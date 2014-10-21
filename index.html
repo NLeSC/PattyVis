@@ -30,26 +30,27 @@
 
   <div class="container-fluid">
     <div class="row">
-        <div class="col-xs-3">
-            <div class="input-group" ng-controller="SearchCtrl">
-                <input type="text" class="form-control" id="search">
-                <div id="search-results">
-                    <div class="search-result" ng-repeat="result in results">
+        <div class="col-xs-4">
+            <div class="form-group" ng-controller="SearchCtrl">
+                <div class="input-group">
+                    <div class="glyphicon glyphicon-search input-group-addon"></div>
+                    <input type="text" class="form-control" id="search" placeholder="Search..." ng-model="query">
+                </div>
+                <div class="panel" id="search-results" ng-show="query">
+                    <div class="search-result" ng-repeat="site in sites | filter : searchFn as results" ng-cloak>
                         <div style="display: inline-block; vertical-align: top;">
-                            <img src="{{ result.properties.thumbnail }}" width="150">
+                            <img src="{{ site.properties.thumbnail }}" width="120">
                         </div>
                         <div style="display:inline-block;">
-                            <strong>{{ result.properties.description }}</strong>
-                            <p>{{ result.properties.site_interpretation }}</p>
+                            <strong>{{ site.properties.description }}</strong>
+                            <p>{{ site.properties.site_interpretation }}</p>
                         </div>
                     </div>
+                    <div ng-if="results.length == 0">No results.</div>
                 </div>
-                <span class="input-group-btn" style="vertical-align: top;">
-                    <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
-                </span>
             </div>
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-5">
             <div id="lblDistance" style="z-index: 100;">abc</div>
   
             <div id="lblNumVisibleNodes" class="info"></div>
