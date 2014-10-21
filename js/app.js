@@ -1,6 +1,13 @@
-var defaultPointSize = 0.03;
-var defaultLOD = 15;
-var pointcloudPath = "bower_components/potree/resources/pointclouds/lion_takanawa/cloud.js";
+var defaultPointSize = 0.09;
+var defaultLOD = 12;
+var pointcloudPath = "Potree_Cleaned_rit1_take2/cloud.js";
+//var pointcloudPath = "bower_components/potree/resources/pointclouds/lion_takanawa/cloud_laz.js";
+
+var pointcloud;
+var skybox;
+var stats;
+var clock = new THREE.Clock();
+var materials = {};
 
 var renderer;
 var camera;
@@ -10,7 +17,6 @@ var mouse = {
 	y : 1
 };
 var projector, raycaster;
-var pointcloud, pointcloudMaterial;
 var spStart, spEnd, sConnection;
 var placeStartMode = false;
 var placeEndMode = false;
@@ -55,7 +61,7 @@ function loadSkybox() {
 
 	}),
 
-	mesh = new THREE.Mesh(new THREE.BoxGeometry(100, 100, 100), material);
+	mesh = new THREE.Mesh(new THREE.BoxGeometry(10000, 10000, 10000), material);
 	sceneCube.add(mesh);
 }
 
@@ -82,7 +88,7 @@ function initGUI() {
 
 function initThree() {
 	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(getFov(), window.innerWidth / window.innerHeight, 0.1, 1000);
+	camera = new THREE.PerspectiveCamera(getFov(), window.innerWidth / window.innerHeight, 0.001, 100000);
 
 	projector = new THREE.Projector();
 	raycaster = new THREE.Raycaster();
@@ -104,14 +110,22 @@ function initThree() {
 		size : defaultPointSize,
 		vertexColors : true
 	});
-	var pco = POCLoader.load(pointcloudPath);
-	pointcloud = new Potree.PointCloudOctree(pco, pointcloudMaterial);
+				
+	// materials
+	materials.rgb = new Potree.PointCloudRGBMaterial({ size: defaultPointSize});
+	materials.color = new Potree.PointCloudColorMaterial({size: defaultPointSize});
+	materials.height = new Potree.PointCloudHeightMaterial({size: defaultPointSize, min: 0, max: 10});
+	materials.intensity = new Potree.PointCloudIntensityMaterial({size: defaultPointSize, min: 0, max: 65535});
+	
+	// load pointcloud
+	var pco = POCLoader.load(pointcloudPath, {toOrigin: true});
+	
+	pointcloud = new Potree.PointCloudOctree(pco, materials.rgb);
 	pointcloud.LOD = defaultLOD;
-	pointcloud.rotation.set(Math.PI / 2, 0.85 * -Math.PI / 2, -0.0);
-	// pointcloud.scale.set(0.5,0.5,0.5);
+	pointcloud.rotation.set(-Math.PI/2.0, 0.0, 0.0);
 	pointcloud.moveToOrigin();
 	pointcloud.moveToGroundPlane();
-	pointcloud.position.y -= 1.6
+			
 	scene.add(pointcloud);
 
 	// grid
@@ -201,10 +215,12 @@ function onDocumentMouseMove(event) {
 function render() {
 	requestAnimationFrame(render);
 	
+	pointcloud.update(camera);
+	
 	if (useOculus) firstperson.updateInput();
 
 
-	camera.updateMatrixWorld(true);
+	//camera.updateMatrixWorld(true);
 
 	vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
 	projector.unprojectVector(vector, camera);
@@ -256,6 +272,7 @@ function render() {
 	var numVisiblePoints = pointcloud.numVisiblePoints;
 	document.getElementById("lblNumVisibleNodes").innerHTML = "visible nodes: " + numVisibleNodes;
 	document.getElementById("lblNumVisiblePoints").innerHTML = "visible points: " + Potree.utils.addCommas(numVisiblePoints);
+	document.getElementById("lblPosition").innerHTML = "position of start: " + Potree.utils.addCommas(spStart.position.x)+ "/" + Potree.utils.addCommas(spStart.position.y)+"/" + Potree.utils.addCommas(spStart.position.z);
 
 	if (!useOculus) {
 	  //Non-Oculus rendering
