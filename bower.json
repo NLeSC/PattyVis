@@ -21,7 +21,6 @@
     "OrbitControls": "https://raw2.github.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js",
     "dat-gui": "*",
     "stats.js": "*",
-    "bootstrap": "~3.2.0",
-    "openlayers3": "~3.0.0"
+    "bootstrap": "~3.2.0"
   }
 }
