@@ -1,7 +1,8 @@
 var defaultPointSize = 0.09;
 var defaultLOD = 12;
 //var pointcloudPath = "Potree_Cleaned_rit1_take2/cloud.js";
-var pointcloudPath = "bower_components/potree/resources/pointclouds/lion_takanawa/cloud_laz.js";
+//var pointcloudPath = "bower_components/potree/resources/pointclouds/lion_takanawa/cloud_laz.js";
+var pointcloudPath = "converted_data/out_8/cloud.js";
 
 var pointcloud;
 var skybox;
@@ -157,9 +158,9 @@ function initThree() {
 	scene.add(sConnection);
 
 	// controls
-	camera.position.set(4, 6, 10);
+	camera.position.set(-818, 12, -960);
 	controls = new THREE.OrbitControls(camera, renderer.domElement);
-	controls.target.set(0, 3, 0);
+	controls.target.set(-818, 12, -948);
 	camera.lookAt(controls.target);
 	
 	firstperson = new OculusFirstPersonControls(camera);
@@ -301,8 +302,8 @@ function onClick() {
 	placeStartMode = false;
 	placeEndMode = false;
 
-	console.log(spStart.position);
-	console.log(spEnd.position);
+	//console.log(spStart.position);
+	//console.log(spEnd.position);
 }
 
 function toggleOculus() {
