@@ -10,6 +10,7 @@
 .container-fluid{
     margin-top: 15px;
     position: absolute;
+    pointer-events: none;
 }
 
 #search-results{
