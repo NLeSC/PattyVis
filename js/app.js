@@ -27,6 +27,7 @@ var firstperson;
 var pathcontrols;
 
 var useOculus = false;
+
 function getFov() {
 	if (useOculus) {
 		return 110;
@@ -34,6 +35,42 @@ function getFov() {
 		return 75;
 	}
 }
+
+
+
+var pipeSpline = new THREE.SplineCurve3([
+                         				new THREE.Vector3(0, 10, -10),
+                         				new THREE.Vector3(10, 0, -10),
+                         				new THREE.Vector3(20, 0, 0),
+                         				new THREE.Vector3(30, 0, 10),
+                         				new THREE.Vector3(30, 0, 20),
+                         				new THREE.Vector3(20, 0, 30),
+                         				new THREE.Vector3(10, 0, 30),
+                         				new THREE.Vector3(0, 0, 30),
+                         				new THREE.Vector3(-10, 10, 30),
+                         				new THREE.Vector3(-10, 20, 30),
+                         				new THREE.Vector3(0, 30, 30),
+                         				new THREE.Vector3(10, 30, 30),
+                         				new THREE.Vector3(20, 30, 15),
+                         				new THREE.Vector3(10, 30, 10),
+                         				new THREE.Vector3(0, 30, 10),
+                         				new THREE.Vector3(-10, 20, 10),
+                         				new THREE.Vector3(-10, 10, 10),
+                         				new THREE.Vector3(0, 0, 10),
+                         				new THREE.Vector3(10, -10, 10),
+                         				new THREE.Vector3(20, -15, 10),
+                         				new THREE.Vector3(30, -15, 10),
+                         				new THREE.Vector3(40, -15, 10),
+                         				new THREE.Vector3(50, -15, 10),
+                         				new THREE.Vector3(60, 0, 10),
+                         				new THREE.Vector3(70, 0, 0), 
+                         				new THREE.Vector3(80, 0, 0),
+                         				new THREE.Vector3(90, 0, 0),
+                         				new THREE.Vector3(100, 0, 0)]);
+
+
+
+
 
 function loadSkybox() {
 	cameraCube = new THREE.PerspectiveCamera(getFov(), window.innerWidth / window.innerHeight, 1, 100000);
@@ -167,8 +204,10 @@ function initThree() {
 	
 	firstperson = new OculusFirstPersonControls(camera);
 
-	pathcontrols = PathControls(camera);
+	
+	pathcontrols = new PathControls(camera, pipeSpline);
 
+	
 	
 	window.addEventListener('resize', onResize, false);
 	  
@@ -224,6 +263,7 @@ function render() {
 	pointcloud.update(camera);
 	
 	if (useOculus) firstperson.updateInput();
+	else pathcontrols.updateInput();
 
 	camera.updateMatrixWorld(true);
 
@@ -315,17 +355,17 @@ function toggleOculus() {
   onResize();
   
   if (!useOculus) {
-    camera.fov = 75;
+    camera.fov = getFov();
 	camera.updateProjectionMatrix();
 	firstperson.disable();
-	  
+
 	camera.position.set(4, 6, 10);
 	controls.target.set(0, 3, 0);
 	controls.update();
 	camera.lookAt(controls.target);  
 	
   } else {
-	camera.fov = 110;
+	camera.fov = getFov();
 	camera.updateProjectionMatrix();
 	firstperson.enable();
 	
