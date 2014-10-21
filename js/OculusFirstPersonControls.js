@@ -33,10 +33,12 @@ OculusFirstPersonControls = function (camera) {
 	
 	this.enable = function () {
 		active = true;
+		oculusBridge.connect();
 	}
 	
 	this.disable = function () {
 		active = false;
+		oculusBridge.disconnect();
 	}
 	
 	this.updateInput = function () {
@@ -102,7 +104,7 @@ function init(){
     "debug" : true,
     "onOrientationUpdate" : bridgeOrientationUpdated
   });
-  oculusBridge.connect();
+
 
 }
 
