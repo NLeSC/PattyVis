@@ -21,6 +21,24 @@ iconFeature.setStyle(iconStyle);
 //   features: [iconFeature]
 // });
 
+function centerMap(center) {
+  map.getView().setCenter(ol.proj.transform(center, 'EPSG:4326', 'EPSG:3857'));
+}
+
+// function takes features array
+function plotMarkers(featuresArray) {
+  // first remove old ones
+  var oldFeatures = vectorSource.getFeatures();
+  function removeMarker(m) {
+    vectorSource.removeFeature(m);
+  }
+  oldFeatures.forEach(removeMarker);
+
+  // then add new ones
+  vectorSource.addFeatures(featuresArray);
+}
+
+
 var vectorSource = new ol.source.GeoJSON(
     /** @type {olx.source.GeoJSONOptions} */ ({
       object: {
