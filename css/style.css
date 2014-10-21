@@ -1,3 +1,7 @@
+body{
+    overflow: hidden;
+}
+
 #lblDistance{
     color:white;
     font-weight: bold;
