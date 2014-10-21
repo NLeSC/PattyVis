@@ -10,6 +10,7 @@
 .container-fluid{
     margin-top: 15px;
     position: absolute;
+    pointer-events: none;
 }
 
 #search-results{
@@ -21,6 +22,10 @@
 
 .search-result{
     padding: 10px;
+}
+
+.clickable{
+    pointer-events: all;
 }
 
 #overhead-map{
