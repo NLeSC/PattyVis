@@ -1,12 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="pattyApp">
 <head>
-<meta charset="utf-8">
-<title>Project Patty Visualisation</title>
+    <meta charset="utf-8">
+    <title>Project Patty Visualisation</title>
+
+    <!-- CSS -->
+    <link type="text/css" rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
 </head>
  <body style="margin: 0px; padding: 0px;">
+ 
+  <link type="text/css" rel="stylesheet" href="css/style.css">  
 
-  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <script src="bower_components/angular/angular.js"></script>
 
   <script src="bower_components/threejs/build/three.js"></script>
   <!-- <script src="bower_components/potree/libs/three.js/build/three.js"></script> -->
@@ -14,33 +20,64 @@
   <script src="bower_components/stats.js/build/stats.min.js"></script>
   <script src="bower_components/dat-gui/build/dat.gui.min.js"></script>
 
-  <script src="bower_components/potree/src/Potree.js"></script>
-  <script src="bower_components/potree/src/PointCloudOctree.js"></script>
-  <script src="bower_components/potree/src/PointCloudOctreeGeometry.js"></script>
-  <script src="bower_components/potree/src/loader/POCLoader.js"></script>
-  <script src="bower_components/potree/src/loader/PointAttributes.js"></script>
-  <script src="bower_components/potree/src/utils.js"></script>
-  <script src="bower_components/potree/src/LRU.js"></script>
+  <script src="bower_components/potree/libs/plasio/js/laslaz.js"></script>
+  <script src="bower_components/potree/libs/plasio/vendor/bluebird.js"></script>
+  <script src="lib/js/potree.min.js"></script>
+  <script src="lib/workers/laslaz-worker.js"></script>
+  <script src="lib/workers/lasdecoder-worker.js"></script>
   
   <script src="js/OculusRiftEffect.js"></script>
   <script src="js/OculusBridge.min.js"></script>
   <script src="js/OculusFirstPersonControls.js"></script>
   
-  <input type="button" value="place start" 
-    style="position:absolute; left: 10px; top: 10px; width: 100px; z-index: 100" 
+  <div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-4">
+            <div class="form-group" ng-controller="SearchCtrl">
+                <div class="input-group">
+                    <div class="glyphicon glyphicon-search input-group-addon"></div>
+                    <input type="text" class="form-control" id="search" placeholder="Search..." ng-model="query">
+                </div>
+                <div class="panel" id="search-results" ng-show="query">
+                    <div class="search-result" ng-repeat="site in sites | filter : searchFn as results" ng-cloak>
+                        <div style="display: inline-block; vertical-align: top;">
+                            <img ng-src="{{ site.properties.thumbnail }}" width="120">
+                        </div>
+                        <div style="display:inline-block;">
+                            <strong>{{ site.properties.description }}</strong>
+                            <p>{{ site.properties.site_interpretation }}</p>
+                        </div>
+                    </div>
+                    <div ng-if="results.length == 0">No results.</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-5">
+            <div id="lblDistance" style="z-index: 100;">abc</div>
+  
+            <div id="lblNumVisibleNodes" class="info"></div>
+            <div id="lblNumVisiblePoints" class="info"></div>
+            <div id="lblPosition" class="info"></div>
+            
+            <input type="button" value="place start" style="z-index: 100" onclick="placeStart()">
+            <input type="button" value="place end" style="z-index: 100" onclick="placeEnd()">
+            <input type="button" value="toggle oculus" style="z-index: 100" onclick="toggleOculus()">
+        </div>
+        <div class="col-xs-3">
+            <span class="pull-right">
+            <div id="overhead-map">
+                <img src="data/sites/13/IMG_0040.JPG" width="200" height="200">
+            </div>
+            </span>
+        </div>
+      </div>
+   </div>
 
-    onclick="placeStart()">
-  <input type="button" value="place end"
-    style="position:absolute; left: 10px; top: 40px; width: 100px; z-index: 100"
-    onclick="placeEnd()">
-  <input type="button" value="toggle oculus" 
-    style="position:absolute; left: 10px; top: 70px; width: 100px; z-index: 100"
-    onclick="toggleOculus()">
+  <script src="js/controllers.js"></script>
 
-  <div id="lblDistance" style="position: absolute; width: 20px; z-index: 100;">abc</div>
-
-  <div id="lblNumVisibleNodes" class="info" style="position: absolute; left: 10px; top: 110px; width: 400px;"></div>
-  <div id="lblNumVisiblePoints" class="info" style="position: absolute; left: 10px; top: 130px; width: 400px;"></div>
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  
+  <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
   <script type="text/javascript" src="js/app.js"></script>
 </body>

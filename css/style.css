@@ -13,7 +13,7 @@
 }
 
 #search-results{
-    margin-top: 50px;
+    margin-top: 10px;
     background-color: #ffffff; 
     opacity: 0.9; 
     filter: alpha(opacity=90); /* For IE8 and earlier */
