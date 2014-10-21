@@ -92,8 +92,19 @@ var vectorLayer = new ol.layer.Vector({
   source: vectorSource
 });
 
+var mapType1 = new ol.source.MapQuest({layer: 'sat'});
+var mapType2 = new ol.source.TileWMS({
+    url: 'http://maps.opengeo.org/geowebcache/service/wms',
+    params: {LAYERS: 'openstreetmap', VERSION: '1.1.1'}
+  });
+var mapType3 = new ol.source.TileWMS({
+    url: 'http://maps.opengeo.org/geowebcache/service/wms',
+    params: {LAYERS: 'bluemarble', VERSION: '1.1.1'}
+  });
+var mapType4 = new ol.source.MapQuest({layer: 'osm'});
+
 var rasterLayer = new ol.layer.Tile({
-  source: new ol.source.MapQuest({layer: 'sat'})
+  source: mapType4
 });
 
 var map = new ol.Map({
