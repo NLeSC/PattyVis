@@ -12,24 +12,26 @@
  
   <link type="text/css" rel="stylesheet" href="css/style.css">  
 
-   
+  <script src="bower_components/angular/angular.js"></script>
+ 
   <script src="bower_components/threejs/build/three.js"></script>
   <!-- <script src="bower_components/potree/libs/three.js/build/three.js"></script> -->
   <script src="bower_components/OrbitControls/index.js"></script>
   <script src="bower_components/stats.js/build/stats.min.js"></script>
   <script src="bower_components/dat-gui/build/dat.gui.min.js"></script>
   
-  <script src="bower_components/potree/src/Potree.js"></script>
-  <script src="bower_components/potree/src/PointCloudOctree.js"></script>
-  <script src="bower_components/potree/src/PointCloudOctreeGeometry.js"></script>
-  <script src="bower_components/potree/src/loader/POCLoader.js"></script>
-  <script src="bower_components/potree/src/loader/PointAttributes.js"></script>
-  <script src="bower_components/potree/src/utils.js"></script>
-  <script src="bower_components/potree/src/LRU.js"></script>
+  <script src="bower_components/potree/libs/plasio/js/laslaz.js"></script>
+  <script src="bower_components/potree/libs/plasio/vendor/bluebird.js"></script>
+  <script src="lib/js/potree.min.js"></script>
+  <script src="lib/workers/laslaz-worker.js"></script>
+  <script src="lib/workers/lasdecoder-worker.js"></script>
+
   <script src="bower_components/openlayers3/build/ol.js"></script>
+ 
   <script src="js/OculusRiftEffect.js"></script>
   <script src="js/OculusBridge.min.js"></script>
   <script src="js/OculusFirstPersonControls.js"></script>
+
 
   <div class="container-fluid">
     <div class="row">
@@ -66,9 +68,11 @@
   
             <div id="lblNumVisibleNodes" class="info"></div>
             <div id="lblNumVisiblePoints" class="info"></div>
-            
+            <div id="lblPosition" class="info"></div>
+ 
             <input type="button" value="place start" style="z-index: 100" onclick="placeStart()">
             <input type="button" value="place end" style="z-index: 100" onclick="placeEnd()">
+            <input type="button" value="toggle oculus" style="z-index: 100" onclick="toggleOculus()">
         </div>
         <div class="col-xs-3">
             <span class="pull-right">
