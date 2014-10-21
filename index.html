@@ -43,7 +43,7 @@
                 <div class="panel" id="search-results" ng-show="query">
                     <div class="search-result" ng-repeat="site in sites | filter : searchFn as results" ng-cloak>
                         <div style="display: inline-block; vertical-align: top;">
-                            <img src="{{ site.properties.thumbnail }}" width="120">
+                            <img ng-src="{{ site.properties.thumbnail }}" width="120">
                         </div>
                         <div style="display:inline-block;">
                             <strong>{{ site.properties.description }}</strong>
