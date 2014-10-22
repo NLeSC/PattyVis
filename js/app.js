@@ -1,5 +1,7 @@
 var defaultPointSize = 0.09;
 var defaultLOD = 12;
+
+//var pointcloudPath = 'http://192.168.6.34/potree/resources/pointclouds/viaappia/cloud_laz.js';
 var pointcloudPath = 'data/out_8/cloud.js';
 
 var pointcloud;
@@ -34,32 +36,27 @@ function getFov() {
 		return 75;
 	}
 }
+var pipeSpline;
+var cameraPath = [];
 
+var jqxhr = $.get( "data/cameraPath.json", function( data ) {
+  //$( ".result" ).html( data );  
+  
+  $.each(data.features, function (id, value) {
+    var coordinates = value.geometry.coordinates;
+    var vector = new THREE.Vector3(coordinates[0], coordinates[1], coordinates[2]);
+    console.log(vector);
+    cameraPath.push(vector);
+  }); 
+  
+  pathcontrols = new PathControls(camera, pipeSpline);
+  
+  })
+  .fail(function() {
+    console.log( "Error while loading cameraPath" );
+  });
 
-var pipeSpline = new THREE.SplineCurve3([
-new THREE.Vector3(-760.162069138975, 8, -1056.573978932733),
-new THREE.Vector3(-767.5959700089833, 8, -1018.5412775081725),
-new THREE.Vector3(-773.5043584819791, 8, -1000.6137242919983),
-new THREE.Vector3(-785.971463810118, 9, -982.5877817814662), //
-new THREE.Vector3(-781.6874427542574, 9, -985.1594906149345), //
-new THREE.Vector3(-815.9857660877537, 9, -952.2696375472989),
-new THREE.Vector3(-595.1536252817069, 12, -674.5681971703718),
-new THREE.Vector3(-519.3811004015599, 12, -588.2968255342925),
-new THREE.Vector3(-501.26141040306334, 12, -564.6049789829602),
-new THREE.Vector3(-463.60045554710535, 12, -509.0972616532118),
-new THREE.Vector3(-444.8218757290406, 12, -482.96061961378217),
-new THREE.Vector3(-297.22130374572305, 12, -296.28466782193476),
-new THREE.Vector3(-37.89582792293546, 17, 31.102728036814963),
-new THREE.Vector3(354.2225500875838, 22, 525.5286164599157),
-new THREE.Vector3(445.72946247031314, 22, 643.1505551479343),
-new THREE.Vector3(455.7505205418127, 25, 639.0922593516342),
-new THREE.Vector3(478.19653803096537, 25, 620.2632431983607),
-new THREE.Vector3(493.67400412940657, 25, 605.4108310948885),
-new THREE.Vector3(601.5153001216364, 25, 490.58431946593646) ]);
-
-
-
-
+pipeSpline = new THREE.SplineCurve3(cameraPath);
 
 function loadSkybox() {
 	cameraCube = new THREE.PerspectiveCamera(getFov(), window.innerWidth / window.innerHeight, 1, 100000);
@@ -192,14 +189,7 @@ function initThree() {
 	//controls.target.set(-818, 12, -948);
 	//camera.lookAt(new THREE.Vector3(-767.595, 8, -1018.541));
 
-
-
 	firstperson = new OculusFirstPersonControls(camera);
-
-
-	pathcontrols = new PathControls(camera, pipeSpline);
-
-
 
 	window.addEventListener('resize', onResize, false);
 
@@ -332,8 +322,13 @@ function render() {
 
 	pointcloud.update(camera);
 
-	if (useOculus) firstperson.updateInput();
-	else pathcontrols.updateInput();
+	if (useOculus) {
+	  firstperson.updateInput();
+	} else {
+	  if (pathcontrols != null) {
+	    pathcontrols.updateInput();
+	  }
+	}
 
 	camera.updateMatrixWorld(true);
 
