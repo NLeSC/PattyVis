@@ -17,6 +17,8 @@ var xAngle;
 var xAngle = 0;
 var yAngle = 0;
 
+var seq = 0;
+
 var mouseX = window.innerWidth / 2;
 var mouseY = window.innerHeight / 2;
 
@@ -41,6 +43,8 @@ PathControls = function (camera, path) {
 	this.camera = camera;
     this.path = path;
 	init();
+	
+	bodyPosition = camera.position;
 	
 	zoom = camera.fov;
 	maxZoom = camera.fov;
@@ -164,11 +168,18 @@ function onKeyDown(event) {
   if (event.keyCode == 50) { // the 2 key
 		autoWalk = false;
         firstPerson = true;
+        
+        if (firstPerson) {
+        	//continue from current position
+        	bodyPosition = camera.position;
+        }
   }
   
   //print position
   if (event.keyCode == 80 || event.keyCode == 112) {
-    console.log('[' + camera.position.x + ', ' + camera.position.y + ', ' + camera.position.z + ']');
+    console.log("{\n   \"type\": \"Feature\",\n   \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": ["
+    		+ camera.position.x + ', ' + camera.position.y + ', ' + camera.position.z + "]\n   },\n   \"id\": "
+    		+ seq++ + "\n}​,");
   }
     
   //console.log(event.keyCode);
