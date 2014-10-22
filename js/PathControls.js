@@ -61,34 +61,34 @@ PathControls = function (camera, path) {
 		  } else if (firstPerson) {
 			  
 			  // Forward/backward
-			  if(keys[87] || keys[38]){ // W or UP
+			  if(keys[87] || keys [119] || keys[38]) { // W or UP
 			      bodyPosition.x -= Math.cos(-xAngle + Math.PI / 2) * step;
 			      bodyPosition.y -= Math.cos(yAngle + Math.PI / 2) * step;
 			      bodyPosition.z -= Math.sin(-xAngle + Math.PI / 2) * step;
 			  }
 
-			  if(keys[83] || keys[40]){ // S or DOWN
+			  if(keys[83] || keys [115] || keys[40]) { // S or DOWN
 			      bodyPosition.x += Math.cos(-xAngle + Math.PI / 2) * step;
 			      bodyPosition.y += Math.cos(yAngle + Math.PI / 2) * step;
 			      bodyPosition.z += Math.sin(-xAngle + Math.PI / 2) * step;
 			  }
 
 			  // Turn
-			  if(keys[17]){ // Ctrl
+			  if(keys[90] || keys [122]) { // Z
 				  bodyPosition.y -= step;
-			  }   
+			  }
 			  
-			  if(keys[16]){ // Shift
+			  if(keys[81] || keys [113]) { // Q
 				  bodyPosition.y += step;
 			  }
 
 			  // Straif
-			  if(keys[65] || keys[37]){ // A or LEFT
+			  if(keys[65] || keys[97] || keys[37]) { // A or left
 			      bodyPosition.x -= Math.cos(-xAngle) * step;
 			      bodyPosition.z -= Math.sin(-xAngle) * step;
 			  }   
 			  
-			  if(keys[68] || keys[39]){ // D or RIGHT
+			  if(keys[68] || keys[100] || keys[39]) { // D or right
 			      bodyPosition.x += Math.cos(-xAngle) * step;
 			      bodyPosition.z += Math.sin(-xAngle) * step;
 			  }
@@ -98,10 +98,10 @@ PathControls = function (camera, path) {
 		  
 		  } else {
 			  // Forward/backward
-			  if(keys[87] || keys[38]){ // W or UP
+			  if(keys[87] || keys[38]) { // W or UP
 				  positionOnRoad += 0.1 * delta;
 			  }
-			  if(keys[83] || keys[40]){ // S or DOWN
+			  if(keys[83] || keys[40]) { // S or DOWN
 				  positionOnRoad -= 0.1 * delta;
 			  }
 
@@ -147,6 +147,10 @@ function init(){
 function onKeyDown(event) {
   keys[event.keyCode] = true;
   
+  if (keys[18]) { //catch shortcuts that use ALT key
+    event.preventDefault();
+  }
+  
   if (event.keyCode == 49) { //the 1 key
 	autoWalk = !autoWalk;
 	firstPerson = false;
@@ -162,7 +166,12 @@ function onKeyDown(event) {
         firstPerson = true;
   }
   
-  console.log(event.keyCode);
+  //print position
+  if (event.keyCode == 80 || event.keyCode == 112) {
+    console.log('[' + camera.position.x + ', ' + camera.position.y + ', ' + camera.position.z + ']');
+  }
+    
+  //console.log(event.keyCode);
 }
 
 function onKeyUp(event) {
@@ -170,10 +179,11 @@ function onKeyUp(event) {
 }
 
 function mousedown(event) {
-	event.preventDefault();
 	
 	//right mouse button going down!!
 	if (event.button == 2) {
+		
+		event.preventDefault();
 		
 		mouseX = event.pageX;
 		mouseY = event.pageY;
@@ -183,9 +193,10 @@ function mousedown(event) {
 }
 
 function mouseup(event) {
-	event.preventDefault();
 	
+	//right mouse button going up!!
 	if (event.button == 2) {
+		event.preventDefault();
 		drag = false;
 	}
 }
