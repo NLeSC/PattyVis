@@ -147,8 +147,6 @@ function init(){
 function onKeyDown(event) {
   keys[event.keyCode] = true;
   
-  debugger
-  
   if (event.keyCode == 49) { //the 1 key
 	autoWalk = !autoWalk;
 	firstPerson = false;
