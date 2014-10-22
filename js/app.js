@@ -1,6 +1,6 @@
 var defaultPointSize = 0.09;
 var defaultLOD = 12;
-var pointcloudPath = 'http://192.168.6.31/potree/resources/pointclouds/viaappia/cloud_laz.js';
+var pointcloudPath = 'http://192.168.6.34/potree/resources/pointclouds/viaappia/cloud_laz.js';
 
 var pointcloud;
 var skybox;
@@ -62,7 +62,7 @@ var pipeSpline = new THREE.SplineCurve3([
                          				new THREE.Vector3(40, -15, 10),
                          				new THREE.Vector3(50, -15, 10),
                          				new THREE.Vector3(60, 0, 10),
-                         				new THREE.Vector3(70, 0, 0), 
+                         				new THREE.Vector3(70, 0, 0),
                          				new THREE.Vector3(80, 0, 0),
                          				new THREE.Vector3(90, 0, 0),
                          				new THREE.Vector3(100, 0, 0)]);
@@ -107,6 +107,7 @@ function initGUI() {
 	var gui = new dat.GUI({
 		height : 5 * 32 - 1
 	});
+	gui.close();
 
 	var params = {
 		PointSize : defaultPointSize,
@@ -139,7 +140,7 @@ function initThree() {
 	//OculusRift
 	effect = new THREE.OculusRiftEffect( renderer, {worldScale: 100} );
 	effect.setSize( window.innerWidth, window.innerHeight );
-	
+
 	loadSkybox();
 	scene.add(sceneCube);
 
@@ -148,22 +149,22 @@ function initThree() {
 		size : defaultPointSize,
 		vertexColors : true
 	});
-				
+
 	// materials
 	materials.rgb = new Potree.PointCloudRGBMaterial({ size: defaultPointSize});
 	materials.color = new Potree.PointCloudColorMaterial({size: defaultPointSize});
 	materials.height = new Potree.PointCloudHeightMaterial({size: defaultPointSize, min: 0, max: 10});
 	materials.intensity = new Potree.PointCloudIntensityMaterial({size: defaultPointSize, min: 0, max: 65535});
-	
+
 	// load pointcloud
 	var pco = POCLoader.load(pointcloudPath, {toOrigin: true});
-	
+
 	pointcloud = new Potree.PointCloudOctree(pco, materials.rgb);
 	pointcloud.LOD = defaultLOD;
 	pointcloud.rotation.set(-Math.PI/2.0, 0.0, 0.0);
 	pointcloud.moveToOrigin();
 	pointcloud.moveToGroundPlane();
-			
+
 	scene.add(pointcloud);
 
 	// grid
@@ -199,16 +200,16 @@ function initThree() {
 	//controls = new THREE.OrbitControls(camera, renderer.domElement);
 	//controls.target.set(-818, 12, -948);
 	//camera.lookAt(controls.target);
-	
+
 	firstperson = new OculusFirstPersonControls(camera);
 
-	
+
 	pathcontrols = new PathControls(camera, pipeSpline);
 
-	
-	
+
+
 	window.addEventListener('resize', onResize, false);
-	  
+
 	document.addEventListener('mousemove', onDocumentMouseMove, false);
 	renderer.domElement.addEventListener('click', onClick, false);
 }
@@ -238,10 +239,10 @@ function onResize() {
 	  if(!useOculus){
 	    windowHalf = new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2);
 	    aspectRatio = window.innerWidth / window.innerHeight;
-	   
+
 	    camera.aspect = aspectRatio;
 	    camera.updateProjectionMatrix();
-	   
+
 	    renderer.setSize(window.innerWidth, window.innerHeight);
 	  } else {
 	    effect.setSize(window.innerWidth, window.innerHeight);
@@ -257,9 +258,9 @@ function onDocumentMouseMove(event) {
 
 function render() {
 	requestAnimationFrame(render);
-	
+
 	pointcloud.update(camera);
-	
+
 	if (useOculus) firstperson.updateInput();
 	else pathcontrols.updateInput();
 
@@ -351,7 +352,7 @@ function onClick() {
 function toggleOculus() {
   useOculus = !useOculus;
   onResize();
-  
+
   if (!useOculus) {
     camera.fov = getFov();
 	camera.updateProjectionMatrix();
@@ -360,14 +361,14 @@ function toggleOculus() {
 	camera.position.set(4, 6, 10);
 	controls.target.set(0, 3, 0);
 	controls.update();
-	camera.lookAt(controls.target);  
-	
+	camera.lookAt(controls.target);
+
   } else {
 	camera.fov = getFov();
 	camera.updateProjectionMatrix();
 	firstperson.enable();
-	
+
   }
 
-  
+
 }
