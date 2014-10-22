@@ -52,11 +52,16 @@ npm install connect serve-static
 node server.js
 ```
 
-### access with web browser
+Access with web browser
+-----------------------
 Running app should be available at url:
 http://localhost:8080/
 
-# Mockup
+Mockup
+------
 
 For mockup see https://wiki.esciencecenter.nl/index.php/Patty_Visualization
 
+Oculus Rift
+-----------
+Get the host application and run it: https://github.com/Instrument/oculus-bridge
