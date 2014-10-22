@@ -193,9 +193,10 @@ function mousedown(event) {
 }
 
 function mouseup(event) {
-	event.preventDefault();
 	
+	//right mouse button going up!!
 	if (event.button == 2) {
+		event.preventDefault();
 		drag = false;
 	}
 }
