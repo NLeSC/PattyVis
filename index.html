@@ -54,6 +54,7 @@
                         </div>
                         <div class="btn-group">
                             <button type="button" class="glyphicon glyphicon-eye-open" ng-click="lookAtSite(site.id)" title="Look at site"></button>
+                            <button type="button" class="glyphicon glyphicon-tag" ng-click="showLabel(site.properties.description)" title="Show label (at fixed position - turn around to see it)."></button>
                         </div>
                     </div>
                     <div ng-if="results.length == 0" ng-cloak>No results.</div>

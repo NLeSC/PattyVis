@@ -18,4 +18,7 @@ pattyApp.controller('SearchCtrl', function ($scope, $http){
      // TODO goto to site view
      console.log(arguments);
    }
+   $scope.showLabel = function(name) {
+     addTextLabel(name, -764.0, 8.2, -1014.0); 
+   }
 });
