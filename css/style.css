@@ -2,15 +2,6 @@ body{
     overflow: hidden;
 }
 
-#lblDistance{
-    color:white;
-    font-weight: bold;
-    text-shadow:  2px  2px 2px black,
-            2px -2px 2px black,
-           -2px  2px 2px black,
-           -2px -2px 2px black;
-  }
-
 .container-fluid{
     margin-top: 15px;
     position: absolute;
@@ -19,8 +10,8 @@ body{
 
 #search-results{
     margin-top: 10px;
-    background-color: #ffffff; 
-    opacity: 0.9; 
+    background-color: #ffffff;
+    opacity: 0.9;
     filter: alpha(opacity=90); /* For IE8 and earlier */
 }
 

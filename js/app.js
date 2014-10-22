@@ -27,6 +27,9 @@ var pathcontrols;
 
 var useOculus = false;
 
+// dat.gui bound parameters
+var controlParams;
+
 function getFov() {
 	if (useOculus) {
 		return 110;
@@ -94,24 +97,48 @@ function loadSkybox() {
 }
 
 function initGUI() {
-	var gui = new dat.GUI({
-		height : 5 * 32 - 1
+	 var gui = new dat.GUI({
+		height : 5 * 32 - 1,
+		autoplace: false
 	});
-	gui.close();
+	var guiContainer = document.getElementById('my-gui-container');
+	guiContainer.appendChild(gui.domElement);
 
-	var params = {
+	// gui.close();
+
+	controlParams = {
 		PointSize : defaultPointSize,
-		LOD : defaultLOD
+		LOD : defaultLOD,
+		'toggleOculus': toggleOculus,
+		'show aabb' : false,
+		'placeStart': placeStart,
+		'placeEnd': placeEnd,
+		startPosition: '',
+		distance: 0,
+    visibleNodes: 0,
+		visiblePoints: 0
 	};
 
-	var pLOD = gui.add(params, 'LOD', 0.5, 20);
+	var pLOD = gui.add(controlParams, 'LOD', 0.5, 20);
 	pLOD.onChange(function(value) {
 		pointcloud.LOD = value;
 	});
 
-	var pPointSize = gui.add(params, 'PointSize', 0.01, 0.1);
+	var pPointSize = gui.add(controlParams, 'PointSize', 0.01, 0.1);
 	pPointSize.onChange(function(value) {
 		pointcloudMaterial.size = value;
+	});
+	gui.add(controlParams, 'toggleOculus');
+	var measureFolder = gui.addFolder('Distance measurement');
+	measureFolder.add(controlParams, 'placeStart');
+	measureFolder.add(controlParams, 'placeEnd');
+	measureFolder.add(controlParams, 'startPosition').listen();
+	measureFolder.add(controlParams, 'distance').listen();
+	var statsFolder = gui.addFolder('Stats');
+	statsFolder.add(controlParams, 'visibleNodes').listen();
+	statsFolder.add(controlParams, 'visiblePoints').listen();
+	statsFolder.add(controlParams, 'show aabb').onChange(function(value){
+		pointcloud.showBoundingBox = value;
 	});
 }
 
@@ -378,16 +405,10 @@ function render() {
 	labelPos.y = -(labelPos.y - 1) / 2 * window.innerHeight;
 
 	var distance = spStart.position.distanceTo(spEnd.position);
-	var lblDistance = document.getElementById("lblDistance");
-	lblDistance.style.left = labelPos.x;
-	lblDistance.style.top = labelPos.y;
-	lblDistance.innerHTML = distance.toFixed(2);
-
-	var numVisibleNodes = pointcloud.numVisibleNodes;
-	var numVisiblePoints = pointcloud.numVisiblePoints;
-	document.getElementById("lblNumVisibleNodes").innerHTML = "visible nodes: " + numVisibleNodes;
-	document.getElementById("lblNumVisiblePoints").innerHTML = "visible points: " + Potree.utils.addCommas(numVisiblePoints);
-	document.getElementById("lblPosition").innerHTML = "position of start: " + Potree.utils.addCommas(spStart.position.x)+ "/" + Potree.utils.addCommas(spStart.position.y)+"/" + Potree.utils.addCommas(spStart.position.z);
+	controlParams.distance = distance;
+	controlParams.visibleNodes = pointcloud.numVisibleNodes;
+	controlParams.visiblePoints = pointcloud.numVisiblePoints;
+	controlParams.startPosition = Potree.utils.addCommas(spStart.position.x)+ "/" + Potree.utils.addCommas(spStart.position.y)+"/" + Potree.utils.addCommas(spStart.position.z);
 
 	if (!useOculus) {
 	  //Non-Oculus rendering

@@ -9,8 +9,8 @@
     <link type="text/css" rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
 </head>
  <body style="margin: 0px; padding: 0px;" oncontextmenu="return false;">
- 
-  <link type="text/css" rel="stylesheet" href="css/style.css">  
+
+  <link type="text/css" rel="stylesheet" href="css/style.css">
 
   <script src="bower_components/angular/angular.js"></script>
 
@@ -27,14 +27,14 @@
   <script src="lib/workers/lasdecoder-worker.js"></script>
 
   <script src="bower_components/openlayers3/build/ol.js"></script>
- 
+
   <script src="js/OculusRiftEffect.js"></script>
   <script src="js/OculusBridge.min.js"></script>
   <script src="js/OculusFirstPersonControls.js"></script>
   <script src="js/PathControls.js"></script>
 
   <script src="bower_components/proj4/dist/proj4.js"></script>
-  
+
   <div class="container-fluid">
     <div class="row">
         <div class="col-xs-4">
@@ -58,15 +58,7 @@
             </div>
         </div>
         <div class="col-xs-5">
-            <div id="lblDistance" class="clickable" style="z-index: 100;">abc</div>
-  
-            <div id="lblNumVisibleNodes" class="info clickable"></div>
-            <div id="lblNumVisiblePoints" class="info clickable"></div>
-            <div id="lblPosition" class="info clickable"></div>
-            
-            <input type="button" value="place start" class="clickable" style="z-index: 100" onclick="placeStart()">
-            <input type="button" value="place end" class="clickable" style="z-index: 100" onclick="placeEnd()">
-            <input type="button" value="toggle oculus" class="clickable" style="z-index: 100" onclick="toggleOculus()">
+          <div id="my-gui-container" class="clickable" style="z-index: 100;"></div>
         </div>
         <div class="col-xs-3">
             <span class="pull-right">
@@ -80,7 +72,7 @@
   <script src="js/controllers.js"></script>
 
   <script src="bower_components/jquery/dist/jquery.min.js"></script>
-  
+
   <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
   <script type="text/javascript" src="js/app.js"></script>
