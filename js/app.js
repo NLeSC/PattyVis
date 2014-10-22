@@ -1,6 +1,6 @@
 var defaultPointSize = 0.09;
 var defaultLOD = 12;
-var pointcloudPath = 'http://192.168.6.34/potree/resources/pointclouds/viaappia/cloud_laz.js';
+var pointcloudPath = 'data/out_8/cloud.js';
 
 var pointcloud;
 var skybox;
