@@ -36,36 +36,26 @@ function getFov() {
 }
 
 
-
 var pipeSpline = new THREE.SplineCurve3([
-                         				new THREE.Vector3(0, 10, -10),
-                         				new THREE.Vector3(10, 0, -10),
-                         				new THREE.Vector3(20, 0, 0),
-                         				new THREE.Vector3(30, 0, 10),
-                         				new THREE.Vector3(30, 0, 20),
-                         				new THREE.Vector3(20, 0, 30),
-                         				new THREE.Vector3(10, 0, 30),
-                         				new THREE.Vector3(0, 0, 30),
-                         				new THREE.Vector3(-10, 10, 30),
-                         				new THREE.Vector3(-10, 20, 30),
-                         				new THREE.Vector3(0, 30, 30),
-                         				new THREE.Vector3(10, 30, 30),
-                         				new THREE.Vector3(20, 30, 15),
-                         				new THREE.Vector3(10, 30, 10),
-                         				new THREE.Vector3(0, 30, 10),
-                         				new THREE.Vector3(-10, 20, 10),
-                         				new THREE.Vector3(-10, 10, 10),
-                         				new THREE.Vector3(0, 0, 10),
-                         				new THREE.Vector3(10, -10, 10),
-                         				new THREE.Vector3(20, -15, 10),
-                         				new THREE.Vector3(30, -15, 10),
-                         				new THREE.Vector3(40, -15, 10),
-                         				new THREE.Vector3(50, -15, 10),
-                         				new THREE.Vector3(60, 0, 10),
-                         				new THREE.Vector3(70, 0, 0),
-                         				new THREE.Vector3(80, 0, 0),
-                         				new THREE.Vector3(90, 0, 0),
-                         				new THREE.Vector3(100, 0, 0)]);
+new THREE.Vector3(-760.162069138975, 8, -1056.573978932733),
+new THREE.Vector3(-767.5959700089833, 8, -1018.5412775081725),
+new THREE.Vector3(-773.5043584819791, 8, -1000.6137242919983),
+new THREE.Vector3(-785.971463810118, 9, -982.5877817814662), //
+new THREE.Vector3(-781.6874427542574, 9, -985.1594906149345), //
+new THREE.Vector3(-815.9857660877537, 9, -952.2696375472989),
+new THREE.Vector3(-595.1536252817069, 12, -674.5681971703718),
+new THREE.Vector3(-519.3811004015599, 12, -588.2968255342925),
+new THREE.Vector3(-501.26141040306334, 12, -564.6049789829602),
+new THREE.Vector3(-463.60045554710535, 12, -509.0972616532118),
+new THREE.Vector3(-444.8218757290406, 12, -482.96061961378217),
+new THREE.Vector3(-297.22130374572305, 12, -296.28466782193476),
+new THREE.Vector3(-37.89582792293546, 17, 31.102728036814963),
+new THREE.Vector3(354.2225500875838, 22, 525.5286164599157),
+new THREE.Vector3(445.72946247031314, 22, 643.1505551479343),
+new THREE.Vector3(455.7505205418127, 25, 639.0922593516342),
+new THREE.Vector3(478.19653803096537, 25, 620.2632431983607),
+new THREE.Vector3(493.67400412940657, 25, 605.4108310948885),
+new THREE.Vector3(601.5153001216364, 25, 490.58431946593646) ]);
 
 
 
@@ -196,10 +186,13 @@ function initThree() {
 	scene.add(sConnection);
 
 	// controls
-	camera.position.set(-818, 12, -960);
+	//camera.position.set(-818, 12, -960);
+	camera.position.set(-760.162, 8, -1056.573);
 	//controls = new THREE.OrbitControls(camera, renderer.domElement);
 	//controls.target.set(-818, 12, -948);
-	//camera.lookAt(controls.target);
+	//camera.lookAt(new THREE.Vector3(-767.595, 8, -1018.541));
+
+
 
 	firstperson = new OculusFirstPersonControls(camera);
 
