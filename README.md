@@ -54,7 +54,7 @@ node server.js
 
 ### access with web browser
 Running app should be available at url:
-http://localhost:8000/
+http://localhost:8080/
 
 # Mockup
 
