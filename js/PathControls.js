@@ -8,6 +8,7 @@
 var camera;
 var clock;
 var path;
+var drag = false;
 
 var bodyAngle;
 var bodyAxis;
@@ -20,7 +21,7 @@ var mouseX = window.innerWidth / 2;
 var mouseY = window.innerHeight / 2;
 
 //this factor controls mouse sensitivity
-var factor = 4;
+var factor = 8;
 
 // Map for key states
 var keys = [];
@@ -48,6 +49,8 @@ PathControls = function (camera, path) {
 		  var delta		  = clock.getDelta();
 		  var elapsed     = clock.getElapsedTime();
 		  var step        = 10 * delta;
+		  
+		  if (keys[18]) step *= 4; //Alt
 
 		  if (autoWalk) {
 			  var looptime = 120;
@@ -71,11 +74,11 @@ PathControls = function (camera, path) {
 			  }
 
 			  // Turn
-			  if(keys[90]){ // Z
+			  if(keys[17]){ // Ctrl
 				  bodyPosition.y -= step;
 			  }   
 			  
-			  if(keys[81]){ // Q
+			  if(keys[16]){ // Shift
 				  bodyPosition.y += step;
 			  }
 
@@ -128,8 +131,11 @@ function init(){
   document.addEventListener('keyup', onKeyUp, false);
   
   document.addEventListener('mousemove', mousemove, false);
+  document.addEventListener('mousedown', mousedown, false);
+  document.addEventListener('mouseup', mouseup, false);
+  
   document.addEventListener('mousewheel', mousewheel, false );
-  document.addEventListener( 'DOMMouseScroll', mousewheel, false ); // firefox
+  document.addEventListener('DOMMouseScroll', mousewheel, false ); // firefox
   
   
   bodyAngle     = 0;
@@ -140,6 +146,8 @@ function init(){
 
 function onKeyDown(event) {
   keys[event.keyCode] = true;
+  
+  debugger
   
   if (event.keyCode == 49) { //the 1 key
 	autoWalk = !autoWalk;
@@ -163,10 +171,35 @@ function onKeyUp(event) {
   keys[event.keyCode] = false;
 }
 
-function mousemove(event) {
+function mousedown(event) {
+	event.preventDefault();
 	
-	xAngle -= ((event.pageX) - mouseX) / (window.innerWidth / factor);
-	yAngle -= ((event.pageY) - mouseY) / (window.innerHeight / factor);
+	//right mouse button going down!!
+	if (event.button == 2) {
+		
+		mouseX = event.pageX;
+		mouseY = event.pageY;
+
+		drag = true;
+	}
+}
+
+function mouseup(event) {
+	event.preventDefault();
+	
+	if (event.button == 2) {
+		drag = false;
+	}
+}
+
+function mousemove(event) {
+	if (!drag) return;
+	
+	xAngle -= factor*(event.pageX - mouseX) / (window.innerWidth);
+	yAngle -= factor*(event.pageY - mouseY) / (window.innerHeight);
+	
+	if (yAngle < -0.95 * Math.PI/2) yAngle = -0.95 * Math.PI/2;
+	if (yAngle > 0.95 * Math.PI/2) yAngle = 0.95 * Math.PI/2;
 
 	mouseX = event.pageX;
 	mouseY = event.pageY;
