@@ -10,8 +10,12 @@ pattyApp.controller('SearchCtrl', function ($scope, $http){
    $scope.searchFn = function (value, index){
        if( !$scope.query ){ return false; }
        var re = new RegExp($scope.query, 'i');
-       return ( re.test(value.properties.description) || 
-           re.test(value.properties.site_interpretation) || 
+       return ( re.test(value.properties.description) ||
+           re.test(value.properties.site_interpretation) ||
            value.id == $scope.query );
+   }
+   $scope.lookAtSite = function(siteId) {
+     // TODO goto to site view
+     console.log(arguments);
    }
 });
