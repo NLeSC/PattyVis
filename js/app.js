@@ -43,17 +43,17 @@ var pipeSpline;
 var cameraPath = [];
 
 var jqxhr = $.get( "data/cameraPath.json", function( data ) {
-  //$( ".result" ).html( data );  
-  
+  //$( ".result" ).html( data );
+
   $.each(data.features, function (id, value) {
     var coordinates = value.geometry.coordinates;
     var vector = new THREE.Vector3(coordinates[0], coordinates[1], coordinates[2]);
     console.log(vector);
     cameraPath.push(vector);
-  }); 
-  
+  });
+
   pathcontrols = new PathControls(camera, pipeSpline);
-  
+
   })
   .fail(function() {
     console.log( "Error while loading cameraPath" );
@@ -101,7 +101,8 @@ function initGUI() {
 	var guiContainer = document.getElementById('my-gui-container');
 	guiContainer.appendChild(gui.domElement);
 
-	// gui.close();
+  // hide controls by default
+	gui.close();
 
 	controlParams = {
 		PointSize : defaultPointSize,
