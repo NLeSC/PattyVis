@@ -92,3 +92,10 @@ var map = new ol.Map({
     zoom: 10
   })
 });
+
+// listen on map click
+map.on('click', function(event) {
+    var lat = event.coordinate[0];
+    var lon = event.coordinate[1];
+    alert('x: '+ lat + '\ny: ' + lon);
+});
