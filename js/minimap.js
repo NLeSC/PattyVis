@@ -92,3 +92,23 @@ var map = new ol.Map({
     zoom: 10
   })
 });
+
+// listen on map click
+map.on('click', function(event) {
+    // EPSG:3857 (strange internal OpenLayers lat/lon units)
+    var lat = event.coordinate[0];
+    var lon = event.coordinate[1];
+    // EPSG:4326 "normal" lat/long:
+    var coord_4326 = ol.proj.transform([lat, lon], 'EPSG:3857', 'EPSG:4326');
+    var lat_4326 = coord_4326[0];
+    var lon_4326 = coord_4326[1];
+    // EPSG:32633 laz coordinate system:
+    var coord_32633 = proj4('EPSG:3857', "+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", [lat, lon]);
+    var lat_32633 = coord_32633[0];
+    var lon_32633 = coord_32633[1];
+
+    alert('EPSG:3857 (openlayers)\nx: '+ lat + '\ny: ' + lon +
+          '\nESPG:4326 (google)\nx: ' + lat_4326
+           + '\ny: ' + lon_4326 + '\nEPSG:32633 (drivemap)\nx: ' + lat_32633 +
+           '\ny: ' + lon_32633);
+});

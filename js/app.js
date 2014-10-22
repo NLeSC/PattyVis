@@ -1,7 +1,6 @@
 var defaultPointSize = 0.09;
 var defaultLOD = 12;
-//var pointcloudPath = 'http://192.168.6.31/potree/resources/pointclouds/viaappia/cloud_laz.js';
-var pointcloudPath = 'out_8/cloud.js';
+var pointcloudPath = 'http://192.168.6.34/potree/resources/pointclouds/viaappia/cloud_laz.js';
 
 var pointcloud;
 var skybox;
@@ -63,7 +62,7 @@ var pipeSpline = new THREE.SplineCurve3([
                          				new THREE.Vector3(40, -15, 10),
                          				new THREE.Vector3(50, -15, 10),
                          				new THREE.Vector3(60, 0, 10),
-                         				new THREE.Vector3(70, 0, 0), 
+                         				new THREE.Vector3(70, 0, 0),
                          				new THREE.Vector3(80, 0, 0),
                          				new THREE.Vector3(90, 0, 0),
                          				new THREE.Vector3(100, 0, 0)]);
@@ -108,6 +107,7 @@ function initGUI() {
 	var gui = new dat.GUI({
 		height : 5 * 32 - 1
 	});
+	gui.close();
 
 	var params = {
 		PointSize : defaultPointSize,
@@ -140,7 +140,7 @@ function initThree() {
 	//OculusRift
 	effect = new THREE.OculusRiftEffect( renderer, {worldScale: 100} );
 	effect.setSize( window.innerWidth, window.innerHeight );
-	
+
 	loadSkybox();
 	scene.add(sceneCube);
 
@@ -149,22 +149,22 @@ function initThree() {
 		size : defaultPointSize,
 		vertexColors : true
 	});
-				
+
 	// materials
 	materials.rgb = new Potree.PointCloudRGBMaterial({ size: defaultPointSize});
 	materials.color = new Potree.PointCloudColorMaterial({size: defaultPointSize});
 	materials.height = new Potree.PointCloudHeightMaterial({size: defaultPointSize, min: 0, max: 10});
 	materials.intensity = new Potree.PointCloudIntensityMaterial({size: defaultPointSize, min: 0, max: 65535});
-	
+
 	// load pointcloud
 	var pco = POCLoader.load(pointcloudPath, {toOrigin: true});
-	
+
 	pointcloud = new Potree.PointCloudOctree(pco, materials.rgb);
 	pointcloud.LOD = defaultLOD;
 	pointcloud.rotation.set(-Math.PI/2.0, 0.0, 0.0);
 	pointcloud.moveToOrigin();
 	pointcloud.moveToGroundPlane();
-			
+
 	scene.add(pointcloud);
 
 	// grid
@@ -200,18 +200,96 @@ function initThree() {
 	//controls = new THREE.OrbitControls(camera, renderer.domElement);
 	//controls.target.set(-818, 12, -948);
 	//camera.lookAt(controls.target);
-	
+
 	firstperson = new OculusFirstPersonControls(camera);
 
-	
+
 	pathcontrols = new PathControls(camera, pipeSpline);
 
-	
-	
+
+
 	window.addEventListener('resize', onResize, false);
-	  
+
 	document.addEventListener('mousemove', onDocumentMouseMove, false);
 	renderer.domElement.addEventListener('click', onClick, false);
+}
+
+function makeTextSprite( message, parameters ){
+    if ( parameters === undefined ) parameters = {};
+
+    var fontface = parameters.hasOwnProperty("fontface") ?
+        parameters["fontface"] : "Arial";
+
+    var fontsize = parameters.hasOwnProperty("fontsize") ?
+        parameters["fontsize"] : 18;
+
+    var borderThickness = parameters.hasOwnProperty("borderThickness") ?
+        parameters["borderThickness"] : 4;
+
+    var borderColor = parameters.hasOwnProperty("borderColor") ?
+        parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
+
+    var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
+        parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
+
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+    context.font = "Bold " + fontsize + "px " + fontface;
+
+    // get size data (height depends only on font size)
+    var metrics = context.measureText( message );
+    var textWidth = metrics.width;
+
+    // background color
+    context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
+                          + backgroundColor.b + "," + backgroundColor.a + ")";
+
+    context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
+                          + borderColor.b + "," + borderColor.a + ")";
+
+    context.lineWidth = borderThickness;
+    roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
+    // 1.4 is extra height factor for text below baseline: g,j,p,q.
+
+    // text color
+    context.fillStyle = "rgba(0, 0, 0, 1.0)";
+
+    context.fillText( message, borderThickness, fontsize + borderThickness);
+
+    // canvas contents will be used for a texture
+    var texture = new THREE.Texture(canvas)
+    texture.needsUpdate = true;
+
+    var spriteMaterial = new THREE.SpriteMaterial(
+        { map: texture, useScreenCoordinates: false,} );
+    var sprite = new THREE.Sprite( spriteMaterial );
+    //sprite.scale.set(100,50,1.0);
+    sprite.scale.set(10, 5, 1.0);
+    return sprite;
+}
+
+// function for drawing rounded rectangles
+function roundRect(ctx, x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.lineTo(x+w-r, y);
+    ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+    ctx.lineTo(x+w, y+h-r);
+    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    ctx.lineTo(x+r, y+h);
+    ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+    ctx.lineTo(x, y+r);
+    ctx.quadraticCurveTo(x, y, x+r, y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+}
+
+// add a text label
+function addTextLabel(msg, x, y, z){
+    var label = makeTextSprite(msg);
+    label.position.set(x, y, z);
+    scene.add( label );
 }
 
 function createGrid(width, length, spacing) {
@@ -239,10 +317,10 @@ function onResize() {
 	  if(!useOculus){
 	    windowHalf = new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2);
 	    aspectRatio = window.innerWidth / window.innerHeight;
-	   
+
 	    camera.aspect = aspectRatio;
 	    camera.updateProjectionMatrix();
-	   
+
 	    renderer.setSize(window.innerWidth, window.innerHeight);
 	  } else {
 	    effect.setSize(window.innerWidth, window.innerHeight);
@@ -258,9 +336,9 @@ function onDocumentMouseMove(event) {
 
 function render() {
 	requestAnimationFrame(render);
-	
+
 	pointcloud.update(camera);
-	
+
 	if (useOculus) firstperson.updateInput();
 	else pathcontrols.updateInput();
 
@@ -329,6 +407,7 @@ function render() {
 
 initThree();
 initGUI();
+addTextLabel(' Lion ', -1.5, 6.3, -1.3);
 render();
 
 function placeStart() {
@@ -352,7 +431,7 @@ function onClick() {
 function toggleOculus() {
   useOculus = !useOculus;
   onResize();
-  
+
   if (!useOculus) {
     camera.fov = getFov();
 	camera.updateProjectionMatrix();
@@ -361,14 +440,13 @@ function toggleOculus() {
 	camera.position.set(4, 6, 10);
 	controls.target.set(0, 3, 0);
 	controls.update();
-	camera.lookAt(controls.target);  
-	
+	camera.lookAt(controls.target);
+
   } else {
 	camera.fov = getFov();
 	camera.updateProjectionMatrix();
 	firstperson.enable();
-	
+
   }
 
-  
 }
