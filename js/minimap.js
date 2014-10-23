@@ -1,4 +1,5 @@
 proj4.defs("EPSG:32633", "+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
+proj4.defs('urn:ogc:def:crs:EPSG::32633', proj4.defs('EPSG:32633'));
 
 var siteProjectionCode = "EPSG:32633";
 var siteProjection = ol.proj.get(siteProjectionCode);
@@ -34,60 +35,28 @@ function plotMarkers(GeoJSONfeatureCollection) {
   oldFeatures.forEach(removeMarker);
 
   // then add new ones
+  if (GeoJSONfeatureCollection.features.length === 0) {
+    // show all sites when there are no search results
+    GeoJSONfeatureCollection = sites_geojson;
+  }
   var featuresArray = sitesFormat.readFeatures(GeoJSONfeatureCollection);
   vectorSource.addFeatures(featuresArray);
+  centerOnVisibleSites();
 }
 
+var sites_geojson = {};
 
-var vectorSource = new ol.source.GeoJSON(
-    /** @type {olx.source.GeoJSONOptions} */ {
-      object: {
-        "type": "FeatureCollection",
-        "features": [{
-          "type": "Feature",
-          "geometry": {
-            "type": "Point",
-            "coordinates": [12.5464756318, 41.829304, 130]
-          },
-          "id": 162,
-          "properties": {
-            "pointcloud": "data/sites/162/cloud_las.js",
-            "description": "Pyramid",
-            "thumbnail": "data/sites/162/P1120067.JPG",
-            "site_context": "Funerary",
-            "site_interpretation": "Funerary tower",
-            "condition": "Damaged"
-          },
-          "bbox": [12.546372, 41.829228, 121.484, 12.546579, 41.829381, 144.177]
-        }, {
-          "type": "Feature",
-          "geometry": {
-            "type": "Point",
-            "coordinates": [12.546488, 41.828926, 120.21]
-          },
-          "id": 13,
-          "properties": {
-            "pointcloud": "data/sites/13/cloud_las.js",
-            "description": "Block",
-            "thumbnail": "data/sites/13/IMG_0040.JPG",
-            "site_context": "Unknown",
-            "site_interpretation": "Unknown",
-            "condition": "Chipped"
-          },
-          "bbox":[12.546479, 41.828919, 120, 12.546497, 41.828934, 120.42]
-        }],
-        "crs": {
-          "type":"name",
-          "properties": {
-              "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
-              // "name": "EPSG:3857"
-          }
-        }
-      },
-    projection: 'EPSG:3857'
-    });
+$.getJSON('data/sites.json', function(data) {
+    sites_geojson = data;
+    var featuresArray = sitesFormat.readFeatures(sites_geojson);
+    vectorSource.clear();
+    vectorSource.addFeatures(featuresArray);
+    centerOnVisibleSites();
+});
 
-
+var vectorSource = new ol.source.GeoJSON({
+    projection: siteProjection
+});
 
 var vectorLayer = new ol.layer.Vector({
   source: vectorSource,
@@ -117,6 +86,11 @@ var map = new ol.Map({
     zoom: 10
   })
 });
+// center on sites
+function centerOnVisibleSites() {
+  map.getView().fitExtent(vectorSource.getExtent(), map.getSize());
+}
+centerOnVisibleSites();
 
 // listen on map click
 map.on('click', function(event) {
@@ -128,7 +102,7 @@ map.on('click', function(event) {
     var lat_4326 = coord_4326[0];
     var lon_4326 = coord_4326[1];
     // EPSG:32633 laz coordinate system:
-    var coord_32633 = proj4('EPSG:3857', "+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs", [lat, lon]);
+    var coord_32633 = proj4('EPSG:3857', siteProjectionCode, [lat, lon]);
     var lat_32633 = coord_32633[0];
     var lon_32633 = coord_32633[1];
 

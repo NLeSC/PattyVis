@@ -17,7 +17,7 @@ pattyApp.controller('SearchCtrl', function ($scope, $http){
    }
    $scope.$watch('results', function(newValue, oldValue) {
       var markers = newValue.map(function(site){
-          return {'id': site.id, 'geometry': site.geometry};
+          return {'id': site.id, 'geometry': site.geometry, 'type': 'Feature', properties: site.properties};
       });
       plotMarkers({
         "type": "FeatureCollection",
