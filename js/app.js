@@ -30,6 +30,7 @@ var pathcontrols;
 var useOculus = false;
 
 var testBox;
+var selectedObject = false;
 
 // dat.gui bound parameters
 var controlParams;
@@ -301,7 +302,6 @@ function addBoundingBox(){
     });
     testBox = new THREE.Mesh(boxGeometry, boxMaterial);
     testBox.position.set(-760.60, 5.39, -1066.72);
-    console.log(testBox);
     scene.add(testBox);
 }
 
@@ -377,10 +377,15 @@ function render() {
         }
     });
 
+    // Bounding box selection
+    // TODO: check for all (visible) objects instead of only testBox
+    // TODO: do something with selected object (see onClick())
     var intersects = raycaster.intersectObject(testBox, false);
     if (intersects.length > 0){
+        selectedObject = true;
         testBox.material.color.setHex(0x99FFFF); 
     } else {
+        selectedObject = false;
         testBox.material.color.setHex(0xFF99CC);
     }
 
@@ -446,6 +451,10 @@ function onClick() {
 
     //console.log(spStart.position);
     //console.log(spEnd.position);
+
+    if (selectedObject) {
+        console.log('Selected object');
+    }
 }
 
 function toggleOculus() {
