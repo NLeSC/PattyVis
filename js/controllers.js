@@ -4,7 +4,10 @@ pattyApp.controller('SearchCtrl', function ($scope, $http){
    $scope.sites = [];
    $scope.query = '';
    $scope.results = [];
-   $http.get('data/sites.json').success(function (data){
+   $scope.viaappia_server_root = viaappia_server_root;
+   var sites_url = 'data/sites.json';
+   var sites_url = viaappia_server_root + 'example.json';
+   $http.get(sites_url).success(function (data){
        $scope.sites = data.features;
    });
 

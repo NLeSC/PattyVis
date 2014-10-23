@@ -1,3 +1,7 @@
+var sites_url = 'data/sites.json';
+var viaappia_server_root = 'http://192.168.6.12/';
+var sites_url = viaappia_server_root + 'example.json';
+
 proj4.defs("EPSG:32633", "+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
 proj4.defs('urn:ogc:def:crs:EPSG::32633', proj4.defs('EPSG:32633'));
 
@@ -11,42 +15,40 @@ var siteStyle =  new ol.style.Style({
     fill: new ol.style.Fill({
       color: 'rgba(255, 255, 0, 0.1)'
     })
-  })
+});
+var sitesFormat = new ol.format.GeoJSON({
+    defaultDataProjection: siteProjection,
+    geometryName: "sites"
+});
 
 function centerMap(center) {
   map.getView().setCenter(ol.proj.transform(center, 'EPSG:4326', 'EPSG:3857'));
 }
 
-
-//
-
-var sitesFormat = new ol.format.GeoJSON({
-    defaultDataProjection: siteProjection,
-    geometryName: "sites"})
-
+function centerOnVisibleSites() {
+  map.getView().fitExtent(vectorSource.getExtent(), map.getSize());
+}
 
 // function takes features array
 function plotMarkers(GeoJSONfeatureCollection) {
-  // first remove old ones
-  var oldFeatures = vectorSource.getFeatures();
-  function removeMarker(m) {
-    vectorSource.removeFeature(m);
-  }
-  oldFeatures.forEach(removeMarker);
 
-  // then add new ones
   if (GeoJSONfeatureCollection.features.length === 0) {
     // show all sites when there are no search results
+    if (!sites_geojson.features) {
+      return;
+    }
     GeoJSONfeatureCollection = sites_geojson;
   }
+// first remove old ones
+  vectorSource.clear();
+// then add new ones
   var featuresArray = sitesFormat.readFeatures(GeoJSONfeatureCollection);
   vectorSource.addFeatures(featuresArray);
   centerOnVisibleSites();
 }
 
 var sites_geojson = {};
-
-$.getJSON('data/sites.json', function(data) {
+$.getJSON(sites_url, function(data) {
     sites_geojson = data;
     var featuresArray = sitesFormat.readFeatures(sites_geojson);
     vectorSource.clear();
@@ -60,6 +62,7 @@ var vectorSource = new ol.source.GeoJSON({
 
 var vectorLayer = new ol.layer.Vector({
   source: vectorSource,
+  projection: siteProjectionCode,
   style: siteStyle
 });
 
@@ -86,11 +89,6 @@ var map = new ol.Map({
     zoom: 10
   })
 });
-// center on sites
-function centerOnVisibleSites() {
-  map.getView().fitExtent(vectorSource.getExtent(), map.getSize());
-}
-centerOnVisibleSites();
 
 map.on('rightclick', function(event) {
 	event.preventDefault();
