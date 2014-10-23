@@ -2,7 +2,7 @@ var defaultPointSize = 0.09;
 var defaultLOD = 12;
 
 //var pointcloudPath = 'http://192.168.6.34/potree/resources/pointclouds/viaappia/cloud_laz.js';
-var pointcloudPath = 'data/out_8/cloud.js';
+var pointcloudPath = 'data/out_6/cloud.js';
 
 var pointcloud;
 var skybox;
@@ -123,14 +123,14 @@ function initGUI() {
         visiblePoints: 0
     };
 
-    var pLOD = gui.add(controlParams, 'LOD', 0.5, 20);
+    var pLOD = gui.add(controlParams, 'LOD', 0.5, 50);
     pLOD.onChange(function(value) {
         pointcloud.LOD = value;
     });
 
-    var pPointSize = gui.add(controlParams, 'PointSize', 0.01, 0.1);
+    var pPointSize = gui.add(controlParams, 'PointSize', 0.01, 0.5);
     pPointSize.onChange(function(value) {
-        pointcloudMaterial.size = value;
+        pointcloud.material.size = value;
     });
     gui.add(controlParams, 'toggleOculus');
     var measureFolder = gui.addFolder('Distance measurement');
