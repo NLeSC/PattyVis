@@ -33,6 +33,7 @@ var useOculus = false;
 
 var testBox;
 var selectedObject = false;
+var objectBoundingBoxes = [];
 
 // dat.gui bound parameters
 var controlParams;
@@ -190,6 +191,34 @@ function initThree() {
 
     scene.add(pointcloud);
 
+    // load object point clouds
+    // now only one and based on local data, so commented out
+    //var pco = POCLoader.load('data/pyramid/cloud.js', {toOrigin: true});
+    //var objectPointcloud = new Potree.PointCloudOctree(pco, materials.rgb);
+    //objectPointcloud.LOD = defaultLOD;
+    //objectPointcloud.rotation.set(-Math.PI/2.0, 0.0, 0.0);
+    //objectPointcloud.moveToOrigin();
+    //objectPointcloud.moveToGroundPlane();
+    //objectPointcloud.position.set(-760.60, 5.39, -1066.72);
+
+    //console.log(pco);
+    //console.log(objectPointcloud);
+    //console.log(objectPointcloud.boundingBox);
+    
+    //scene.add(objectPointcloud);
+
+    // add object bounding box to objectBoundingBoxes array
+    // now using fake (but multiple) bounding boxes
+    for(var i=0; i<3; i++){
+        for(var j=0; j<3; j++){
+            var objectBBox = createVisibleBoundingBox(-760.60+(i*4), 5.39+(j*4), -1066.72);
+            objectBBox.name = ''+i+'-'+j;
+            objectBoundingBoxes.push(objectBBox);
+            // show bounding box
+            scene.add(objectBBox);
+        }
+    }
+
     // grid
     scene.add(createGrid(8, 8, 1));
 
@@ -298,16 +327,15 @@ function roundRect(ctx, x, y, w, h, r){
     ctx.stroke();
 }
 
-function addBoundingBox(){
-    console.log('AddBoundingBox');
-    boxGeometry = new THREE.BoxGeometry(10, 10, 10);
-    boxMaterial = new THREE.MeshBasicMaterial({
+function createVisibleBoundingBox(x, y, z){
+    var boxGeometry = new THREE.BoxGeometry(3, 3, 3);
+    var boxMaterial = new THREE.MeshBasicMaterial({
         color : 0xFF99CC,
         wireframe : true
     });
-    testBox = new THREE.Mesh(boxGeometry, boxMaterial);
-    testBox.position.set(-760.60, 5.39, -1066.72);
-    scene.add(testBox);
+    var bBox = new THREE.Mesh(boxGeometry, boxMaterial);
+    bBox.position.set(x, y, z);
+    return bBox;
 }
 
 function createGrid(width, length, spacing) {
@@ -382,18 +410,8 @@ function render() {
         }
     }
     
-<<<<<<< Updated upstream
-    var x = camera.position.x + (pointcloud.boundingBox.max.x - pointcloud.boundingBox.min.x)/2.0 - pointcloud.pcoGeometry.offset.x;
-    var y = -camera.position.z + (pointcloud.boundingBox.max.y - pointcloud.boundingBox.min.y)/2.0 - pointcloud.pcoGeometry.offset.y;
-    var z = 170.0;
-    var vec = new THREE.Vector3(x,y,z);
-    proj4.defs('EPSG:32633', "+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
-    var vec_proj = proj4('EPSG:32633', 'EPSG:4326', [vec.x, vec.y, vec.z]);
-
-=======
     var coords = worldSpaceToLatLon([camera.position.x, camera.position.z]);
     
->>>>>>> Stashed changes
     if (timeToUpdateMap > MAP_TIMESTEPS) {
       map.getView().setCenter(ol.proj.transform([coords[0], coords[1]], 'EPSG:4326', 'EPSG:3857'));
       timeToUpdateMap =0;
@@ -421,15 +439,18 @@ function render() {
     });
 
     // Bounding box selection
-    // TODO: check for all (visible) objects instead of only testBox
     // TODO: do something with selected object (see onClick())
-    var intersects = raycaster.intersectObject(testBox, false);
+    var intersects = raycaster.intersectObjects(objectBoundingBoxes, false);
     if (intersects.length > 0){
+        var I = intersects[0];
         selectedObject = true;
-        testBox.material.color.setHex(0x99FFFF);
+        I.object.material.color.setHex(0x99FFFF);
+        testBox = I.object;
     } else {
         selectedObject = false;
-        testBox.material.color.setHex(0xFF99CC);
+        objectBoundingBoxes.forEach(function (bbox){
+            bbox.material.color.setHex(0xFF99CC);
+        });
     }
 
     if (placeStartMode || placeEndMode) {
@@ -475,7 +496,6 @@ function render() {
 initThree();
 initGUI();
 addTextLabel(' Lion ', -1.5, 6.3, -1.3);
-addBoundingBox();
 render();
 
 function placeStart() {
@@ -496,7 +516,7 @@ function onClick() {
     //console.log(spEnd.position);
 
     if (selectedObject) {
-        console.log('Selected object');
+        console.log('Selected object '+testBox.name);
     }
 }
 

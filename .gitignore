@@ -5,3 +5,4 @@ bower_components/*
 node_modules/*
 
 /data/out_8
+/data/pyramid
