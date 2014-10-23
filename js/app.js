@@ -56,6 +56,7 @@ var jqxhr = $.get( "data/cameraPath.json", function( data ) {
   });
 
     pathcontrols = new PathControls(camera, pipeSpline);
+    pathcontrols.enable();
 
 })
 .fail(function() {
@@ -353,7 +354,9 @@ function render() {
     pointcloud.update(camera);
 
     if (useOculus) {
-        firstperson.updateInput();
+    	if (firstperson != null) {
+    		firstperson.updateInput();
+    	}
     } else {
         if (pathcontrols != null) {
             pathcontrols.updateInput();
@@ -465,16 +468,19 @@ function toggleOculus() {
         camera.fov = getFov();
         camera.updateProjectionMatrix();
         firstperson.disable();
+        pathcontrols.enable();
 
-        camera.position.set(4, 6, 10);
-        controls.target.set(0, 3, 0);
-        controls.update();
-        camera.lookAt(controls.target);
+        //camera.position.set(4, 6, 10);
+        //controls.target.set(0, 3, 0);
+        //controls.update();
+        //camera.lookAt(controls.target);
 
     } else {
         camera.fov = getFov();
         camera.updateProjectionMatrix();
         firstperson.enable();
+        pathcontrols.disable();
+        
 
     }
 

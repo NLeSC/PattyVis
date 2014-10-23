@@ -10,6 +10,8 @@ var clock;
 var path;
 var drag = false;
 
+var active = false;
+
 var bodyAngle;
 var bodyAxis;
 var bodyPosition;
@@ -83,7 +85,17 @@ PathControls = function (camera, path) {
 	zoom = camera.fov;
 	maxZoom = camera.fov;
 	
+	this.enable = function () {
+		active = true;
+	}
+	
+	this.disable = function () {
+		active = false;
+	}
+	
 	this.updateInput = function () {
+		  if (!active) return;
+		  
 		  var delta		  = clock.getDelta();
 		  var elapsed     = clock.getElapsedTime();
 		  var step        = 10 * delta;
@@ -130,7 +142,7 @@ PathControls = function (camera, path) {
 				  bodyPosition.y += step;
 			  }
 
-			  // Straif
+			  // Strafe
 			  if(keys[65] || keys[97] || keys[37]) { // A or left
 			      bodyPosition.x -= Math.cos(-xAngle) * step;
 			      bodyPosition.z -= Math.sin(-xAngle) * step;
@@ -189,8 +201,6 @@ function init(){
   document.addEventListener('mousewheel', mousewheel, false );
   document.addEventListener('DOMMouseScroll', mousewheel, false ); // firefox
   
-
-
 }
 
 function onKeyDown(event) {
@@ -263,6 +273,7 @@ function mouseup(event) {
 
 function mousemove(event) {
 	if (!drag) return;
+	if (!active) return;
 	
 	xAngle -= factor*(event.pageX - mouseX) / (window.innerWidth);
 	yAngle -= factor*(event.pageY - mouseY) / (window.innerHeight);
@@ -275,8 +286,7 @@ function mousemove(event) {
 	}
 
 	mouseX = event.pageX;
-	mouseY = event.pageY;
-    
+	mouseY = event.pageY;    
 	
 	camera.rotation.y = xAngle;
 	camera.rotation.x = yAngle;

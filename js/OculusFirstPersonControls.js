@@ -12,14 +12,21 @@ var clock;
 var bodyAngle;
 var bodyAxis;
 var bodyPosition;
-var viewAngle;
+var xAngle;
 var yAngle;
+
+var mouseXAngle = 0;
+var mouseYAngle = 0;
+var oculusXAngle = 0;
+var oculusYAngle = 0;
 
 var quat, quatCam, xzVector;
 
 var oculusBridge;
 
 var active = false;
+
+var initialized = false;
 
 // Map for key states
 var keys = [];
@@ -29,7 +36,25 @@ for(var i = 0; i < 130; i++){
 
 OculusFirstPersonControls = function (camera) {
 	this.camera = camera;
-	init();
+
+	camera.rotation.order = 'YXZ';
+	
+	oculusBridge = new OculusBridge({
+		    "debug" : true,
+		    "onOrientationUpdate" : bridgeOrientationUpdated
+		  });
+	
+	  clock = new THREE.Clock();
+	  
+	  init();
+
+	  bodyAngle     = 0;
+	  bodyAxis      = new THREE.Vector3(0, 1, 0);
+	  bodyPosition  = camera.position;
+
+	  quat = new THREE.Quaternion();
+	  quatCam = new THREE.Quaternion(0, 0, 0, 0);
+	  xzVector = new THREE.Vector3(0, 0, 1);
 	
 	this.enable = function () {
 		active = true;
@@ -47,18 +72,22 @@ OculusFirstPersonControls = function (camera) {
 		  var delta		  = clock.getDelta();
 		  var step        = 10 * delta;
 		  var turn_speed  = (55 * delta) * Math.PI / 180;
+		  
+		  if (keys[18]) {
+			  step *= 6; //Alt
+		  }
 
 		  // Forward/backward
 		  if(keys[87] || keys[38]){ // W or UP
-		      bodyPosition.x += Math.cos(-viewAngle) * step;
-		      bodyPosition.y -= Math.cos(yAngle) * step;
-		      bodyPosition.z += Math.sin(-viewAngle) * step;
+		      bodyPosition.x -= Math.cos(-xAngle + Math.PI / 2) * step;
+		      bodyPosition.y -= Math.cos(yAngle + Math.PI / 2) * step;
+		      bodyPosition.z -= Math.sin(-xAngle + Math.PI / 2) * step;
 		  }
 
 		  if(keys[83] || keys[40]){ // S or DOWN
-		      bodyPosition.x -= Math.cos(-viewAngle) * step;
-		      bodyPosition.y += Math.cos(yAngle) * step;
-		      bodyPosition.z -= Math.sin(-viewAngle) * step;
+			  bodyPosition.x += Math.cos(-xAngle + Math.PI / 2) * step;
+		      bodyPosition.y += Math.cos(yAngle + Math.PI / 2) * step;
+		      bodyPosition.z += Math.sin(-xAngle + Math.PI / 2) * step;
 		  }
 
 		  // Turn
@@ -70,15 +99,15 @@ OculusFirstPersonControls = function (camera) {
 			  bodyPosition.y += step;
 		  }
 
-		  // Straif
-		  if(keys[65] || keys[37]){ // A or LEFT
-		      bodyPosition.x -= Math.cos(-viewAngle + Math.PI/2) * step;
-		      bodyPosition.z -= Math.sin(-viewAngle + Math.PI/2) * step;
+		  // Strafe
+		  if(keys[65] || keys[97] || keys[37]) { // A or left
+		      bodyPosition.x -= Math.cos(-xAngle) * step;
+		      bodyPosition.z -= Math.sin(-xAngle) * step;
 		  }   
 		  
-		  if(keys[68] || keys[39]){ // D or RIGHT
-		      bodyPosition.x += Math.cos(-viewAngle + Math.PI/2) * step;
-		      bodyPosition.z += Math.sin(-viewAngle + Math.PI/2) * step;
+		  if(keys[68] || keys[100] || keys[39]) { // D or right
+		      bodyPosition.x += Math.cos(-xAngle) * step;
+		      bodyPosition.z += Math.sin(-xAngle) * step;
 		  }
 
 		  camera.position.set(bodyPosition.x, bodyPosition.y, bodyPosition.z);
@@ -87,27 +116,13 @@ OculusFirstPersonControls = function (camera) {
 }
 
 function init(){
-  clock = new THREE.Clock();
-
-  document.addEventListener('keydown', onKeyDown, false);
-  document.addEventListener('keyup', onKeyUp, false);
-
-  bodyAngle     = 0;
-  bodyAxis      = new THREE.Vector3(0, 1, 0);
-  bodyPosition  = new THREE.Vector3(4, 6, 10);
-
-  quat = new THREE.Quaternion();
-  quatCam = new THREE.Quaternion(0, 0, 0, 0);
-  xzVector = new THREE.Vector3(0, 0, 1);
-  
-  oculusBridge = new OculusBridge({
-    "debug" : true,
-    "onOrientationUpdate" : bridgeOrientationUpdated
-  });
 
 
+	  document.addEventListener('keydown', this.onKeyDown, false);
+	  document.addEventListener('keyup', this.onKeyUp, false);
+
+	  document.addEventListener('mousemove', this.mousemove, false);
 }
-
 
 function bridgeOrientationUpdated(quatValues) {
 	if (!active) return;
@@ -122,17 +137,67 @@ function bridgeOrientationUpdated(quatValues) {
   quat.multiply(quatCam);
   
   //orientation
-  viewAngle = Math.atan2(2*quatValues.y*quatValues.w-2*quatValues.x*quatValues.z , 1 - 2*(quatValues.y*quatValues.y) - 2*(quatValues.z*quatValues.z)) + Math.PI/2;
+  oculusXAngle = Math.atan2(2*quatValues.y*quatValues.w-2*quatValues.x*quatValues.z , 1 - 2*(quatValues.y*quatValues.y) - 2*(quatValues.z*quatValues.z)) + Math.PI/2;
+  xAngle = oculusXAngle + mouseXAngle;
   
   //attitude
-  yAngle = Math.atan2(2*quatValues.x*quatValues.w-2*quatValues.y*quatValues.z, 1.0 - 2*(quatValues.x*quatValues.x) - 2*(quatValues.z*quatValues.z)) + Math.PI/2;
+  oculusYAngle = Math.atan2(2*quatValues.x*quatValues.w-2*quatValues.y*quatValues.z, 1.0 - 2*(quatValues.x*quatValues.x) - 2*(quatValues.z*quatValues.z)) + Math.PI/2;
+  yAngle = oculusYAngle + mouseYAngle;
+  
+  //
+  zAngle = Math.asin(2*quatValues.x*quatValues.y + 2*quatValues.z*quatValues.w);
+  
   
   //Apply the combined look/body angle to the camera.
-  camera.quaternion.copy(quat);
+  //camera.quaternion.copy(quat);
+	
+	if (yAngle < -0.95 * Math.PI/2) {
+		yAngle = -0.95 * Math.PI/2;
+	}
+	if (yAngle > 0.95 * Math.PI/2) {
+		yAngle = 0.95 * Math.PI/2;
+	}
+  
+//  camera.rotation.y = xAngle;
+//  camera.rotation.x = yAngle;
+	  camera.rotation.y = oculusXAngle;
+	  camera.rotation.x = oculusYAngle;
+  camera.rotation.z = zAngle;
+  
+}
+
+function mousemove(event) {
+	if (!active) return;
+	
+	mouseXAngle -= factor*(event.pageX - mouseX) / (window.innerWidth);
+	mouseYAngle -= factor*(event.pageY - mouseY) / (window.innerHeight);
+
+	mouseX = event.pageX;
+	mouseY = event.pageY;    
+	
+	xAngle = oculusXAngle + mouseXAngle;
+	yAngle = oculusYAngle + mouseYAngle;
+	
+	if (yAngle < -0.95 * Math.PI/2) {
+		yAngle = -0.95 * Math.PI/2;
+	}
+	if (yAngle > 0.95 * Math.PI/2) {
+		yAngle = 0.95 * Math.PI/2;
+	}
+	
+	camera.rotation.y = xAngle;
+	camera.rotation.x = yAngle;
+	
+	debugger
+	
 }
 
 function onKeyDown(event) {
-  keys[event.keyCode] = true;  
+  keys[event.keyCode] = true;
+  
+  if (keys[18]) { //catch shortcuts that use ALT key
+	    event.preventDefault();
+  }
 }
 
 function onKeyUp(event) {
