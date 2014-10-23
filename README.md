@@ -65,3 +65,14 @@ For mockup see https://wiki.esciencecenter.nl/index.php/Patty_Visualization
 Oculus Rift
 -----------
 Get the host application and run it: https://github.com/Instrument/oculus-bridge
+
+Creation of sites.json
+----------------------
+
+In db run:
+
+    SELECT site_id, ST_ASGEOJSON(geom, 15,5) FROM sites_geoms WHERE site_id IN (162,13);
+
+To get geometry, bbox and crs.
+
+Height and properties need to be filled manually.
