@@ -2,7 +2,9 @@ var defaultPointSize = 0.09;
 var defaultLOD = 12;
 
 //var pointcloudPath = 'http://192.168.6.34/potree/resources/pointclouds/viaappia/cloud_laz.js';
-var pointcloudPath = 'data/out_8/cloud.js';
+// var pointcloudPath = 'data/out_8/cloud.js';
+// var viaappia_server_root = 'http://192.168.6.12/';
+var pointcloudPath = viaappia_server_root + 'BACKGROUNDS/CONV/DRIVE_1_V3/out_8/out_8.js';
 
 var pointcloud;
 var skybox;
@@ -374,7 +376,7 @@ function render() {
     } else {
       timeToUpdateMap++;
     }
-    
+
     //centerMap([vec_proj[1], vec_proj[0]]);
 
     camera.updateMatrixWorld(true);
@@ -400,7 +402,7 @@ function render() {
     var intersects = raycaster.intersectObject(testBox, false);
     if (intersects.length > 0){
         selectedObject = true;
-        testBox.material.color.setHex(0x99FFFF); 
+        testBox.material.color.setHex(0x99FFFF);
     } else {
         selectedObject = false;
         testBox.material.color.setHex(0xFF99CC);

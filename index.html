@@ -46,7 +46,7 @@
                 <div class="panel" id="search-results" ng-show="query">
                     <div class="search-result" ng-repeat="site in sites | filter : searchFn as results" ng-cloak>
                         <div style="display: inline-block; vertical-align: top;">
-                            <img ng-src="{{ site.properties.thumbnail }}" width="120">
+                            <img ng-src="{{ viaappia_server_root }}{{site.properties.thumbnail }}" width="120">
                         </div>
                         <div style="display:inline-block;">
                             <strong>{{ site.properties.description }}</strong>
@@ -79,7 +79,7 @@
 
 
   <script src="js/minimap.js" type="text/javascript"></script>
-  
+
   <script type="text/javascript" src="js/app.js"></script>
 
   <script src="js/controllers.js"></script>
