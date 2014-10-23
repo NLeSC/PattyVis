@@ -1,9 +1,31 @@
+proj4.defs("EPSG:32633", "+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
+
+var siteProjectionCode = "EPSG:32633";
+var siteProjection = ol.proj.get(siteProjectionCode);
+var siteStyle =  new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'yellow',
+      width: 10
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(255, 255, 0, 0.1)'
+    })
+  })
+
 function centerMap(center) {
   map.getView().setCenter(ol.proj.transform(center, 'EPSG:4326', 'EPSG:3857'));
 }
 
+
+//
+
+var sitesFormat = new ol.format.GeoJSON({
+    defaultDataProjection: siteProjection,
+    geometryName: "sites"})
+
+
 // function takes features array
-function plotMarkers(featuresArray) {
+function plotMarkers(GeoJSONfeatureCollection) {
   // first remove old ones
   var oldFeatures = vectorSource.getFeatures();
   function removeMarker(m) {
@@ -12,12 +34,13 @@ function plotMarkers(featuresArray) {
   oldFeatures.forEach(removeMarker);
 
   // then add new ones
+  var featuresArray = sitesFormat.readFeatures(GeoJSONfeatureCollection);
   vectorSource.addFeatures(featuresArray);
 }
 
 
 var vectorSource = new ol.source.GeoJSON(
-    /** @type {olx.source.GeoJSONOptions} */ ({
+    /** @type {olx.source.GeoJSONOptions} */ {
       object: {
         "type": "FeatureCollection",
         "features": [{
@@ -62,11 +85,13 @@ var vectorSource = new ol.source.GeoJSON(
         }
       },
     projection: 'EPSG:3857'
-    }));
+    });
+
 
 
 var vectorLayer = new ol.layer.Vector({
-  source: vectorSource
+  source: vectorSource,
+  style: siteStyle
 });
 
 var mapType1 = new ol.source.MapQuest({layer: 'sat'});
