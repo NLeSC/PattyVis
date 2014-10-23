@@ -125,14 +125,14 @@ function initGUI() {
         visiblePoints: 0
     };
 
-    var pLOD = gui.add(controlParams, 'LOD', 0.5, 20);
+    var pLOD = gui.add(controlParams, 'LOD', 0.5, 50);
     pLOD.onChange(function(value) {
         pointcloud.LOD = value;
     });
 
-    var pPointSize = gui.add(controlParams, 'PointSize', 0.01, 0.1);
+    var pPointSize = gui.add(controlParams, 'PointSize', 0.01, 0.5);
     pPointSize.onChange(function(value) {
-        pointcloudMaterial.size = value;
+        pointcloud.material.size = value;
     });
     gui.add(controlParams, 'toggleOculus');
     var measureFolder = gui.addFolder('Distance measurement');
