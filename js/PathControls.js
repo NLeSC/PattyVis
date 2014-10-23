@@ -130,7 +130,7 @@ PathControls = function (camera, path) {
 				  bodyPosition.y += step;
 			  }
 
-			  // Straif
+			  // Strafe
 			  if(keys[65] || keys[97] || keys[37]) { // A or left
 			      bodyPosition.x -= Math.cos(-xAngle) * step;
 			      bodyPosition.z -= Math.sin(-xAngle) * step;
@@ -142,6 +142,7 @@ PathControls = function (camera, path) {
 			  }
 
 			  camera.position.set(bodyPosition.x, bodyPosition.y, bodyPosition.z);
+			  
 			  
 		  
 		  } else {
@@ -188,8 +189,7 @@ function init(){
   
   document.addEventListener('mousewheel', mousewheel, false );
   document.addEventListener('DOMMouseScroll', mousewheel, false ); // firefox
-  
-
+ 
 
 }
 
@@ -226,9 +226,21 @@ function onKeyDown(event) {
   
   //print position
   if (event.keyCode == 80 || event.keyCode == 112) {
+    
     console.log("{\n   \"type\": \"Feature\",\n   \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": ["
     		+ camera.position.x + ', ' + camera.position.y + ', ' + camera.position.z + "]\n   },\n   \"id\": "
     		+ seq++ + "\n}​,");
+        
+      var x = camera.position.x + (pointcloud.boundingBox.max.x - pointcloud.boundingBox.min.x)/2.0 - pointcloud.pcoGeometry.offset.x;
+      var y = -camera.position.z + (pointcloud.boundingBox.max.y - pointcloud.boundingBox.min.y)/2.0 - pointcloud.pcoGeometry.offset.y;
+      var z = 170.0;
+      var vec = new THREE.Vector3(x,y,z);
+      proj4.defs('EPSG:32633', "+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
+      var vec_proj = proj4('EPSG:32633', 'EPSG:4326', [vec.x, vec.y, vec.z]);
+
+      var MAPS = "https://www.google.nl/maps/@" + vec_proj[1] + "," + vec_proj[0] + ",19z";
+
+      console.log(MAPS);
   }
     
   //console.log(event.keyCode);

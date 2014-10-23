@@ -35,6 +35,9 @@ var selectedObject = false;
 // dat.gui bound parameters
 var controlParams;
 
+var timeToUpdateMap = 0;
+var MAP_TIMESTEPS = 30;
+
 function getFov() {
     if (useOculus) {
         return 110;
@@ -179,9 +182,8 @@ function initThree() {
 
     pointcloud = new Potree.PointCloudOctree(pco, materials.rgb);
     pointcloud.LOD = defaultLOD;
+    pointcloud.position.set(pointcloud.position.x-(pointcloud.boundingBox.max.x - pointcloud.boundingBox.min.x)/2.0, 0.0, pointcloud.position.z+(pointcloud.boundingBox.max.y - pointcloud.boundingBox.min.y)/2.0);
     pointcloud.rotation.set(-Math.PI/2.0, 0.0, 0.0);
-    pointcloud.moveToOrigin();
-    pointcloud.moveToGroundPlane();
 
     scene.add(pointcloud);
 
@@ -359,6 +361,21 @@ function render() {
             pathcontrols.updateInput();
         }
     }
+    var x = camera.position.x + (pointcloud.boundingBox.max.x - pointcloud.boundingBox.min.x)/2.0 - pointcloud.pcoGeometry.offset.x;
+    var y = -camera.position.z + (pointcloud.boundingBox.max.y - pointcloud.boundingBox.min.y)/2.0 - pointcloud.pcoGeometry.offset.y;
+    var z = 170.0;
+    var vec = new THREE.Vector3(x,y,z);
+    proj4.defs('EPSG:32633', "+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
+    var vec_proj = proj4('EPSG:32633', 'EPSG:4326', [vec.x, vec.y, vec.z]);
+
+    if (timeToUpdateMap > MAP_TIMESTEPS) {
+      map.getView().setCenter(ol.proj.transform([vec_proj[0], vec_proj[1]], 'EPSG:4326', 'EPSG:3857'));
+      timeToUpdateMap =0;
+    } else {
+      timeToUpdateMap++;
+    }
+    
+    //centerMap([vec_proj[1], vec_proj[0]]);
 
     camera.updateMatrixWorld(true);
 
