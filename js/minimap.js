@@ -93,8 +93,17 @@ var map = new ol.Map({
   })
 });
 
+map.on('rightclick', function(event) {
+	event.preventDefault();
+	
+	debugger
+	
+	return false;
+});
+
 // listen on map click
 map.on('click', function(event) {
+	
     // EPSG:3857 (strange internal OpenLayers lat/lon units)
     var lat = event.coordinate[0];
     var lon = event.coordinate[1];
@@ -111,4 +120,5 @@ map.on('click', function(event) {
           '\nESPG:4326 (google)\nx: ' + lat_4326
            + '\ny: ' + lon_4326 + '\nEPSG:32633 (drivemap)\nx: ' + lat_32633 +
            '\ny: ' + lon_32633);
+    
 });

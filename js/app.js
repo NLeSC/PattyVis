@@ -48,7 +48,7 @@ var jqxhr = $.get( "data/cameraPath.json", function( data ) {
   $.each(data.features, function (id, value) {
     var coordinates = value.geometry.coordinates;
     var vector = new THREE.Vector3(coordinates[0], coordinates[1], coordinates[2]);
-    console.log(vector);
+    //console.log(vector);
     cameraPath.push(vector);
   });
 

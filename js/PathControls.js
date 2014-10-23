@@ -13,7 +13,6 @@ var drag = false;
 var bodyAngle;
 var bodyAxis;
 var bodyPosition;
-var xAngle;	
 var xAngle = 0;
 var yAngle = 0;
 
@@ -23,6 +22,7 @@ var mouseX = window.innerWidth / 2;
 var mouseY = window.innerHeight / 2;
 
 //this factor controls mouse sensitivity
+//should be more than 2*Math.PI to get full rotation
 var factor = 8;
 
 // Map for key states
@@ -35,14 +35,48 @@ var zoom = 45;
 var maxZoom = 45;
 
 var autoWalk = false;
+var autoLook = true;
 var firstPerson = false;
 
 var positionOnRoad = 0;
+
+//poor man's lookat
+function lookat(camera, center) {
+	var zero = new THREE.Vector3(0, 0, -1);
+	var tmp = new THREE.Vector3(0,0,0);
+
+	var look = new THREE.Vector3(center.x, 0, center.z);
+	var cam = new THREE.Vector3(camera.position.x, 0, camera.position.z);
+	
+	tmp.subVectors(look, cam).normalize();
+	//var angle = 2*Math.PI - Math.acos(zero.dot(tmp));
+	var angle = Math.acos(zero.dot(tmp));
+	
+	if (tmp.x > 0) {
+		//this fixes the fact that acos only returns values between 0 and Pi
+		//and we want to be able to rotate around in a full circle 
+		angle = 2*Math.PI - angle;
+	}
+	
+	camera.rotation.y = xAngle = angle;
+	camera.rotation.x = yAngle = 0;	
+}
+
 
 PathControls = function (camera, path) {
 	this.camera = camera;
     this.path = path;
 	init();
+	
+	var pos = path.getPointAt(0);
+	
+	camera.position = pos;
+	camera.up.set(0,1,0);
+	camera.rotation.order = 'YXZ';
+	
+    lookat(camera, path.getPointAt(0.0001));
+	
+	camera.updateProjectionMatrix();
 	
 	bodyPosition = camera.position;
 	
@@ -54,14 +88,24 @@ PathControls = function (camera, path) {
 		  var elapsed     = clock.getElapsedTime();
 		  var step        = 10 * delta;
 		  
-		  if (keys[18]) step *= 4; //Alt
+		  if (keys[18]) {
+			  step *= 6; //Alt
+		  }
 
 		  if (autoWalk) {
+			  
 			  var looptime = 120;
 			  positionOnRoad = ((positionOnRoad + elapsed) % looptime) / looptime;
 			  var pos = path.getPointAt(positionOnRoad);
 			  
 			  camera.position.set(pos.x, pos.y, pos.z);
+			  
+			  if (autoLook) {
+				  
+				  lookat(camera, path.getPointAt(positionOnRoad+0.0001));
+			  
+			  }
+			  
 		  } else if (firstPerson) {
 			  
 			  // Forward/backward
@@ -103,14 +147,18 @@ PathControls = function (camera, path) {
 		  } else {
 			  // Forward/backward
 			  if(keys[87] || keys[38]) { // W or UP
-				  positionOnRoad += 0.1 * delta;
+				  positionOnRoad += 0.01 * delta;
 			  }
 			  if(keys[83] || keys[40]) { // S or DOWN
-				  positionOnRoad -= 0.1 * delta;
+				  positionOnRoad -= 0.01 * delta;
 			  }
 
-			  if (positionOnRoad > 1) positionOnRoad = 1;
-			  if (positionOnRoad < 0) positionOnRoad = 0;
+			  if (positionOnRoad > 1) {
+				  positionOnRoad = positionOnRoad % 1;
+			  }
+			  if (positionOnRoad < 0) {
+				  positionOnRoad += 1;
+			  }
 			  
 			  var pos = path.getPointAt(positionOnRoad);
 			  
@@ -141,10 +189,7 @@ function init(){
   document.addEventListener('mousewheel', mousewheel, false );
   document.addEventListener('DOMMouseScroll', mousewheel, false ); // firefox
   
-  
-  bodyAngle     = 0;
-  bodyAxis      = new THREE.Vector3(0, 1, 0);
-  bodyPosition  = new THREE.Vector3(4, 6, 10);
+
 
 }
 
@@ -173,6 +218,10 @@ function onKeyDown(event) {
         	//continue from current position
         	bodyPosition = camera.position;
         }
+  }
+  
+  if (event.keyCode == 51) { //the 3 key
+	  autoLook = !autoLook;
   }
   
   //print position
@@ -218,13 +267,16 @@ function mousemove(event) {
 	xAngle -= factor*(event.pageX - mouseX) / (window.innerWidth);
 	yAngle -= factor*(event.pageY - mouseY) / (window.innerHeight);
 	
-	if (yAngle < -0.95 * Math.PI/2) yAngle = -0.95 * Math.PI/2;
-	if (yAngle > 0.95 * Math.PI/2) yAngle = 0.95 * Math.PI/2;
+	if (yAngle < -0.95 * Math.PI/2) {
+		yAngle = -0.95 * Math.PI/2;
+	}
+	if (yAngle > 0.95 * Math.PI/2) {
+		yAngle = 0.95 * Math.PI/2;
+	}
 
 	mouseX = event.pageX;
 	mouseY = event.pageY;
     
-	camera.rotation.order = 'YXZ';
 	
 	camera.rotation.y = xAngle;
 	camera.rotation.x = yAngle;
@@ -250,8 +302,12 @@ function mousewheel(event) {
 		zoom -= 2.5;
 	}
 	
-	if (zoom > maxZoom) zoom = maxZoom;
-	if (zoom < 5) zoom = 5;
+	if (zoom > maxZoom) {
+		zoom = maxZoom;
+	}
+	if (zoom < 5) {
+		zoom = 5;
+	}
 	
 	camera.fov = zoom;
 	camera.updateProjectionMatrix();
