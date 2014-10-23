@@ -14,8 +14,8 @@ var renderer;
 var camera;
 var scene;
 var mouse = {
-	x : 1,
-	y : 1
+    x : 1,
+    y : 1
 };
 var projector, raycaster;
 var spStart, spEnd, sConnection;
@@ -33,11 +33,11 @@ var useOculus = false;
 var controlParams;
 
 function getFov() {
-	if (useOculus) {
-		return 110;
-	} else {
-		return 75;
-	}
+    if (useOculus) {
+        return 110;
+    } else {
+        return 75;
+    }
 }
 var pipeSpline;
 var cameraPath = [];
@@ -62,35 +62,35 @@ var jqxhr = $.get( "data/cameraPath.json", function( data ) {
 pipeSpline = new THREE.SplineCurve3(cameraPath);
 
 function loadSkybox() {
-	cameraCube = new THREE.PerspectiveCamera(getFov(), window.innerWidth / window.innerHeight, 1, 100000);
-	sceneCube = new THREE.Scene();
+    cameraCube = new THREE.PerspectiveCamera(getFov(), window.innerWidth / window.innerHeight, 1, 100000);
+    sceneCube = new THREE.Scene();
 
-	var path = "bower_components/potree/resources/textures/skybox/";
-	var format = ".jpg";
-	var urls = [ path + 'px' + format, path + 'nx' + format, path + 'py' + format, path + 'ny' + format, path + 'pz' + format, path + 'nz' + format ];
+    var path = "bower_components/potree/resources/textures/skybox/";
+    var format = ".jpg";
+    var urls = [ path + 'px' + format, path + 'nx' + format, path + 'py' + format, path + 'ny' + format, path + 'pz' + format, path + 'nz' + format ];
 
-	var textureCube = THREE.ImageUtils.loadTextureCube(urls, new THREE.CubeRefractionMapping());
-	var material = new THREE.MeshBasicMaterial({
-		color : 0xffffff,
-		envMap : textureCube,
-		refractionRatio : 0.95
-	});
+    var textureCube = THREE.ImageUtils.loadTextureCube(urls, new THREE.CubeRefractionMapping());
+    var material = new THREE.MeshBasicMaterial({
+        color : 0xffffff,
+        envMap : textureCube,
+        refractionRatio : 0.95
+    });
 
-	var shader = THREE.ShaderLib["cube"];
-	shader.uniforms["tCube"].value = textureCube;
+    var shader = THREE.ShaderLib["cube"];
+    shader.uniforms["tCube"].value = textureCube;
 
-	var material = new THREE.ShaderMaterial({
+    var material = new THREE.ShaderMaterial({
 
-		fragmentShader : shader.fragmentShader,
-		vertexShader : shader.vertexShader,
-		uniforms : shader.uniforms,
-		depthWrite : false,
-		side : THREE.BackSide
+        fragmentShader : shader.fragmentShader,
+        vertexShader : shader.vertexShader,
+        uniforms : shader.uniforms,
+        depthWrite : false,
+        side : THREE.BackSide
 
-	}),
+    }),
 
-	mesh = new THREE.Mesh(new THREE.BoxGeometry(10000, 10000, 10000), material);
-	sceneCube.add(mesh);
+    mesh = new THREE.Mesh(new THREE.BoxGeometry(10000, 10000, 10000), material);
+    sceneCube.add(mesh);
 }
 
 function initGUI() {
@@ -225,58 +225,52 @@ function initThree() {
 	renderer.domElement.addEventListener('click', onClick, false);
 }
 
-function makeTextSprite( message, parameters ){
-    if ( parameters === undefined ) parameters = {};
-
-    var fontface = parameters.hasOwnProperty("fontface") ?
-        parameters["fontface"] : "Arial";
-
-    var fontsize = parameters.hasOwnProperty("fontsize") ?
-        parameters["fontsize"] : 18;
-
-    var borderThickness = parameters.hasOwnProperty("borderThickness") ?
-        parameters["borderThickness"] : 4;
-
-    var borderColor = parameters.hasOwnProperty("borderColor") ?
-        parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
-
-    var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
-        parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
+function addTextLabel( message, x, y, z ){
 
     var canvas = document.createElement('canvas');
     var context = canvas.getContext('2d');
-    context.font = "Bold " + fontsize + "px " + fontface;
+    //context.font = "Bold " + fontsize + "px " + fontface;
 
     // get size data (height depends only on font size)
     var metrics = context.measureText( message );
     var textWidth = metrics.width;
 
     // background color
-    context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
-                          + backgroundColor.b + "," + backgroundColor.a + ")";
+    //context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
+    //+ backgroundColor.b + "," + backgroundColor.a + ")";
 
-    context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
-                          + borderColor.b + "," + borderColor.a + ")";
+    //context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
+    //+ borderColor.b + "," + borderColor.a + ")";
 
-    context.lineWidth = borderThickness;
-    roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
+    //context.lineWidth = borderThickness;
+    //roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
     // 1.4 is extra height factor for text below baseline: g,j,p,q.
 
     // text color
-    context.fillStyle = "rgba(0, 0, 0, 1.0)";
+    //context.fillStyle = "rgba(0, 0, 0, 1.0)";
 
-    context.fillText( message, borderThickness, fontsize + borderThickness);
+    //context.fillText( message, borderThickness, fontsize + borderThickness);
 
-    // canvas contents will be used for a texture
-    var texture = new THREE.Texture(canvas)
-    texture.needsUpdate = true;
+    var imageObj = new Image();
+    imageObj.onload = function(){
+        context.drawImage(imageObj, 10, 10);
+        context.font = "40pt Calibri";
+        context.fillText(message, 30, 70);
+        // canvas contents will be used for a texture
+        var texture = new THREE.Texture(canvas)
+        texture.needsUpdate = true;
 
-    var spriteMaterial = new THREE.SpriteMaterial(
-        { map: texture, useScreenCoordinates: false,} );
-    var sprite = new THREE.Sprite( spriteMaterial );
-    //sprite.scale.set(100,50,1.0);
-    sprite.scale.set(10, 5, 1.0);
-    return sprite;
+        var spriteMaterial = new THREE.SpriteMaterial(
+            { map: texture, useScreenCoordinates: false,} );
+        var sprite = new THREE.Sprite( spriteMaterial );
+        //sprite.scale.set(100,50,1.0);
+        sprite.scale.set(10, 5, 1.0);
+
+        sprite.position.set(x, y, z);
+        scene.add( sprite );
+    };
+    imageObj.src = "data/label-small.png";
+
 }
 
 // function for drawing rounded rectangles
@@ -296,32 +290,25 @@ function roundRect(ctx, x, y, w, h, r){
     ctx.stroke();
 }
 
-// add a text label
-function addTextLabel(msg, x, y, z){
-    var label = makeTextSprite(msg);
-    label.position.set(x, y, z);
-    scene.add( label );
-}
-
 function createGrid(width, length, spacing) {
-	var material = new THREE.LineBasicMaterial({
-		color : 0xBBBBBB
-	});
+    var material = new THREE.LineBasicMaterial({
+        color : 0xBBBBBB
+    });
 
-	var geometry = new THREE.Geometry();
-	for (var i = 0; i <= length; i++) {
-		geometry.vertices.push(new THREE.Vector3(-(spacing * width) / 2, 0, i * spacing - (spacing * length) / 2));
-		geometry.vertices.push(new THREE.Vector3(+(spacing * width) / 2, 0, i * spacing - (spacing * length) / 2));
-	}
+    var geometry = new THREE.Geometry();
+    for (var i = 0; i <= length; i++) {
+        geometry.vertices.push(new THREE.Vector3(-(spacing * width) / 2, 0, i * spacing - (spacing * length) / 2));
+        geometry.vertices.push(new THREE.Vector3(+(spacing * width) / 2, 0, i * spacing - (spacing * length) / 2));
+    }
 
-	for (var i = 0; i <= width; i++) {
-		geometry.vertices.push(new THREE.Vector3(i * spacing - (spacing * width) / 2, 0, -(spacing * length) / 2));
-		geometry.vertices.push(new THREE.Vector3(i * spacing - (spacing * width) / 2, 0, +(spacing * length) / 2));
-	}
+    for (var i = 0; i <= width; i++) {
+        geometry.vertices.push(new THREE.Vector3(i * spacing - (spacing * width) / 2, 0, -(spacing * length) / 2));
+        geometry.vertices.push(new THREE.Vector3(i * spacing - (spacing * width) / 2, 0, +(spacing * length) / 2));
+    }
 
-	var line = new THREE.Line(geometry, material, THREE.LinePieces);
-	line.receiveShadow = true;
-	return line;
+    var line = new THREE.Line(geometry, material, THREE.LinePieces);
+    line.receiveShadow = true;
+    return line;
 }
 
 function onResize() {
@@ -339,10 +326,10 @@ function onResize() {
 	}
 
 function onDocumentMouseMove(event) {
-	event.preventDefault();
+    event.preventDefault();
 
-	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 }
 
 function render() {
@@ -421,18 +408,18 @@ addTextLabel(' Lion ', -1.5, 6.3, -1.3);
 render();
 
 function placeStart() {
-	placeStartMode = true;
-	placeEndMode = false;
+    placeStartMode = true;
+    placeEndMode = false;
 }
 
 function placeEnd() {
-	placeStartMode = false;
-	placeEndMode = true;
+    placeStartMode = false;
+    placeEndMode = true;
 }
 
 function onClick() {
-	placeStartMode = false;
-	placeEndMode = false;
+    placeStartMode = false;
+    placeEndMode = false;
 
 	//console.log(spStart.position);
 	//console.log(spEnd.position);
