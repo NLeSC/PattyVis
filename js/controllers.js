@@ -19,7 +19,10 @@ pattyApp.controller('SearchCtrl', function ($scope, $http){
       var markers = newValue.map(function(site){
           return {'id': site.id, 'geometry': site.geometry};
       });
-      plotMarkers(markers);
+      plotMarkers({
+        "type": "FeatureCollection",
+        "features": markers
+      });
    });
 
    $scope.lookAtSite = function(siteId) {
@@ -27,6 +30,6 @@ pattyApp.controller('SearchCtrl', function ($scope, $http){
      console.log(arguments);
    }
    $scope.showLabel = function(name) {
-     addTextLabel(name, -764.0, 8.2, -1014.0); 
+     addTextLabel(name, -764.0, 8.2, -1014.0);
    }
 });
