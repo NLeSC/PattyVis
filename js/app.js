@@ -29,6 +29,8 @@ var pathcontrols;
 
 var useOculus = false;
 
+var testBox;
+
 // dat.gui bound parameters
 var controlParams;
 
@@ -297,10 +299,10 @@ function addBoundingBox(){
         color : 0xFF99CC,
         wireframe : true
     });
-    boxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-    boxMesh.position.set(-760.60, 5.39, -1066.72);
-    console.log(boxMesh);
-    scene.add(boxMesh);
+    testBox = new THREE.Mesh(boxGeometry, boxMaterial);
+    testBox.position.set(-760.60, 5.39, -1066.72);
+    console.log(testBox);
+    scene.add(testBox);
 }
 
 function createGrid(width, length, spacing) {
@@ -374,6 +376,13 @@ function render() {
             object.update(camera);
         }
     });
+
+    var intersects = raycaster.intersectObject(testBox, false);
+    if (intersects.length > 0){
+        testBox.material.color.setHex(0x99FFFF); 
+    } else {
+        testBox.material.color.setHex(0xFF99CC);
+    }
 
     if (placeStartMode || placeEndMode) {
         var intersects = raycaster.intersectObject(pointcloud, true);
