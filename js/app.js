@@ -3,7 +3,7 @@ var defaultLOD = 12;
 
 // var pointcloudPath =
 // 'http://192.168.6.34/potree/resources/pointclouds/viaappia/cloud_laz.js';
-var pointcloudPath = 'out_8/cloud.js';
+var pointcloudPath = 'data/out_8/cloud.js';
 // var viaappia_server_root = 'http://192.168.6.12/';
 // var pointcloudPath = viaappia_server_root +
 // 'BACKGROUNDS/CONV/DRIVE_1_V3/out_8/out_8.js';
