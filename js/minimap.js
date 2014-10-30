@@ -86,7 +86,7 @@ var map = new ol.Map({
   target: document.getElementById('overhead-map'),
   view: new ol.View({
     center: ol.proj.transform([12.5469185, 41.8286509], 'EPSG:4326', 'EPSG:3857'),
-    zoom: 10
+    zoom: 17
   })
 });
 
