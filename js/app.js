@@ -43,6 +43,8 @@ var controlParams;
 var timeToUpdateMap = 0;
 var MAP_TIMESTEPS = 30;
 
+var measuringTool;
+
 function getFov() {
 	if (useOculus) {
 		return 110;
@@ -209,6 +211,28 @@ function initThree() {
 
 	scene.add(pointcloud);
 
+	measuringTool = new Potree.MeasuringTool(scene, camera, renderer.domElement);
+
+	// execute this event whenever a new measurement point has been set
+	measuringTool.addEventListener("newpoint", function(event) {
+		// transform from local scene to swiss projection.
+		var point = new THREE.Vector3(event.position.x, -event.position.z, event.position.y);
+		point = point.sub(offset);
+
+		// transform from swiss projection to WGS84
+		// var fromSwiss = proj4.defs("EPSG:21781");
+		// var toWGS84 = proj4.defs("WGS84");
+		// var coordinate = proj4(fromSwiss, toWGS84, [ point.x, point.y ]);
+		//
+		// // transform from WGS84 to Web Mercator
+		// coordinate = ol.proj.transform(coordinate, 'EPSG:4326', 'EPSG:3857');
+		//
+		// // add a point to the OpenLayers map
+		// var olPoint = new ol.geom.Point(coordinate);
+		// var feature = new ol.Feature(olPoint);
+		// featureVector.addFeature(feature);
+	});
+
 	// load object point clouds
 	// now only one and based on local data, so commented out
 	// var pco = POCLoader.load('data/pyramid/cloud.js', {toOrigin: true});
@@ -240,30 +264,31 @@ function initThree() {
 	// grid
 	scene.add(createGrid(8, 8, 1));
 
-	// measurement
-	var sphereGeometry = new THREE.SphereGeometry(0.05, 32, 32);
-	var sphereMaterial = new THREE.MeshBasicMaterial({
-		color : 0xbb0000,
-		shading : THREE.FlatShading
-	});
-	spStart = new THREE.Mesh(sphereGeometry, sphereMaterial);
-	spEnd = new THREE.Mesh(sphereGeometry, sphereMaterial);
-	// spStart.position.set(-1.1,1.05,2);
-	// spEnd.position.set(1.3,1.0,1.15);
-	spStart.position.set(-2.2, 1.9, 1.66);
-	spEnd.position.set(0.02, 2, 2.64);
-	scene.add(spStart);
-	scene.add(spEnd);
-
-	var lc = new THREE.Color(0xff0000);
-	var lineGeometry = new THREE.Geometry();
-	lineGeometry.vertices.push(spStart.position.clone(), spEnd.position.clone());
-	lineGeometry.colors.push(lc, lc, lc);
-	var lineMaterial = new THREE.LineBasicMaterial({
-		vertexColors : THREE.VertexColors
-	});
-	sConnection = new THREE.Line(lineGeometry, lineMaterial);
-	scene.add(sConnection);
+	// // measurement
+	// var sphereGeometry = new THREE.SphereGeometry(0.05, 32, 32);
+	// var sphereMaterial = new THREE.MeshBasicMaterial({
+	// color : 0xbb0000,
+	// shading : THREE.FlatShading
+	// });
+	// spStart = new THREE.Mesh(sphereGeometry, sphereMaterial);
+	// spEnd = new THREE.Mesh(sphereGeometry, sphereMaterial);
+	// // spStart.position.set(-1.1,1.05,2);
+	// // spEnd.position.set(1.3,1.0,1.15);
+	// spStart.position.set(-2.2, 1.9, 1.66);
+	// spEnd.position.set(0.02, 2, 2.64);
+	// scene.add(spStart);
+	// scene.add(spEnd);
+	//
+	// var lc = new THREE.Color(0xff0000);
+	// var lineGeometry = new THREE.Geometry();
+	// lineGeometry.vertices.push(spStart.position.clone(),
+	// spEnd.position.clone());
+	// lineGeometry.colors.push(lc, lc, lc);
+	// var lineMaterial = new THREE.LineBasicMaterial({
+	// vertexColors : THREE.VertexColors
+	// });
+	// sConnection = new THREE.Line(lineGeometry, lineMaterial);
+	// scene.add(sConnection);
 
 	// controls
 	// camera.position.set(-818, 12, -960);
@@ -475,41 +500,44 @@ function render() {
 		});
 	}
 
-	if (placeStartMode || placeEndMode) {
-		var intersects = raycaster.intersectObject(pointcloud, true);
-
-		if (intersects.length > 0) {
-			var I = intersects[0];
-
-			if (placeStartMode) {
-				spStart.position.copy(I.point);
-			} else if (placeEndMode) {
-				spEnd.position.copy(I.point);
-			}
-
-			sConnection.geometry.vertices[0].copy(spStart.position);
-			sConnection.geometry.vertices[1].copy(spEnd.position);
-			sConnection.geometry.verticesNeedUpdate = true;
-			sConnection.geometry.computeBoundingSphere();
-		}
-	}
+	// if (placeStartMode || placeEndMode) {
+	// var intersects = raycaster.intersectObject(pointcloud, true);
+	//
+	// if (intersects.length > 0) {
+	// var I = intersects[0];
+	//
+	// if (placeStartMode) {
+	// spStart.position.copy(I.point);
+	// } else if (placeEndMode) {
+	// spEnd.position.copy(I.point);
+	// }
+	//
+	// sConnection.geometry.vertices[0].copy(spStart.position);
+	// sConnection.geometry.vertices[1].copy(spEnd.position);
+	// sConnection.geometry.verticesNeedUpdate = true;
+	// sConnection.geometry.computeBoundingSphere();
+	// }
+	// }
 
 	// placing distance label
-	var labelPos = spStart.position.clone().add(spEnd.position).multiplyScalar(0.5);
-	projector.projectVector(labelPos, camera);
-	labelPos.x = (labelPos.x + 1) / 2 * window.innerWidth;
-	labelPos.y = -(labelPos.y - 1) / 2 * window.innerHeight;
+	// var labelPos =
+	// spStart.position.clone().add(spEnd.position).multiplyScalar(0.5);
+	// projector.projectVector(labelPos, camera);
+	// labelPos.x = (labelPos.x + 1) / 2 * window.innerWidth;
+	// labelPos.y = -(labelPos.y - 1) / 2 * window.innerHeight;
 
-	var distance = spStart.position.distanceTo(spEnd.position);
-	controlParams.distance = distance;
-	controlParams.visibleNodes = pointcloud.numVisibleNodes;
-	controlParams.visiblePoints = pointcloud.numVisiblePoints;
-	controlParams.startPosition = Potree.utils.addCommas(spStart.position.x) + "/" + Potree.utils.addCommas(spStart.position.y) + "/"
-			+ Potree.utils.addCommas(spStart.position.z);
+	// var distance = spStart.position.distanceTo(spEnd.position);
+	// controlParams.distance = distance;
+	// controlParams.visibleNodes = pointcloud.numVisibleNodes;
+	// controlParams.visiblePoints = pointcloud.numVisiblePoints;
+	// controlParams.startPosition = Potree.utils.addCommas(spStart.position.x) +
+	// "/" + Potree.utils.addCommas(spStart.position.y) + "/"
+	// + Potree.utils.addCommas(spStart.position.z);
 
 	if (!useOculus) {
 		// Non-Oculus rendering
 		renderer.render(scene, camera);
+		renderer.render(measuringTool.sceneMeasurement, camera);
 	} else {
 		// Rendering through the Oculus effect
 		effect.render(scene, camera);
