@@ -96,8 +96,11 @@ PathControls = function(camera, path) {
 			yAngle = 0.95 * Math.PI / 2;
 		}
 
-		camera.rotation.y = xAngle;
-		camera.rotation.x = yAngle;
+		if (!useOculus) {
+			camera.rotation.y = xAngle;
+			camera.rotation.x = yAngle;
+			
+		}
 
 		if (autoWalk) {
 
@@ -223,6 +226,10 @@ function onKeyDown(event) {
 
 	if (event.keyCode == 51) { //the 3 key
 		autoLook = !autoLook;
+	}
+	
+	if (event.keyCode == 4) { //the 4 key
+		toggleViewer = !toggleViewer;
 	}
 
 	//print position

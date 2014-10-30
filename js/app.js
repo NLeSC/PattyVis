@@ -2,9 +2,9 @@ var defaultPointSize = 0.09;
 var defaultLOD = 12;
 
 //var pointcloudPath = 'http://192.168.6.34/potree/resources/pointclouds/viaappia/cloud_laz.js';
-// var pointcloudPath = 'data/out_8/cloud.js';
+ var pointcloudPath = 'data/out_8/cloud.js';
 // var viaappia_server_root = 'http://192.168.6.12/';
-var pointcloudPath = viaappia_server_root + 'BACKGROUNDS/CONV/DRIVE_1_V3/out_8/out_8.js';
+//var pointcloudPath = viaappia_server_root + 'BACKGROUNDS/CONV/DRIVE_1_V3/out_8/out_8.js';
 
 var pointcloud;
 var skybox;
@@ -30,6 +30,8 @@ var firstperson;
 var pathcontrols;
 
 var useOculus = false;
+
+var toggleViewer = false;
 
 var testBox;
 var selectedObject = false;
@@ -357,7 +359,7 @@ function render() {
 
     pointcloud.update(camera);
 
-    if (useOculus) {
+    if (useOculus && toggleViewer) {
       firstperson.updateInput();
     } else {
         if (pathcontrols != null) {
