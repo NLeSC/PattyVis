@@ -98,22 +98,19 @@ PathControls = function(camera, path) {
 
 		if (!useOculus) {
 			camera.rotation.y = xAngle;
-			camera.rotation.x = yAngle;
-			
+			camera.rotation.x = yAngle;			
 		}
 
 		if (autoWalk) {
 
-			var looptime = 120;
+			var looptime = 240;
 			positionOnRoad = ((positionOnRoad + elapsed) % looptime) / looptime;
 			var pos = path.getPointAt(positionOnRoad);
 
 			camera.position.set(pos.x, pos.y, pos.z);
 
 			if (autoLook) {
-
 				lookat(camera, path.getPointAt(positionOnRoad + 0.0001));
-
 			}
 
 		} else if (firstPerson) {

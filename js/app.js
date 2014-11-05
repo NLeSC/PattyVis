@@ -94,7 +94,7 @@ function loadSkybox() {
 	shader.uniforms["tCube"].value = textureCube;
 
 	var material = new THREE.ShaderMaterial({
-
+	  
 		fragmentShader : shader.fragmentShader,
 		vertexShader : shader.vertexShader,
 		uniforms : shader.uniforms,
@@ -450,13 +450,13 @@ function render() {
 
 	pointcloud.update(camera);
 
-	if (useOculus) {
+//	if (useOculus) {
 		firstperson.updateInput();
-	} else {
+//	} else {
 		if (pathcontrols != null) {
 			pathcontrols.updateInput();
 		}
-	}
+//	}
 
 	var coords = worldSpaceToLatLon([ camera.position.x, camera.position.z ]);
 
@@ -575,6 +575,7 @@ function onClick() {
 function toggleOculus() {
 	useOculus = !useOculus;
 	onResize();
+  toggleMap();
 
 	if (!useOculus) {
 		camera.fov = getFov();

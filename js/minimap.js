@@ -2,6 +2,8 @@ var sites_url = 'data/sites.json';
 var viaappia_server_root = 'http://192.168.6.12/';
 var sites_url = viaappia_server_root + 'example.json';
 
+var map_enabled = true;
+
 proj4.defs("EPSG:32633", "+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
 proj4.defs('urn:ogc:def:crs:EPSG::32633', proj4.defs('EPSG:32633'));
 
@@ -118,3 +120,13 @@ map.on('click', function(event) {
            + '\ny: ' + lon_4326 + '\nEPSG:32633 (drivemap)\nx: ' + lat_32633 +
            '\ny: ' + lon_32633);
 });
+
+function toggleMap() {
+  map_enabled = !map_enabled; 
+  console.log("toggleMap: "+map_enabled);
+  if (map_enabled) {
+    document.getElementById('overhead-map').style.visibility = "visible";
+  } else {
+    document.getElementById('overhead-map').style.visibility = "hidden";
+  }
+}
