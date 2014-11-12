@@ -7,6 +7,7 @@ var map_enabled = true;
 proj4.defs("EPSG:32633", "+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
 proj4.defs('urn:ogc:def:crs:EPSG::32633', proj4.defs('EPSG:32633'));
 
+var olProjectionCode = 'EPSG:3857';
 var siteProjectionCode = "EPSG:32633";
 var siteProjection = ol.proj.get(siteProjectionCode);
 var siteStyle =  new ol.style.Style({
@@ -17,10 +18,6 @@ var siteStyle =  new ol.style.Style({
     fill: new ol.style.Fill({
       color: 'rgba(255, 255, 0, 0.1)'
     })
-});
-var sitesFormat = new ol.format.GeoJSON({
-    defaultDataProjection: siteProjection,
-    geometryName: "sites"
 });
 
 function centerMap(center) {
@@ -41,30 +38,29 @@ function plotMarkers(GeoJSONfeatureCollection) {
     }
     GeoJSONfeatureCollection = sites_geojson;
   }
-// first remove old ones
+  var featuresArray = vectorSource.readFeatures(GeoJSONfeatureCollection);
   vectorSource.clear();
-// then add new ones
-  var featuresArray = sitesFormat.readFeatures(GeoJSONfeatureCollection);
   vectorSource.addFeatures(featuresArray);
   centerOnVisibleSites();
 }
 
+var vectorSource = new ol.source.GeoJSON({
+    projection: olProjectionCode
+});
+
 var sites_geojson = {};
 $.getJSON(sites_url, function(data) {
+    // cache all sites, filtering sites will remove sites from vectorSource
+    // when filtering is cleared use the cache to show all sites again
     sites_geojson = data;
-    var featuresArray = sitesFormat.readFeatures(sites_geojson);
+    var featuresArray = vectorSource.readFeatures(sites_geojson);
     vectorSource.clear();
     vectorSource.addFeatures(featuresArray);
     centerOnVisibleSites();
 });
 
-var vectorSource = new ol.source.GeoJSON({
-    projection: siteProjection
-});
-
 var vectorLayer = new ol.layer.Vector({
   source: vectorSource,
-  projection: siteProjectionCode,
   style: siteStyle
 });
 

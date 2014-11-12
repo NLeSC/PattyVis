@@ -9,6 +9,7 @@ pattyApp.controller('SearchCtrl', function ($scope, $http){
    var sites_url = viaappia_server_root + 'example.json';
    $http.get(sites_url).success(function (data){
        $scope.sites = data.features;
+       crs = data.crs;
    });
 
    $scope.searchFn = function (value, index){
@@ -24,7 +25,8 @@ pattyApp.controller('SearchCtrl', function ($scope, $http){
       });
       plotMarkers({
         "type": "FeatureCollection",
-        "features": markers
+        "features": markers,
+        "crs": crs
       });
    });
 
