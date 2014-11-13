@@ -1,6 +1,6 @@
 var sites_url = 'data/sites.json';
-var viaappia_server_root = 'http://192.168.6.12/';
-var sites_url = viaappia_server_root + 'example.json';
+// var viaappia_server_root = 'http://192.168.6.12/';
+// var sites_url = viaappia_server_root + 'example.json';
 
 var map_enabled = true;
 
@@ -118,7 +118,7 @@ map.on('click', function(event) {
 });
 
 function toggleMap() {
-  map_enabled = !map_enabled; 
+  map_enabled = !map_enabled;
   console.log("toggleMap: "+map_enabled);
   if (map_enabled) {
     document.getElementById('overhead-map').style.visibility = "visible";

@@ -7,7 +7,8 @@ var defaultLOD = 12;
 // var viaappia_server_root = 'http://192.168.6.12/';
 // var pointcloudPath = viaappia_server_root +
 // 'BACKGROUNDS/CONV/DRIVE_1_V3/out_8/out_8.js';
- var pointcloudPath = 'data/out_6/cloud.js';
+var viaappia_server_root = '';
+var pointcloudPath = 'data/out_8/cloud.js';
 
 var pointcloud;
 var skybox;
@@ -94,7 +95,7 @@ function loadSkybox() {
 	shader.uniforms["tCube"].value = textureCube;
 
 	var material = new THREE.ShaderMaterial({
-	  
+
 		fragmentShader : shader.fragmentShader,
 		vertexShader : shader.vertexShader,
 		uniforms : shader.uniforms,
@@ -500,7 +501,7 @@ function render() {
 			bbox.material.color.setHex(0xFF99CC);
 		});
 	}
-	
+
 	// if (placeStartMode || placeEndMode) {
 	// var intersects = raycaster.intersectObject(pointcloud, true);
 	//
