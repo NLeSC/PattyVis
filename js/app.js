@@ -446,8 +446,22 @@ LatLonToWorldSpace = function(pointToConvert) {
 	return [ x, y ];
 }
 
+/**
+ * @param {Array} location Location to which to move the camera. Location should be in EPSG:4326 projection.
+ */
+function setCameraLocation(location) {
+	var worldspaceLocation = LatLonToWorldSpace(location);
+	console.log(['Move camera to ', {epsg4326:location, webgl:worldspaceLocation, camera: camera.position}]);
+	// TODO dont move camera outside pointcloud area
+	// TODO when camera on rails then snap camera to closest point on path closest to location
+	camera.position.setX(worldspaceLocation[0]);
+	camera.position.setZ(worldspaceLocation[1]);
+}
+
 function render() {
 	requestAnimationFrame(render);
+
+    var oldCoords = worldSpaceToLatLon([ camera.position.x, camera.position.z ]);
 
 	pointcloud.update(camera);
 
@@ -462,7 +476,10 @@ function render() {
 	var coords = worldSpaceToLatLon([ camera.position.x, camera.position.z ]);
 
 	if (timeToUpdateMap > MAP_TIMESTEPS) {
-		map.getView().setCenter(ol.proj.transform([ coords[0], coords[1] ], 'EPSG:4326', 'EPSG:3857'));
+		// only update minimap when camera has moved
+		if (!(oldCoords[0] === coords[0] && oldCoords[1] === coords[1])) {
+			map.getView().setCenter(ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857'));
+		}
 		timeToUpdateMap = 0;
 	} else {
 		timeToUpdateMap++;
@@ -473,7 +490,7 @@ function render() {
 	camera.updateMatrixWorld(true);
 
 	vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-	projector.unprojectVector(vector, camera);
+	vector.unproject(camera);
 	raycaster.params = {
 		"PointCloud" : {
 			threshold : 0.1

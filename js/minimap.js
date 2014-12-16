@@ -111,9 +111,11 @@ map.on('click', function(event) {
     var lat_32633 = coord_32633[0];
     var lon_32633 = coord_32633[1];
 
-    alert('EPSG:3857 (openlayers)\nx: '+ lat + '\ny: ' + lon +
-          '\nESPG:4326 (google)\nx: ' + lat_4326
-           + '\ny: ' + lon_4326 + '\nEPSG:32633 (drivemap)\nx: ' + lat_32633 +
+    setCameraLocation(coord_4326);
+
+    console.log('EPSG:3857 (openlayers)\nx: '+ lat + '\ny: ' + lon +
+          '\nESPG:4326 (google)\nx: ' + lat_4326 +
+           '\ny: ' + lon_4326 + '\nEPSG:32633 (drivemap)\nx: ' + lat_32633 +
            '\ny: ' + lon_32633);
 });
 
