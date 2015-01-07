@@ -1,8 +1,6 @@
-# bower stuff
-bower_components/*
-
-# local node moules
-node_modules/*
-
-/data/out_8
-/data/pyramid
+node_modules
+dist
+.tmp
+.sass-cache
+bower_components
+app/data/out_8
