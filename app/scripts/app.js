@@ -12,8 +12,12 @@ angular
   .module('pattyApp', [
     'ngAnimate',
     'ngSanitize',
-    'ngTouch'
+    'ngTouch',
+    'pattyApp.searchbox'
   ])
   .config(function () {
 
   });
+
+angular.module('pattyApp.core', []);
+angular.module('pattyApp.searchbox', ['pattyApp.core']);
