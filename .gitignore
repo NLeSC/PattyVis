@@ -4,3 +4,4 @@ dist
 .sass-cache
 bower_components
 app/data/out_8
+test/reports
