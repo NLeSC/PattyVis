@@ -7,7 +7,7 @@
 
     sitesservice.load();
 
-    // when query in view is change propagate to sitesModel
+    // when query in view is change propagate to sites service
     $scope.$watch(function() {
       return me.query;
     }, function(newVal, oldVal) {
