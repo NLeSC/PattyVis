@@ -1,11 +1,12 @@
 /*
  *  OculusFirstPersonControls
  *  by Ben van Werkhoven (Netherlands eScience Center)
- *  
+ *
  *  requires Oculus Bridge
  *  github.com/Instrument/oculus-bridge
  */
-
+// TODO remove this and make it jshintable
+/* jshint ignore:start */
 var camera;
 var clock;
 
@@ -153,3 +154,5 @@ function bridgeOrientationUpdated(quatValues) {
 	camera.rotation.z = zAngle;
 
 }
+
+/* jshint ignore:end */

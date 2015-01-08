@@ -1,10 +1,12 @@
 /*
  *  PathControls
  *  by Ben van Werkhoven (Netherlands eScience Center)
- *  
+ *
  *  free look around with mouse drag
  */
 
+// TODO remove this and make it jshintable
+/* jshint ignore:start */
 var camera;
 var clock;
 var path;
@@ -52,7 +54,7 @@ function lookat(camera, center) {
 
 	if (tmp.x > 0) {
 		//this fixes the fact that acos only returns values between 0 and Pi
-		//and we want to be able to rotate around in a full circle 
+		//and we want to be able to rotate around in a full circle
 		angle = 2 * Math.PI - angle;
 	}
 
@@ -98,7 +100,7 @@ PathControls = function(camera, path) {
 
 		if (!useOculus) {
 			camera.rotation.y = xAngle;
-			camera.rotation.x = yAngle;			
+			camera.rotation.x = yAngle;
 		}
 
 		if (autoWalk) {
@@ -224,7 +226,7 @@ function onKeyDown(event) {
 	if (event.keyCode == 51) { //the 3 key
 		autoLook = !autoLook;
 	}
-	
+
 	if (event.keyCode == 4) { //the 4 key
 		toggleViewer = !toggleViewer;
 	}
@@ -333,3 +335,4 @@ function mousewheel(event) {
 	camera.updateProjectionMatrix();
 
 }
+/* jshint ignore:end */
