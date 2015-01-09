@@ -90,20 +90,20 @@
       var lat = event.coordinate[0];
       var lon = event.coordinate[1];
       // EPSG:4326 'normal' lat/long:
-      var coord_4326 = ol.proj.transform([lat, lon], 'EPSG:3857', 'EPSG:4326');
-      var lat_4326 = coord_4326[0];
-      var lon_4326 = coord_4326[1];
+      var coord4326 = ol.proj.transform([lat, lon], 'EPSG:3857', 'EPSG:4326');
+      var lat4326 = coord4326[0];
+      var lon4326 = coord4326[1];
       // EPSG:32633 laz coordinate system:
-      var coord_32633 = proj4('EPSG:3857', siteProjectionCode, [lat, lon]);
-      var lat_32633 = coord_32633[0];
-      var lon_32633 = coord_32633[1];
+      var coord32633 = proj4('EPSG:3857', siteProjectionCode, [lat, lon]);
+      var lat32633 = coord32633[0];
+      var lon32633 = coord32633[1];
 
-      setCameraLocation(coord_4326);
+      setCameraLocation(coord4326);
 
       console.log('EPSG:3857 (openlayers)\nx: '+ lat + '\ny: ' + lon +
-      '\nESPG:4326 (google)\nx: ' + lat_4326 +
-      '\ny: ' + lon_4326 + '\nEPSG:32633 (drivemap)\nx: ' + lat_32633 +
-      '\ny: ' + lon_32633);
+      '\nESPG:4326 (google)\nx: ' + lat4326 +
+      '\ny: ' + lon4326 + '\nEPSG:32633 (drivemap)\nx: ' + lat32633 +
+      '\ny: ' + lon32633);
     });
 
     function toggleMap() {
