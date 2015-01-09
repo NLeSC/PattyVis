@@ -5,14 +5,11 @@
     var me = this;
     this.sitesservice = sitesservice;
 
-    var mapEnabled = true;
-
     proj4.defs('EPSG:32633', '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
     proj4.defs('urn:ogc:def:crs:EPSG::32633', proj4.defs('EPSG:32633'));
 
     var olProjectionCode = 'EPSG:3857';
     var siteProjectionCode = 'EPSG:32633';
-    var siteProjection = ol.proj.get(siteProjectionCode);
     var siteStyle =  new ol.style.Style({
       stroke: new ol.style.Stroke({
         color: 'yellow',
@@ -22,10 +19,6 @@
         color: 'rgba(255, 255, 0, 0.1)'
       })
     });
-
-    function centerMap(center) {
-      map.getView().setCenter(ol.proj.transform(center, 'EPSG:4326', 'EPSG:3857'));
-    }
 
     function centerOnVisibleSites() {
       map.getView().fitExtent(vectorSource.getExtent(), map.getSize());
@@ -54,19 +47,10 @@
       style: siteStyle
     });
 
-    var mapType1 = new ol.source.MapQuest({layer: 'sat'});
-    var mapType2 = new ol.source.TileWMS({
-      url: 'http://maps.opengeo.org/geowebcache/service/wms',
-      params: {LAYERS: 'openstreetmap', VERSION: '1.1.1'}
-    });
-    var mapType3 = new ol.source.TileWMS({
-      url: 'http://maps.opengeo.org/geowebcache/service/wms',
-      params: {LAYERS: 'bluemarble', VERSION: '1.1.1'}
-    });
-    var mapType4 = new ol.source.MapQuest({layer: 'osm'});
+    var mapType = new ol.source.MapQuest({layer: 'osm'});
 
     var rasterLayer = new ol.layer.Tile({
-      source: mapType4
+      source: mapType
     });
 
     var map = new ol.Map({
@@ -98,26 +82,12 @@
       var lat32633 = coord32633[0];
       var lon32633 = coord32633[1];
 
-      setCameraLocation(coord4326);
 
       console.log('EPSG:3857 (openlayers)\nx: '+ lat + '\ny: ' + lon +
       '\nESPG:4326 (google)\nx: ' + lat4326 +
       '\ny: ' + lon4326 + '\nEPSG:32633 (drivemap)\nx: ' + lat32633 +
       '\ny: ' + lon32633);
     });
-
-    function toggleMap() {
-      mapEnabled = !mapEnabled;
-      console.log('toggleMap: '+mapEnabled);
-      if (mapEnabled) {
-        document.getElementById('overhead-map').style.visibility = 'visible';
-      } else {
-        document.getElementById('overhead-map').style.visibility = 'hidden';
-      }
-    }
-
-
-
   }
 
   angular.module('pattyApp.minimap')
