@@ -3,34 +3,53 @@ PattyVis
 
 Getting started (windows, from scratch)
 ---------------------------------------
-1. Install Git : 	http://git-scm.com/downloads
-2. Install Node.js : 	http://nodejs.org/
-3. Start Git bash
-4. Type: "npm install bower connect serve-static"
-5. Close Git bash
-6. Add C:\Users\{YOUR USERNAME HERE}\node_modules\bower\bin to your PATH
-7. Start Git bash
-8. Type: "git clone https://github.com/NLeSC/PattyVis"
-9. Type: "cd PattyVis"
-10. Type: "bower install"
-11. Type: "node server.js"
-12. Open browser, go to "http://localhost:8080/index.html"
+
+#. Install Git : 	http://git-scm.com/downloads
+3. Install Node.js : 	http://nodejs.org/ (Make sure add node to PATH option is checked)
+  2.1. Create '$HOME/npm' folder (Where $HOME is c:\Users\<username>\AppData\Roaming).
+  2.2. Open node command prompt and run `npm install -g bower grunt-cli`
+3. Install Ruby: http://rubyinstaller.org/ (Make sure add ruby to PATH option is checked)
+  3.1 Open ruby command prompt and run `gem install compass`
+4. Start Git bash
+5. Type: "git clone https://github.com/NLeSC/PattyVis"
+6. Type: "cd PattyVis"
+7. Type: "npm install"
+8. Type: "bower install"
+9. Type: "grunt serve"
+10. Open browser, go to "http://localhost:9000"
 
 Getting started (Linux, Debian and Ubuntu based)
 -------------------------------------------------
-### Install git
-```
-sudo apt-get install git
-```
+
+Prerequisites
+------------
+
+1. nodejs, http://nodejs.org/
+2. bower, http://bower.io
+3. compass, http://compass-style.org
+
+Installation
+------------
+
 ### Install nodejs
+
 Follow instructions at joyents github website:
 https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#debian-and-ubuntu-based-linux-distributions
 
 ### Install nodejs modules
-Install bower globally
+Install bower and grunt-cli globally
 ```
-sudo npm install -g bower
+sudo npm install -g bower grunt-cli
 ```
+
+### Install compass
+
+Compass is used to convert the sass 2 css.
+
+1. Install Ruby using http://rubyinstaller.org/
+2. Run
+
+    gem install compass
 
 ### Fetch git repository
 ```
@@ -40,22 +59,29 @@ git clone https://github.com/NLeSC/PattyVis
 ### setup with bower
 ```
 cd PattyVis
+npm install
 bower install
 ```
-### Install locally connect and serve-static
-```
-npm install connect serve-static
-```
 
-### start server
+### start development server & open browser
 ```
-node server.js
+grunt serve
 ```
+Changes made to code will automatically reload web page.
 
-Access with web browser
------------------------
-Running app should be available at url:
-http://localhost:8080/
+### Run unit tests
+
+```
+grunt test
+```
+Generates test report and coverage inside `test/reports` folder.
+
+### Build a distro
+
+```
+grunt dist
+```
+The `dist` folder has production ready distribution.
 
 Mockup
 ------
