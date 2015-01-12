@@ -4,8 +4,8 @@ PattyVis
 Getting started (windows, from scratch)
 ---------------------------------------
 
-#. Install Git : 	http://git-scm.com/downloads
-3. Install Node.js : 	http://nodejs.org/ (Make sure add node to PATH option is checked)
+1. Install Git : 	http://git-scm.com/downloads
+2. Install Node.js : 	http://nodejs.org/ (Make sure add node to PATH option is checked)
   2.1. Create '$HOME/npm' folder (Where $HOME is c:\Users\<username>\AppData\Roaming).
   2.2. Open node command prompt and run `npm install -g bower grunt-cli`
 3. Install Ruby: http://rubyinstaller.org/ (Make sure add ruby to PATH option is checked)
