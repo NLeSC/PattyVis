@@ -41,6 +41,7 @@ describe('core.sites', function() {
       $httpBackend.verifyNoOutstandingRequest();
 
       expect(sitesservice.all).toEqual(sitesjson);
+      expect(sitesservice.filtered).toEqual(sitesjson);
     });
   });
 
@@ -62,17 +63,31 @@ describe('core.sites', function() {
       });
     });
 
-    it('should return nothing when query is empty', function() {
+    it('should have empty search result when query is empty', function() {
       sitesservice.find('');
 
       var result = sitesservice.searched;
       expect(result).toEqual({});
     });
 
-    it('should return site1 when query is 1', function() {
+    it('should have full filtered result when query is empty', function() {
+      sitesservice.find('');
+
+      var result = sitesservice.filtered;
+      expect(result).toEqual(sitesjson);
+    });
+
+    it('should have site1 as search result when query is 1', function() {
       sitesservice.find('1');
 
       var result = sitesservice.searched;
+      expect(result).toEqual(site1json);
+    });
+
+    it('should have site1 as filtered result when query is 1', function() {
+      sitesservice.find('1');
+
+      var result = sitesservice.filtered;
       expect(result).toEqual(site1json);
     });
 

@@ -6,6 +6,7 @@
 
     function onLoad(data) {
       me.all = data;
+      me.filtered = data;
     }
 
     var me = {
@@ -23,8 +24,10 @@
               re.test(site.properties.interpretation) ||
               site.id === query * 1);
           }, this);
+          this.filtered = this.searched;
         } else {
           this.searched = {};
+          this.filtered = this.all;
         }
       },
       load: function() {
