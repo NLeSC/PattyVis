@@ -1,6 +1,10 @@
 {
   "name": "patty",
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NLeSC/PattyVis.git"
+  },
   "dependencies": {},
   "devDependencies": {
     "grunt": "^0.4.1",
