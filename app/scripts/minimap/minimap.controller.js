@@ -20,6 +20,8 @@
       })
     });
 
+    // TODO add function to ceter the map
+
     function centerOnVisibleSites() {
       map.getView().fitExtent(vectorSource.getExtent(), map.getSize());
     }
@@ -67,6 +69,9 @@
       return false;
     });
 
+    // TODO set initial location for the map
+    // TODO toggle map on/of
+    
     // listen on map click
     map.on('click', function(event) {
 
@@ -81,7 +86,6 @@
       var coord32633 = proj4('EPSG:3857', siteProjectionCode, [lat, lon]);
       var lat32633 = coord32633[0];
       var lon32633 = coord32633[1];
-
 
       console.log('EPSG:3857 (openlayers)\nx: '+ lat + '\ny: ' + lon +
       '\nESPG:4326 (google)\nx: ' + lat4326 +
