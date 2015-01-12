@@ -13,7 +13,8 @@ angular
     'ngAnimate',
     'ngSanitize',
     'ngTouch',
-    'pattyApp.searchbox'
+    'pattyApp.searchbox',
+    'pattyApp.minimap'
   ])
   .config(function () {
 
