@@ -56,7 +56,10 @@ describe('core.sites', function() {
     };
 
     beforeEach(function() {
-      sitesservice.onLoad(sitesjson);
+      inject(function($injector) {
+        sitesservice = $injector.get('sitesservice');
+        sitesservice.onLoad(sitesjson);
+      });
     });
 
     it('should return nothing when query is empty', function() {
