@@ -12,19 +12,33 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/boots
 }
 body {
   padding: 0;
-}
 
-.clickable{
-    pointer-events: all;
 }
-
-.search-results{
-    margin-top: 10px;
-    background-color: #ffffff;
-    opacity: 0.9;
-    filter: alpha(opacity=90); /* For IE8 and earlier */
+.container-fluid{
+  margin-top: 15px;
+  position: absolute;
+  pointer-events: none;
 }
+.clickable {
+  pointer-events: all;
 
-.search-result{
-    padding: 10px;
+}
+.search-results {
+  margin-top: 10px;
+  background-color: #fff;
+  opacity: 0.9;
+  filter: alpha(opacity=90);
+  /* For IE8 and earlier */
+
+}
+.search-result {
+  padding: 10px;
+
+}
+patty-minimap {
+  display: block;
+  padding: 5px;
+  background-color: #ffffff;
+  height: 300px;
+  width: 300px;
 }
