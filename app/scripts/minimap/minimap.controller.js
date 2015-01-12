@@ -40,7 +40,7 @@
     };
 
     $scope.$watch(function() {
-      return me.siteservice.filtered;
+      return me.sitesservice.filtered;
     }, this.onSitesChanged);
 
 
@@ -71,7 +71,7 @@
 
     // TODO set initial location for the map
     // TODO toggle map on/of
-    
+
     // listen on map click
     map.on('click', function(event) {
 
