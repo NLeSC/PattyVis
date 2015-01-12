@@ -6,10 +6,10 @@ Getting started (windows, from scratch)
 
 1. Install Git : 	http://git-scm.com/downloads
 2. Install Node.js : 	http://nodejs.org/ (Make sure add node to PATH option is checked)
-  2.1. Create '$HOME/npm' folder (Where $HOME is c:\Users\<username>\AppData\Roaming).
-  2.2. Open node command prompt and run `npm install -g bower grunt-cli`
+  1. Create '$HOME/npm' folder (Where $HOME is c:\Users\<username>\AppData\Roaming).
+  2. Open node command prompt and run `npm install -g bower grunt-cli`
 3. Install Ruby: http://rubyinstaller.org/ (Make sure add ruby to PATH option is checked)
-  3.1 Open ruby command prompt and run `gem install compass`
+  1. Open ruby command prompt and run `gem install compass`
 4. Start Git bash
 5. Type: "git clone https://github.com/NLeSC/PattyVis"
 6. Type: "cd PattyVis"
