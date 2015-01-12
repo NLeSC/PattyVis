@@ -301,7 +301,7 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           cwd: '<%= yeoman.dist %>',
-          src: ['*.html', 'views/{,*/}*.html'],
+          src: ['*.html'],
           dest: '<%= yeoman.dist %>'
         }]
       }
@@ -327,6 +327,17 @@ module.exports = function (grunt) {
       }
     },
 
+    ngtemplates:  {
+      pattyApp:        {
+        cwd:      'app/',
+        src:      'scripts/searchbox/searchbox.directive.html',
+        dest:     '.tmp/template.js',
+        options:  {
+          usemin: '<%= yeoman.dist %>/scripts/scripts.js' // <~~ This came from the <!-- build:js --> block
+        }
+      }
+    },
+
     // Copies remaining files to places other tasks can use
     copy: {
       dist: {
@@ -339,10 +350,9 @@ module.exports = function (grunt) {
             '*.{ico,png,txt}',
             '.htaccess',
             '*.html',
-            'views/{,*/}*.html',
             'images/{,*/}*.{webp}',
             'fonts/{,*/}*.*',
-            'data/{,*/}*'
+            'data/**'
           ]
         }, {
           expand: true,
@@ -428,6 +438,7 @@ module.exports = function (grunt) {
     'clean:dist',
     'wiredep',
     'useminPrepare',
+    'ngtemplates',
     'concurrent:dist',
     'autoprefixer',
     'concat',
