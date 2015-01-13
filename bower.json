@@ -43,7 +43,7 @@
       "main": "web/build/OculusBridge.min.js"
     },
     "potree": {
-      "main": ["build/js/potree.js", "libs/plasio/js/laslaz.js" ]
+      "main": ["build/js/potree.js", "libs/plasio/js/laslaz.js", "build/workers/laslaz-worker.js", "build/workers/lasdecoder-worker.js"]
     },
     "stats.js": {
       "main": "build/stats.min.js"
