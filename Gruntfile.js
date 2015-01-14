@@ -402,6 +402,13 @@ module.exports = function (grunt) {
         configFile: 'test/karma.conf.js',
         singleRun: true
       }
+    },
+
+    protractor: {
+      options: {
+          configFile: "e2e/e2e.conf.js"
+      },
+      e2e: {}
     }
   });
 
@@ -456,5 +463,10 @@ module.exports = function (grunt) {
     'newer:jshint',
     'test',
     'build'
+  ]);
+
+  grunt.registerTask('e2e', [
+    'connect:test',
+    'protractor'
   ]);
 };
