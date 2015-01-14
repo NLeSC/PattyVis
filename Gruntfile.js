@@ -407,9 +407,9 @@ module.exports = function (grunt) {
 
     protractor: {
       options: {
-          configFile: "e2e/e2e.conf.js"
+          configFile: 'e2e/e2e.conf.js'
       },
-      e2e: {}
+      all: {}
     }
   });
 
@@ -468,6 +468,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('e2e', [
     'connect:test',
-    'protractor'
+    'protractor:all'
   ]);
 };
