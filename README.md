@@ -83,10 +83,13 @@ Before tests can be run the webdrivers must be updated/installed with
 npm run webdriver-update
 ```
 
-Tests in firefox and chrome can be run with
+Tests in Firefox and Chrome can be run with
 ```
 grunt e2e
 ```
+
+The pointcloud and minimap use a canvas and can't be tested automatically so they must be verified manually using the screenshots in the report.
+Open `e2e/reports/report.html` in a web-browser.
 
 ### Build a distro
 
