@@ -5,9 +5,11 @@ exports.config = {
     '*.js'
   ],
 
-  capabilities: {
-    'browserName': 'chrome'
-  },
+  multiCapabilities: [{
+      'browserName': 'chrome'
+  }, {
+      'browserName': 'firefox'
+  }],
 
   baseUrl: 'http://localhost:9001/',
 

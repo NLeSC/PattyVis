@@ -76,6 +76,18 @@ grunt test
 ```
 Generates test report and coverage inside `test/reports` folder.
 
+### Run end-to-end tests
+
+Before tests can be run the webdrivers must be updated/installed with
+```
+npm run webdriver-update
+```
+
+Tests in firefox and chrome can be run with
+```
+grunt e2e
+```
+
 ### Build a distro
 
 ```
