@@ -5,13 +5,32 @@
     var me = this;
     this.elRenderArea = null;
 
-    var pointSize = 0.7;
-    var pointCountTarget = 0.4;
-    var opacity = 1;
-    var pointSizeType = Potree.PointSizeType.ADAPTIVE;
-    var pointColorType = Potree.PointColorType.RGB;
-    var pointShape = Potree.PointShape.SQUARE;
-    var interpolate = false;
+    me.showSettings = false;
+    // TODO use this.settings instead of $scope, it did not sync with this so reverted to $scope
+    $scope.settings = {
+      pointCountTarget: 0.4,
+      pointSize: 0.7,
+      opacity: 1,
+      showSkybox: true,
+      interpolate: false,
+      pointSizeType: Potree.PointSizeType.ADAPTIVE,
+      pointSizeTypes: Potree.PointSizeType,
+      pointColorType: Potree.PointColorType.RGB,
+      pointColorTypes: Potree.PointColorType,
+      pointShapes: Potree.PointShape,
+      pointShape: Potree.PointShape.SQUARE
+    };
+
+    // select returns strings, while potree needs int
+    $scope.$watch('settings.pointSizeType', function(newVal) {
+      $scope.settings.pointShape = parseInt(newVal);
+    });
+    $scope.$watch('settings.pointColorType', function(newVal) {
+      $scope.settings.pointColorType = parseInt(newVal);
+    });
+    $scope.$watch('settings.pointShape', function(newVal) {
+      $scope.settings.pointShape = parseInt(newVal);
+    });
 
     var pointcloudPath = 'data/out_8/cloud.js';
     this.renderer = null;
@@ -20,7 +39,6 @@
     var pointcloud;
     var skybox;
     var clock = new THREE.Clock();
-    var showSkybox = true;
     var controls;
     var referenceFrame;
 
@@ -91,8 +109,8 @@
         pointcloud = new Potree.PointCloudOctree(geometry);
 
         pointcloud.material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
-        pointcloud.material.size = pointSize;
-        pointcloud.visiblePointsTarget = pointCountTarget * 1000 * 1000;
+        pointcloud.material.size = $scope.settings.pointSize;
+        pointcloud.visiblePointsTarget = $scope.settings.pointCountTarget * 1000 * 1000;
 
         referenceFrame.add(pointcloud);
         referenceFrame.updateMatrixWorld(true);
@@ -139,13 +157,13 @@
 
     this.update = function() {
       if (pointcloud) {
-        pointcloud.material.size = pointSize;
-        pointcloud.visiblePointsTarget = pointCountTarget * 1000 * 1000;
-        pointcloud.material.opacity = opacity;
-        pointcloud.material.pointSizeType = pointSizeType;
-        pointcloud.material.pointColorType = pointColorType;
-        pointcloud.material.pointShape = pointShape;
-        pointcloud.material.interpolate = interpolate;
+        pointcloud.material.size = $scope.settings.pointSize;
+        pointcloud.visiblePointsTarget = $scope.settings.pointCountTarget * 1000 * 1000;
+        pointcloud.material.opacity = $scope.settings.opacity;
+        pointcloud.material.pointSizeType = $scope.settings.pointSizeType;
+        pointcloud.material.pointColorType = $scope.settings.pointColorType;
+        pointcloud.material.pointShape = $scope.settings.pointShape;
+        pointcloud.material.interpolate = $scope.settings.interpolate;
         pointcloud.material.heightMin = 0;
         pointcloud.material.heightMax = 8;
         pointcloud.material.intensityMin = 0;
@@ -171,7 +189,7 @@
 
 
       // render skybox
-      if (showSkybox) {
+      if ($scope.settings.showSkybox) {
         skybox.camera.rotation.copy(camera.rotation);
         me.renderer.render(skybox.scene, skybox.camera);
       }

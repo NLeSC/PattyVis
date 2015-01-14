@@ -45,3 +45,16 @@ patty-pointcloud-canvas {
   width: 100%;
   height: 100%;
 }
+
+patty-pointcloud-controls {
+}
+
+.btn-trans {
+  border-color: transparent;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.settings-panel {
+  width: 400px;
+}
