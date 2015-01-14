@@ -331,7 +331,7 @@ module.exports = function (grunt) {
     ngtemplates:  {
       pattyApp:        {
         cwd:      'app/',
-        src:      'scripts/searchbox/searchbox.directive.html',
+        src:      'scripts/*/*.html',
         dest:     '.tmp/template.js',
         options:  {
           usemin: '<%= yeoman.dist %>/scripts/scripts.js' // <~~ This came from the <!-- build:js --> block
@@ -437,6 +437,8 @@ module.exports = function (grunt) {
   grunt.registerTask('test', [
     'clean:server',
     'concurrent:test',
+    'useminPrepare',
+    'ngtemplates',
     'autoprefixer',
     'connect:test',
     'karma'

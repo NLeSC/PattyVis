@@ -37,6 +37,8 @@ module.exports = function(config) {
       'bower_components/oculus-bridge/web/build/OculusBridge.min.js',
       'bower_components/OculusRiftEffect/index.js',
       'app/scripts/**/*.js',
+      // test for directives need the templates, inside test load pattyApp module to get templates
+      '.tmp/template.js',
       'test/mock/**/*.js',
       'test/spec/**/*.js'
     ],
