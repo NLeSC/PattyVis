@@ -3,6 +3,7 @@
 describe('pointcloud-controls.directive', function() {
 
   // load the module
+  // use main module because it contains filled template cache
   beforeEach(module('pattyApp'));
 
   var $compile;
@@ -13,11 +14,12 @@ describe('pointcloud-controls.directive', function() {
       $rootScope = _$rootScope_;
     });
   });
-  
+
   it('should have a settings icon', function() {
     var scope = $rootScope.$new();
     var html = '<patty-pointcloud-controls></patty-pointcloud-controls>';
     var result = $compile(html)(scope);
+    scope.$digest();
     expect(result.html()).toContain('glyphicon-cog');
   });
 });

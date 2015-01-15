@@ -22,7 +22,8 @@ angular
   });
 
 angular.module('pattyApp.core', []);
-angular.module('pattyApp.searchbox', ['pattyApp.core']);
+angular.module('pattyApp.utils', []);
+angular.module('pattyApp.searchbox', ['pattyApp.core', 'pattyApp.utils']);
 angular.module('pattyApp.minimap', ['pattyApp.core'])
   .factory('ol', function($window) {
     return $window.ol;

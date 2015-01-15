@@ -5,8 +5,8 @@
     return {
       restrict: 'E',
       templateUrl: 'scripts/pointcloud/pointcloud-controls.directive.html',
-      controller: 'PointcloudController',
-      controllerAs: 'vm'
+      controller: 'PointcloudControlsController',
+      controllerAs: 'pc'
     };
   }
 

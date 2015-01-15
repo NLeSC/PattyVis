@@ -5,9 +5,9 @@ function pattyPointcloudCanvas() {
   return {
     restrict: 'E',
     link: function(scope, element) {
-      scope.vm.init(element[0]);
+      scope.vm.attachCanvas(element[0]);
     },
-    controller: 'PointcloudController',
+    controller: 'PointcloudCanvasController',
     controllerAs: 'vm'
   };
 }
