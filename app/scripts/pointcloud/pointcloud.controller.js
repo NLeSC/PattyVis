@@ -18,12 +18,12 @@
       pointColorType: Potree.PointColorType.RGB,
       pointColorTypes: Potree.PointColorType,
       pointShapes: Potree.PointShape,
-      pointShape: Potree.PointShape.SQUARE
+      pointShape: Potree.PointShape.CIRCLE
     };
 
     // select returns strings, while potree needs int
     $scope.$watch('settings.pointSizeType', function(newVal) {
-      $scope.settings.pointShape = parseInt(newVal);
+      $scope.settings.pointSizeType = parseInt(newVal);
     });
     $scope.$watch('settings.pointColorType', function(newVal) {
       $scope.settings.pointColorType = parseInt(newVal);
