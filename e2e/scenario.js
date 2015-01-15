@@ -19,7 +19,7 @@ describe('pattyApp', function() {
 
   describe('searched on "py"', function() {
     beforeEach(function() {
-      element(by.model('vm.query')).sendKeys('py');
+      element(by.model('sp.query')).sendKeys('py');
     });
 
     it('should have one search result', function() {
@@ -29,7 +29,7 @@ describe('pattyApp', function() {
 
   describe('search on "bla"', function() {
     beforeEach(function() {
-      element(by.model('vm.query')).sendKeys('bla');
+      element(by.model('sp.query')).sendKeys('bla');
     });
 
     it('should have zero search results', function() {
