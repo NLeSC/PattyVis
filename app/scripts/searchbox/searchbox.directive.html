@@ -1,10 +1,10 @@
 <div class="form-group clickable">
     <div class="input-group">
         <div class="glyphicon glyphicon-search input-group-addon"></div>
-        <input type="text" class="form-control" placeholder="Search..." ng-model="vm.query">
+        <input type="text" class="form-control" placeholder="Search..." ng-model="sp.query" ng-change="sp.queryChanged()">
     </div>
-    <div class="panel" class="search-results" ng-show="vm.query">
-        <div class="search-result" ng-repeat="site in vm.sitesservice.searched.features" ng-cloak>
+    <div class="panel" class="search-results" ng-show="sp.query">
+        <div class="search-result" ng-repeat="site in sp.sitesservice.searched.features" ng-cloak>
             <div style="display: inline-block; vertical-align: top;">
                 <img ng-src="{{site.properties.thumbnail }}" width="120">
             </div>
@@ -17,6 +17,6 @@
                 <button type="button" class="glyphicon glyphicon-tag" ng-click="showLabel(site.properties.description)" title="Show label (at fixed position - turn around to see it)."></button>
             </div>
         </div>
-        <div ng-if="vm.sitesservice.searched.features.length == 0" ng-cloak>No results.</div>
+        <div ng-if="sp.sitesservice.searched.features.length == 0" ng-cloak>No results.</div>
     </div>
 </div>

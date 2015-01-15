@@ -2,19 +2,17 @@
   'use strict';
 
   function SearchPanelController($scope, sitesservice) {
-    var me = this;
+    this.query = '';
+
     this.sitesservice = sitesservice;
 
     sitesservice.load();
 
     // when query in view is change propagate to sites service
-    $scope.$watch(function() {
-      return me.query;
-    }, function(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        sitesservice.find(newVal);
-      }
-    });
+    this.queryChanged = function(){
+      sitesservice.find(this.query);
+    };
+
   }
 
   angular.module('pattyApp.searchbox')

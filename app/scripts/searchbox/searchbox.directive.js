@@ -6,7 +6,7 @@
       restrict: 'E',
       templateUrl: 'scripts/searchbox/searchbox.directive.html',
       controller: 'SearchPanelController',
-      controllerAs: 'vm'
+      controllerAs: 'sp'
     };
   }
 
