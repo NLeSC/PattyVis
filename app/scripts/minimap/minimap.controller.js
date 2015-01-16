@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function MinimapController($scope, ol, proj4, sitesservice) {
+  function MinimapController($scope, ol, proj4, sitesservice, CamFrustrumService) {
     var me = this;
     this.sitesservice = sitesservice;
 
@@ -10,7 +10,7 @@
 
     var olProjectionCode = 'EPSG:3857';
     var siteProjectionCode = 'EPSG:32633';
-    var siteStyle =  new ol.style.Style({
+    var siteStyle = new ol.style.Style({
       stroke: new ol.style.Stroke({
         color: 'yellow',
         width: 10
@@ -21,6 +21,7 @@
     });
 
     // TODO add function to ceter the map
+
 
     function centerOnVisibleSites() {
       map.getView().fitExtent(vectorSource.getExtent(), map.getSize());
@@ -49,7 +50,9 @@
       style: siteStyle
     });
 
-    var mapType = new ol.source.MapQuest({layer: 'osm'});
+    var mapType = new ol.source.MapQuest({
+      layer: 'osm'
+    });
 
     var rasterLayer = new ol.layer.Tile({
       source: mapType
@@ -87,13 +90,15 @@
       var lat32633 = coord32633[0];
       var lon32633 = coord32633[1];
 
-      console.log('EPSG:3857 (openlayers)\nx: '+ lat + '\ny: ' + lon +
-      '\nESPG:4326 (google)\nx: ' + lat4326 +
-      '\ny: ' + lon4326 + '\nEPSG:32633 (drivemap)\nx: ' + lat32633 +
-      '\ny: ' + lon32633);
+      console.log('EPSG:3857 (openlayers)\nx: ' + lat + '\ny: ' + lon +
+        '\nESPG:4326 (google)\nx: ' + lat4326 +
+        '\ny: ' + lon4326 + '\nEPSG:32633 (drivemap)\nx: ' + lat32633 +
+        '\ny: ' + lon32633);
     });
+
+    map.addLayer(CamFrustrumService.layer);
   }
 
   angular.module('pattyApp.minimap')
-  .controller('MinimapController', MinimapController);
+    .controller('MinimapController', MinimapController);
 })();

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, Eventbus) {
     var me = this;
     this.elRenderArea = null;
 
@@ -143,7 +143,34 @@
       return geo;
     }
 
+    this.updateMapFrustum = function() {
+      var aspect = camera.aspect;
+      var top = Math.tan(THREE.Math.degToRad(camera.fov * 0.5)) * camera.near;
+      var bottom = -top;
+      var left = aspect * bottom;
+      var right = aspect * top;
+
+      var camPos = new THREE.Vector3(0, 0, 0);
+      left = new THREE.Vector3(left, 0, -camera.near).multiplyScalar(3000);
+      right = new THREE.Vector3(right, 0, -camera.near).multiplyScalar(3000);
+      camPos.applyMatrix4(camera.matrixWorld);
+      left.applyMatrix4(camera.matrixWorld);
+      right.applyMatrix4(camera.matrixWorld);
+
+      camPos = toGeo(camPos);
+      left = toGeo(left);
+      right = toGeo(right);
+
+      Eventbus.publish('cameraMoved', {
+        cam: camPos,
+        left: left,
+        right: right
+      });
+    };
+
     this.update = function() {
+      var oldPos = camera.position.clone();
+
       if (pointcloud) {
         pointcloud.material.size = me.settings.pointSize;
         pointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
@@ -162,6 +189,12 @@
       }
 
       controls.update(clock.getDelta());
+
+      // TODO also update when rotate and scale changes
+      var cameraMoved = !(camera.position.equals(oldPos));
+      if (cameraMoved) {
+        this.updateMapFrustum();
+      }
     };
 
     this.render = function() {
