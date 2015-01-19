@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "features": [{
+    "type": "Feature",
+    "geometry": {
+      "type": "LineString",
+      "coordinates": [
+        [295746.8, 4634353.8, 164.5],
+        [295842.2, 4634238.9, 158.5]
+      ]
+    },
+    "properties": {
+      "pointcloud": "data/out_8/cloud.js"
+    },
+    "id": "DRIVE_1_V3"
+  }],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:EPSG::32633"
+    }
+  }
+}

@@ -1,8 +1,9 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, Messagebus) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, Messagebus, DrivemapService) {
     var me = this;
+
     this.elRenderArea = null;
 
     me.settings = {
@@ -84,15 +85,19 @@
       controls = new THREE.FirstPersonControls(camera, me.renderer.domElement);
       camera.rotation.order = 'ZYX';
       controls.moveSpeed *= 10;
-      camera.position.set(256.8, 164.5, -2093.8);
-      camera.lookAt(new THREE.Vector3(301.8, 150.3, -2059.6));
 
       // enable frag_depth extension for the interpolation shader, if available
       me.renderer.context.getExtension('EXT_frag_depth');
 
       referenceFrame = new THREE.Object3D();
 
+      DrivemapService.load().then(this.loadPointcloud);
+    };
+
+    this.loadPointcloud = function() {
       // load pointcloud
+      pointcloudPath = DrivemapService.getPointcloudUrl();
+
       POCLoader.load(pointcloudPath, function(geometry) {
         pointcloud = new Potree.PointCloudOctree(geometry);
 
@@ -113,6 +118,7 @@
           0, 0, 0, 1
         ));
         scene.add(referenceFrame);
+        me.goHome();
       });
 
     };
@@ -122,7 +128,7 @@
      */
     function toLocal(position) {
       var scenePos = position.clone().applyMatrix4(referenceFrame.matrixWorld);
-      return scenePos;
+      return new THREE.Vector3(scenePos.x, scenePos.z, -scenePos.y);
     }
 
     /**
@@ -166,6 +172,16 @@
         left: left,
         right: right
       });
+    };
+
+    this.goHome = function() {
+      var locationGeo = DrivemapService.getHomeLocation();
+      var lookAtGeo = DrivemapService.getHomeLookAt();
+      var locationLocal = toLocal(locationGeo);
+      var lookAtLocal = toLocal(lookAtGeo);
+
+      camera.position.set(locationLocal.x, locationLocal.y, locationLocal.z);
+      camera.lookAt(lookAtLocal);
     };
 
     this.update = function() {
