@@ -16,7 +16,7 @@
       pointColorType: Potree.PointColorType.RGB,
       pointColorTypes: Potree.PointColorType,
       pointShapes: Potree.PointShape,
-      pointShape: Potree.PointShape.CIRCLE
+      pointShape: Potree.PointShape.SQUARE
     };
 
 

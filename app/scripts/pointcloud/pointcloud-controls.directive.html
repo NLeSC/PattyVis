@@ -24,24 +24,21 @@
       <div class="form-group">
         <label>
           Size type
-          <select ng-model="pc.settings.pointSizeType" coerce2integer>
-            <option value="{{ value }}" ng-repeat="(key, value) in pc.settings.pointSizeTypes | orderBy:value">{{ key | lowercase }}</option>
+          <select ng-model="pc.settings.pointSizeType" ng-options="value as key|lowercase for (key, value) in pc.settings.pointSizeTypes | orderBy:value">
           </select>
         </label>
       </div>
       <div class="form-group">
         <label>
           Color type
-          <select ng-model="pc.settings.pointColorType" coerce2integer>
-            <option value="{{ value }}" ng-repeat="(key, value) in pc.settings.pointColorTypes | orderBy:value">{{ key | lowercase }}</option>
+          <select ng-model="pc.settings.pointColorType" ng-options="value as key|lowercase for (key, value) in pc.settings.pointColorTypes | orderBy:value">
           </select>
         </label>
       </div>
       <div class="form-group">
         <label>
           Shape
-          <select ng-model="pc.settings.pointShape" coerce2integer>
-            <option value="{{ value }}" ng-repeat="(key, value) in pc.settings.pointShapes | orderBy:value">{{ key | lowercase }}</option>
+          <select ng-model="pc.settings.pointShape" ng-options="value as key|lowercase for (key, value) in pc.settings.pointShapes | orderBy:value">
           </select>
         </label>
       </div>
