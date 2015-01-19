@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, Messagebus) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, Messagebus, $rootScope) {
     var me = this;
     this.elRenderArea = null;
 
@@ -21,12 +21,17 @@
     };
     me.stats = {
       nrPoints: 0,
-      nrNodes:0,
+      nrNodes: 0,
       sceneCoordinates: {
-        x:0, y:0, z:0
+        x: 0,
+        y: 0,
+        z: 0
       },
       lasCoordinates: {
-        x:0, y:0, z:0, crs: 'EPSG:32633' // TODO fetch csr from drivemap.json
+        x: 0,
+        y: 0,
+        z: 0,
+        crs: 'EPSG:32633' // TODO fetch csr from drivemap.json
       }
     };
 
@@ -39,7 +44,10 @@
     var clock = new THREE.Clock();
     var controls;
     var referenceFrame;
-    var mouse = {x: 0, y: 0};
+    var mouse = {
+      x: 0,
+      y: 0
+    };
 
     function loadSkybox(path) {
       var camera = new THREE.PerspectiveCamera(75, $window.innerWidth / $window.innerHeight, 1, 100000);
@@ -76,15 +84,15 @@
       };
     }
 
-    function getMousePointCloudIntersection(){
-      var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
+    function getMousePointCloudIntersection() {
+      var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
       vector.unproject(camera);
       var direction = vector.sub(camera.position).normalize();
       var ray = new THREE.Ray(camera.position, direction);
 
       var pointClouds = [];
-      scene.traverse(function(object){
-        if(object instanceof Potree.PointCloudOctree){
+      scene.traverse(function(object) {
+        if (object instanceof Potree.PointCloudOctree) {
           pointClouds.push(object);
         }
       });
@@ -92,17 +100,19 @@
       var closestPoint = null;
       var closestPointDistance = null;
 
-      for(var i = 0; i < pointClouds.length; i++){
+      for (var i = 0; i < pointClouds.length; i++) {
         var pointcloud = pointClouds[i];
-        var point = pointcloud.pick(me.renderer, camera, ray, {accuracy: 0.5});
+        var point = pointcloud.pick(me.renderer, camera, ray, {
+          accuracy: 0.5
+        });
 
-        if(!point){
+        if (!point) {
           continue;
         }
 
         var distance = camera.position.distanceTo(point.position);
 
-        if(!closestPoint || distance < closestPointDistance){
+        if (!closestPoint || distance < closestPointDistance) {
           closestPoint = point;
           closestPointDistance = distance;
         }
@@ -111,20 +121,18 @@
       return closestPoint ? closestPoint.position : null;
     }
 
-    function updateStats(){
-      if(me.settings.showStats){
-           if (pointcloud) {
-             me.stats.nrPoints = pointcloud.numVisiblePoints;
-             me.stats.nrNodes = pointcloud.numVisibleNodes;
-           } else {
+    function updateStats() {
+      if (me.settings.showStats) {
+        if (pointcloud) {
+          me.stats.nrPoints = pointcloud.numVisiblePoints;
+          me.stats.nrNodes = pointcloud.numVisibleNodes;
+        } else {
           me.stats.nrPoints = 'none';
-          me.stats.nrNodes ='none';
-           }
-
+          me.stats.nrNodes = 'none';
+        }
 
         var I = getMousePointCloudIntersection();
-        if(I){
-
+        if (I) {
           var sceneCoordinates = I;
           me.stats.sceneCoordinates.x = sceneCoordinates.x.toFixed(2);
           me.stats.sceneCoordinates.y = sceneCoordinates.y.toFixed(2);
@@ -134,12 +142,17 @@
           me.stats.lasCoordinates.y = geoCoordinates.y.toFixed(2);
           me.stats.lasCoordinates.z = geoCoordinates.z.toFixed(2);
         }
+
+        // stats are changed in requestAnimationFrame loop,
+        // which is outside the AngularJS $digest loop
+        // to have changes to stats propagated to angular, we need to trigger a digest 
+        $rootScope.$digest();
       }
     }
 
-    function onMouseMove(event){
-      mouse.x = ( event.clientX / me.renderer.domElement.clientWidth ) * 2 - 1;
-      mouse.y = - ( event.clientY / me.renderer.domElement.clientHeight ) * 2 + 1;
+    function onMouseMove(event) {
+      mouse.x = (event.clientX / me.renderer.domElement.clientWidth) * 2 - 1;
+      mouse.y = -(event.clientY / me.renderer.domElement.clientHeight) * 2 + 1;
     }
 
     this.initThree = function() {
