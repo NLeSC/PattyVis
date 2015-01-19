@@ -117,3 +117,12 @@ In db run:
 To get geometry, bbox and crs.
 
 Height and properties need to be filled manually.
+
+
+Frame rate report
+----------------
+
+Use Chrome FPS plotting to get the frame rate.
+1. Open developer tools
+2. On Console tab goto Rendering tab (bottom screen)
+3. Check the Show FPS meter checkbox

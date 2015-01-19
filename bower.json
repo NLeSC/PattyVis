@@ -29,7 +29,6 @@
     "OculusRiftEffect": "https://raw.githubusercontent.com/troffmo5/OculusStreetView/master/js/OculusRiftEffect.js",
     "potree": "https://github.com/potree/potree.git",
     "dat-gui": "0.5.0",
-    "stats.js": "r12",
     "bluebird": "1.0.8"
   },
   "overrides": {
