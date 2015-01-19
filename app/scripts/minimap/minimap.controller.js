@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function MinimapController($scope, ol, proj4, sitesservice, CamFrustrumService) {
+  function MinimapController($scope, ol, proj4, sitesservice, CamFrustrumService, Messagebus) {
     var me = this;
     this.sitesservice = sitesservice;
 
@@ -97,6 +97,11 @@
     });
 
     map.addLayer(CamFrustrumService.layer);
+
+    Messagebus.subscribe('cameraMoved', function(event, frustrum) {
+      CamFrustrumService.onCameraMove(frustrum);
+      map.getView().fitExtent(CamFrustrumService.featureVector.getExtent(), map.getSize());
+    });
   }
 
   angular.module('pattyApp.minimap')

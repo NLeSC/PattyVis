@@ -44,10 +44,6 @@
       ]);
       this.camFrustum.setCoordinates([camPos, left, right, camPos]);
     };
-
-    Messagebus.subscribe('cameraMoved', function(event, frustrum) {
-      me.onCameraMove(frustrum);
-    });
   }
 
   angular.module('pattyApp.minimap')
