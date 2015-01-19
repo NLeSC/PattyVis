@@ -11,6 +11,7 @@
       opacity: 1,
       showSkybox: true,
       interpolate: false,
+      showStats: false,
       pointSizeType: Potree.PointSizeType.ADAPTIVE,
       pointSizeTypes: Potree.PointSizeType,
       pointColorType: Potree.PointColorType.RGB,
@@ -18,7 +19,16 @@
       pointShapes: Potree.PointShape,
       pointShape: Potree.PointShape.SQUARE
     };
-
+    me.stats = {
+      nrPoints: 0,
+      nrNodes:0,
+      sceneCoordinates: {
+        x:0, y:0, z:0
+      },
+      lasCoordinates: {
+        x:0, y:0, z:0, crs: 'EPSG:32633' // TODO fetch csr from drivemap.json
+      }
+    };
 
     var pointcloudPath = 'data/out_8/cloud.js';
     this.renderer = null;
@@ -29,6 +39,7 @@
     var clock = new THREE.Clock();
     var controls;
     var referenceFrame;
+    var mouse = {x: 0, y: 0};
 
     function loadSkybox(path) {
       var camera = new THREE.PerspectiveCamera(75, $window.innerWidth / $window.innerHeight, 1, 100000);
@@ -65,6 +76,72 @@
       };
     }
 
+    function getMousePointCloudIntersection(){
+      var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
+      vector.unproject(camera);
+      var direction = vector.sub(camera.position).normalize();
+      var ray = new THREE.Ray(camera.position, direction);
+
+      var pointClouds = [];
+      scene.traverse(function(object){
+        if(object instanceof Potree.PointCloudOctree){
+          pointClouds.push(object);
+        }
+      });
+
+      var closestPoint = null;
+      var closestPointDistance = null;
+
+      for(var i = 0; i < pointClouds.length; i++){
+        var pointcloud = pointClouds[i];
+        var point = pointcloud.pick(me.renderer, camera, ray, {accuracy: 0.5});
+
+        if(!point){
+          continue;
+        }
+
+        var distance = camera.position.distanceTo(point.position);
+
+        if(!closestPoint || distance < closestPointDistance){
+          closestPoint = point;
+          closestPointDistance = distance;
+        }
+      }
+
+      return closestPoint ? closestPoint.position : null;
+    }
+
+    function updateStats(){
+      if(me.settings.showStats){
+           if (pointcloud) {
+             me.stats.nrPoints = pointcloud.numVisiblePoints;
+             me.stats.nrNodes = pointcloud.numVisibleNodes;
+           } else {
+          me.stats.nrPoints = 'none';
+          me.stats.nrNodes ='none';
+           }
+
+
+        var I = getMousePointCloudIntersection();
+        if(I){
+
+          var sceneCoordinates = I;
+          me.stats.sceneCoordinates.x = sceneCoordinates.x.toFixed(2);
+          me.stats.sceneCoordinates.y = sceneCoordinates.y.toFixed(2);
+          me.stats.sceneCoordinates.z = sceneCoordinates.z.toFixed(2);
+          var geoCoordinates = toGeo(sceneCoordinates);
+          me.stats.lasCoordinates.x = geoCoordinates.x.toFixed(2);
+          me.stats.lasCoordinates.y = geoCoordinates.y.toFixed(2);
+          me.stats.lasCoordinates.z = geoCoordinates.z.toFixed(2);
+        }
+      }
+    }
+
+    function onMouseMove(event){
+      mouse.x = ( event.clientX / me.renderer.domElement.clientWidth ) * 2 - 1;
+      mouse.y = - ( event.clientY / me.renderer.domElement.clientHeight ) * 2 + 1;
+    }
+
     this.initThree = function() {
       var fov = 75;
       var width = $window.innterWidth;
@@ -78,6 +155,7 @@
       me.renderer = new THREE.WebGLRenderer();
       me.renderer.setSize(width, height);
       me.renderer.autoClear = false;
+      me.renderer.domElement.addEventListener('mousemove', onMouseMove, false);
 
       skybox = loadSkybox('bower_components/potree/resources/textures/skybox/');
       // camera and controls
@@ -195,6 +273,7 @@
       if (cameraMoved) {
         this.updateMapFrustum();
       }
+      updateStats();
     };
 
     this.render = function() {
