@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, Eventbus) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, Messagebus) {
     var me = this;
     this.elRenderArea = null;
 
@@ -161,7 +161,7 @@
       left = toGeo(left);
       right = toGeo(right);
 
-      Eventbus.publish('cameraMoved', {
+      Messagebus.publish('cameraMoved', {
         cam: camPos,
         left: left,
         right: right

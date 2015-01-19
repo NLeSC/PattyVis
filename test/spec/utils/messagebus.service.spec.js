@@ -1,14 +1,14 @@
 'use strict';
 
-describe('utils.eventbus', function() {
+describe('utils.messagebus', function() {
 
   // load the module
   beforeEach(module('pattyApp.utils'));
 
-  var eventbus;
+  var messagebus;
   beforeEach(function() {
     inject(function($injector) {
-      eventbus = $injector.get('Eventbus');
+      messagebus = $injector.get('Messagebus');
     });
   });
 
@@ -17,9 +17,9 @@ describe('utils.eventbus', function() {
     var subscriber = function(event, _data_) {
       data = _data_;
     };
-    eventbus.subscribe('someevent', subscriber);
+    messagebus.subscribe('someevent', subscriber);
 
-    eventbus.publish('someevent', 'someargs');
+    messagebus.publish('someevent', 'someargs');
 
     expect(data).toBe('someargs');
   });

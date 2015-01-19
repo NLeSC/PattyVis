@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CamFrustrumService(ol, proj4, Eventbus) {
+  function CamFrustrumService(ol, proj4, Messagebus) {
     var me = this;
     var olProjectionCode = 'EPSG:3857';
     var siteProjectionCode = 'EPSG:32633';
@@ -45,7 +45,7 @@
       this.camFrustum.setCoordinates([camPos, left, right, camPos]);
     };
 
-    Eventbus.subscribe('cameraMoved', function(event, frustrum) {
+    Messagebus.subscribe('cameraMoved', function(event, frustrum) {
       me.onCameraMove(frustrum);
     });
   }

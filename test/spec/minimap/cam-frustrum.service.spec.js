@@ -5,11 +5,11 @@ describe('minimap.CamFrustrumService', function() {
   // load the module
   beforeEach(module('pattyApp.minimap'));
 
-  var eventbus;
+  var Messagebus;
   var service;
   beforeEach(function() {
     inject(function($injector) {
-      eventbus = $injector.get('Eventbus');
+      Messagebus = $injector.get('Messagebus');
       service = $injector.get('CamFrustrumService');
       var proj4 = $injector.get('proj4');
       proj4.defs('EPSG:32633', '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
@@ -48,7 +48,7 @@ describe('minimap.CamFrustrumService', function() {
         }
       };
 
-      eventbus.publish('cameraMoved', frustrum);
+      Messagebus.publish('cameraMoved', frustrum);
 
       var expected = [
         [1170385.0413843133, 2048.42216895622], // cam
