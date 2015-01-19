@@ -32,7 +32,7 @@
         x: 0,
         y: 0,
         z: 0,
-        crs: 'EPSG:32633' // TODO fetch csr from drivemap.json
+        crs: 'unknown'
       }
     };
 
@@ -188,6 +188,7 @@
     this.loadPointcloud = function() {
       // load pointcloud
       pointcloudPath = DrivemapService.getPointcloudUrl();
+      me.stats.lasCoordinates.crs = DrivemapService.getCrs();
 
       POCLoader.load(pointcloudPath, function(geometry) {
         pointcloud = new Potree.PointCloudOctree(geometry);
@@ -211,7 +212,6 @@
         scene.add(referenceFrame);
         me.goHome();
       });
-
     };
 
     /**

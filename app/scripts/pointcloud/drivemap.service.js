@@ -36,6 +36,9 @@
     this.getCoordinates = function() {
       return this.data.features[0].geometry.coordinates;
     };
+    this.getCrs = function() {
+      return this.data.crs.properties.name;
+    };
   }
 
   angular.module('pattyApp.pointcloud')

@@ -1,8 +1,7 @@
 (function() {
   'use strict';
 
-  function CamFrustrumService(ol, proj4, Messagebus) {
-    var me = this;
+  function CamFrustrumService(ol, proj4) {
     var olProjectionCode = 'EPSG:3857';
     var siteProjectionCode = 'EPSG:32633';
 
