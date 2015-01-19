@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, sitesservice) {
     var me = this;
 
     this.elRenderArea = null;
@@ -240,6 +240,82 @@
       return geo;
     }
 
+    function addTextLabel(message, x, y, z) {
+      var canvas = document.createElement('canvas');
+      var context = canvas.getContext('2d');
+      // context.font = "Bold " + fontsize + "px " + fontface;
+
+      // get size data (height depends only on font size)
+      // var metrics = context.measureText(message);
+
+      // background color
+      // context.fillStyle = "rgba(" + backgroundColor.r + "," + backgroundColor.g +
+      // ","
+      // + backgroundColor.b + "," + backgroundColor.a + ")";
+
+      // context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
+      // + borderColor.b + "," + borderColor.a + ")";
+
+      // context.lineWidth = borderThickness;
+      // roundRect(context, borderThickness/2, borderThickness/2, textWidth +
+      // borderThickness, fontsize * 1.4 + borderThickness, 6);
+      // 1.4 is extra height factor for text below baseline: g,j,p,q.
+
+      // text color
+      // context.fillStyle = "rgba(0, 0, 0, 1.0)";
+
+      // context.fillText( message, borderThickness, fontsize + borderThickness);
+
+      var imageObj = new Image();
+      imageObj.onload = function() {
+        context.drawImage(imageObj, 10, 10);
+        context.font = '40pt Calibri';
+        context.fillText(message, 30, 70);
+        // canvas contents will be used for a texture
+        var texture = new THREE.Texture(canvas);
+        texture.needsUpdate = true;
+
+        var spriteMaterial = new THREE.SpriteMaterial({
+          map: texture,
+          useScreenCoordinates: false,
+        });
+        var sprite = new THREE.Sprite(spriteMaterial);
+        // sprite.scale.set(100,50,1.0);
+        sprite.scale.set(10, 5, 1.0);
+
+        sprite.position.set(x, y, z);
+        referenceFrame.add(sprite);
+      };
+      imageObj.src = 'data/label-small.png';
+    }
+
+    this.goHome = function() {
+      var locationGeo = DrivemapService.getHomeLocation();
+      var lookAtGeo = DrivemapService.getHomeLookAt();
+      var locationLocal = toLocal(locationGeo);
+      var lookAtLocal = toLocal(lookAtGeo);
+
+      camera.position.set(locationLocal.x, locationLocal.y, locationLocal.z);
+      camera.lookAt(lookAtLocal);
+    };
+
+    this.lookAtSite = function(site) {
+      var coordGeo = sitesservice.centerOfSite(site);
+      var posGeo = new THREE.Vector3(coordGeo[0], coordGeo[1], coordGeo[2]);
+      var posLocal = toLocal(posGeo);
+      camera.lookAt(posLocal);
+      var camPos = posLocal.clone().setZ(posLocal.z - 20);
+      camera.position.set(camPos.x, -camPos.z, camPos.y);
+    };
+
+    this.showLabel = function(site) {
+      var message = site.properties.description;
+      var coordGeo = sitesservice.centerOfSite(site);
+      var posGeo = new THREE.Vector3(coordGeo[0], coordGeo[1], coordGeo[2] + 10);
+      var posLocal = toLocal(posGeo);
+      addTextLabel(message, posLocal.x, -posLocal.z, posLocal.y);
+    };
+
     this.updateMapFrustum = function() {
       var aspect = camera.aspect;
       var top = Math.tan(THREE.Math.degToRad(camera.fov * 0.5)) * camera.near;
@@ -263,16 +339,6 @@
         left: left,
         right: right
       });
-    };
-
-    this.goHome = function() {
-      var locationGeo = DrivemapService.getHomeLocation();
-      var lookAtGeo = DrivemapService.getHomeLookAt();
-      var locationLocal = toLocal(locationGeo);
-      var lookAtLocal = toLocal(lookAtGeo);
-
-      camera.position.set(locationLocal.x, locationLocal.y, locationLocal.z);
-      camera.lookAt(lookAtLocal);
     };
 
     this.update = function() {

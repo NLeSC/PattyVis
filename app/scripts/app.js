@@ -23,7 +23,6 @@ angular
 
 angular.module('pattyApp.utils', []);
 angular.module('pattyApp.core', ['pattyApp.utils']);
-angular.module('pattyApp.searchbox', ['pattyApp.core']);
 angular.module('pattyApp.minimap', ['pattyApp.core'])
   .factory('ol', function($window) {
     return $window.ol;
@@ -31,7 +30,6 @@ angular.module('pattyApp.minimap', ['pattyApp.core'])
   .factory('proj4', function($window) {
     return $window.proj4;
   });
-
 angular.module('pattyApp.pointcloud', ['pattyApp.core'])
   .factory('THREE', function($window) {
     return $window.THREE;
@@ -42,3 +40,4 @@ angular.module('pattyApp.pointcloud', ['pattyApp.core'])
   .factory('Potree', function($window) {
     return $window.Potree;
   });
+angular.module('pattyApp.searchbox', ['pattyApp.core', 'pattyApp.pointcloud']);
