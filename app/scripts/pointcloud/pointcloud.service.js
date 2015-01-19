@@ -277,6 +277,7 @@
 
     this.update = function() {
       var oldPos = camera.position.clone();
+      var oldRot = camera.rotation.clone();
 
       if (pointcloud) {
         pointcloud.material.size = me.settings.pointSize;
@@ -298,7 +299,7 @@
       controls.update(clock.getDelta());
 
       // TODO also update when rotate and scale changes
-      var cameraMoved = !(camera.position.equals(oldPos));
+      var cameraMoved = !(camera.position.equals(oldPos)) || !(camera.rotation.equals(oldRot));
       if (cameraMoved) {
         this.updateMapFrustum();
       }
