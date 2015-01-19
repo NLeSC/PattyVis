@@ -49,6 +49,15 @@ patty-pointcloud-canvas {
 patty-pointcloud-controls {
 }
 
+patty-pointcloud-stats {
+  position: absolute;
+  left: 5px;
+  bottom: 50px;
+  color: white;
+  font-weight: bold;
+  text-shadow: 1px 1px 1px black, 1px -1px 1px black, -1px 1px 1px black, -1px -1px 1px black;
+}
+
 .btn-trans {
   border-color: transparent;
   background-color: transparent;

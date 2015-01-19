@@ -39,7 +39,8 @@
     </div>
   </div>
   <patty-pointcloud-canvas></patty-pointcloud-canvas>
-
+  <patty-pointcloud-stats></patty-pointcloud-stats>
+ 
   <!-- build:js(.) scripts/oldieshim.js -->
   <!--[if lt IE 9]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>
@@ -86,7 +87,6 @@
 
   <!-- build:js({.tmp,app}) scripts/scripts.js -->
   <script src="scripts/app.js"></script>
-  <script src="scripts/utils/coerce2integer.directive.js"></script>
   <script src="scripts/utils/messagebus.service.js"></script>
   <script src="scripts/core/sites.service.js"></script>
   <script src="scripts/searchbox/searchbox.directive.js"></script>
@@ -100,6 +100,8 @@
   <script src="scripts/pointcloud/pointcloud-canvas.controller.js"></script>
   <script src="scripts/pointcloud/pointcloud-controls.directive.js"></script>
   <script src="scripts/pointcloud/pointcloud-controls.controller.js"></script>
+  <script src="scripts/pointcloud/pointcloud-stats.directive.js"></script>
+  <script src="scripts/pointcloud/pointcloud-stats.controller.js"></script>
   <!-- endbuild -->
 </body>
 
