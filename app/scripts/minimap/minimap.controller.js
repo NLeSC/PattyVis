@@ -20,18 +20,13 @@
       })
     });
 
-    // TODO add function to ceter the map
-
-
     function centerOnVisibleSites() {
       map.getView().fitExtent(vectorSource.getExtent(), map.getSize());
     }
 
-
     var vectorSource = new ol.source.GeoJSON({
       projection: olProjectionCode
     });
-
 
     this.onSitesChanged = function(filtered) {
       var featuresArray = vectorSource.readFeatures(filtered);
@@ -102,6 +97,8 @@
       CamFrustrumService.onCameraMove(frustrum);
       map.getView().fitExtent(CamFrustrumService.featureVector.getExtent(), map.getSize());
     });
+
+
   }
 
   angular.module('pattyApp.minimap')
