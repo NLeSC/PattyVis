@@ -185,6 +185,11 @@
 
       DrivemapService.load().then(this.loadPointcloud);
 
+      var objectBBox = this.createVisibleBoundingBox(20,0,-40);//-760.60, 5.39, -1066.72);
+      objectBBox.name = 'piet';
+      // show bounding box
+      referenceFrame.add(objectBBox);
+
       scene.add(referenceFrame);
     };
 
@@ -215,6 +220,19 @@
         me.goHome();
       });
     };
+
+    this.createVisibleBoundingBox = function(x, y, z){
+      var boxGeometry = new THREE.BoxGeometry(30, 30, 30);
+      var boxMaterial = new THREE.MeshBasicMaterial({
+        color : 0x000000,
+        wireframe : true,
+        opacity: 1,
+      });
+      var bBox = new THREE.Mesh(boxGeometry, boxMaterial);
+      bBox.position.set(x, y, z);
+      return bBox;
+    }
+
 
     /**
      * transform from geo coordinates to local scene coordinates
