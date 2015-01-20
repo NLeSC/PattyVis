@@ -48,8 +48,10 @@ Compass is used to convert the sass 2 css.
 
 1. Install Ruby using http://rubyinstaller.org/
 2. Run
-
-    gem install compass
+```
+sudo apt-get install libffi-dev
+sudo gem install compass
+```
 
 ### Fetch git repository
 ```
