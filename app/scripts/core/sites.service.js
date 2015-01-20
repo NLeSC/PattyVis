@@ -36,12 +36,29 @@
       onLoad: onLoad,
       centerOfSite: function(site) {
         return [
-          ((site.bbox[3] - site.bbox[0]) / 2) + site.bbox[0], ((site.bbox[4] - site.bbox[1]) / 2) + site.bbox[1], ((site.bbox[5] - site.bbox[2]) / 2) + site.bbox[2],
+          ((site.bbox[3] - site.bbox[0]) / 2) + site.bbox[0],
+          ((site.bbox[4] - site.bbox[1]) / 2) + site.bbox[1],
+          ((site.bbox[5] - site.bbox[2]) / 2) + site.bbox[2],
+          // is same as:
+          // ((site.bbox[3] + site.bbox[0]) / 2),
+          // ((site.bbox[4] + site.bbox[1]) / 2),
+          // ((site.bbox[5] + site.bbox[2]) / 2)
         ];
       },
       getCrs: function() {
         return me.all.crs.properties.name;
+      },
+      getBoundingBox: function(site) {
+        return site.bbox;
+      },
+      getBoundingBoxSize: function(site) {
+        return [
+          ((site.bbox[3] - site.bbox[0]) / 2),
+          ((site.bbox[4] - site.bbox[1]) / 2),
+          ((site.bbox[5] - site.bbox[2]) / 2)
+        ];
       }
+
     };
     return me;
   }
