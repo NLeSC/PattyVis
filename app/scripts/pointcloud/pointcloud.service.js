@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, sitesservice) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, sitesservice, CameraService) {
     var me = this;
 
     this.elRenderArea = null;
@@ -166,6 +166,7 @@
 
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+      CameraService.camera = camera.clone();
       me.renderer = new THREE.WebGLRenderer();
       me.renderer.setSize(width, height);
       me.renderer.autoClear = false;
@@ -389,6 +390,7 @@
         skybox.camera.rotation.copy(camera.rotation);
         me.renderer.render(skybox.scene, skybox.camera);
       }
+      CameraService.camera.position.copy(camera.position);
 
       // render scene
       me.renderer.render(scene, camera);
