@@ -183,12 +183,10 @@
 
       referenceFrame = new THREE.Object3D();
 
-      DrivemapService.load().then(this.loadPointcloud);
-
-      var objectBBox = this.createVisibleBoundingBox(20,0,-40);//-760.60, 5.39, -1066.72);
-      objectBBox.name = 'piet';
-      // show bounding box
-      referenceFrame.add(objectBBox);
+      DrivemapService.load()
+        .then(this.loadPointcloud)
+        .then(this.loadboxje);
+      // handy test coordinates for box: 295794,4634290,139 (immediately in sight)
 
       scene.add(referenceFrame);
     };
@@ -206,27 +204,43 @@
         pointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
 
         referenceFrame.add(pointcloud);
-        referenceFrame.updateMatrixWorld(true);
-
+        referenceFrame.updateMatrixWorld(true); // doesn't seem to do anything
+        // reference frame position to pointcloud position:
         referenceFrame.position.set(-pointcloud.position.x, -pointcloud.position.y, 0);
-
+        // rotates to some unknown orientation:
         referenceFrame.updateMatrixWorld(true);
+        // rotates point cloud to align with horizon
         referenceFrame.applyMatrix(new THREE.Matrix4().set(
           1, 0, 0, 0,
           0, 0, 1, 0,
           0, -1, 0, 0,
           0, 0, 0, 1
         ));
-        me.goHome();
+        me.goHome(); // moves camera to nice position
       });
     };
 
+    this.loadboxje = function() {
+      // load box
+      var objectBBox = me.createVisibleBoundingBox(295794,4634290,139);//450+pointcloud.position.x,130+pointcloud.position.y,0);//-760.60, 5.39, -1066.72);
+
+      objectBBox.name = 'piet';
+      // show bounding box
+      referenceFrame.add(objectBBox);
+    };
+
+
     this.createVisibleBoundingBox = function(x, y, z){
       var boxGeometry = new THREE.BoxGeometry(30, 30, 30);
+      // 296254.971269128320273,4633691.809428597800434, 120,296256.456351440516300,4633693.518252233974636, 120.42
+      // [296247.246448120509740,4633726.192645221017301, 121.484,296264.387774608097970,4633743.168275895528495, 144.177]
       var boxMaterial = new THREE.MeshBasicMaterial({
-        color : 0x000000,
+        color : 0xFF99CC,
+        // transparent: false,
         wireframe : true,
-        opacity: 1,
+        // opacity: 1,
+            // overdraw: 0.5
+
       });
       var bBox = new THREE.Mesh(boxGeometry, boxMaterial);
       bBox.position.set(x, y, z);
