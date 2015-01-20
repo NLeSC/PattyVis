@@ -64,6 +64,10 @@ cd PattyVis
 npm install
 bower install
 ```
+If you already have a installed the bower packages before, but need to update them for a new version of the code, run
+```
+bower update
+```
 
 ### start development server & open browser
 ```
