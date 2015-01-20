@@ -184,6 +184,8 @@
       referenceFrame = new THREE.Object3D();
 
       DrivemapService.load().then(this.loadPointcloud);
+
+      scene.add(referenceFrame);
     };
 
     this.loadPointcloud = function() {
@@ -210,7 +212,6 @@
           0, -1, 0, 0,
           0, 0, 0, 1
         ));
-        scene.add(referenceFrame);
         me.goHome();
       });
     };
