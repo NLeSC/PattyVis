@@ -13,8 +13,10 @@ Getting started (windows, from scratch)
 4. Start Git bash
 5. Type: "git clone https://github.com/NLeSC/PattyVis"
 6. Type: "cd PattyVis"
-7. Type: "npm install"
+7. Type: "npm install -g grunt grunt-cli"
+8. Type: "npm install"
 8. Type: "bower install"
+8. Type: "bower update"
 9. Type: "grunt serve"
 10. Open browser, go to "http://localhost:9000"
 
