@@ -6,3 +6,5 @@ bower_components
 app/data/out_8
 test/reports
 e2e/reports
+.exvim.project*
+project.exvim
