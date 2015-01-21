@@ -184,8 +184,8 @@
       referenceFrame = new THREE.Object3D();
 
       DrivemapService.load()
-        .then(this.loadPointcloud)
-        .then(this.loadboxje);
+        .then(this.loadPointcloud);
+        // .then(this.loadSiteBoxes);
       // handy test coordinates for box: 295794,4634290,139 (immediately in sight)
 
       scene.add(referenceFrame);
@@ -220,14 +220,20 @@
       });
     };
 
-    this.loadboxje = function() {
-      // load box
-      var objectBBox = me.createVisibleBoundingBox(295794,4634290,139);//450+pointcloud.position.x,130+pointcloud.position.y,0);//-760.60, 5.39, -1066.72);
 
-      objectBBox.name = 'piet';
-      // show bounding box
-      referenceFrame.add(objectBBox);
-    };
+    this.loadSiteBoxes = function() {
+      console.log("loadSiteBoxes");
+      // var ding = angular.copy(SiteBoxService);
+      // console.log(ding);
+      // for (var siteBox in SiteBoxService.siteBoxList) {
+      for (var ix=0; ix < SiteBoxService.siteBoxList.length; ix++) {
+        // console.log('hier');
+        // console.log(siteBox);
+        referenceFrame.add(SiteBoxService.siteBoxList[ix]);
+        // console.log('daar');
+      }
+      console.log('klaar');
+    }
 
 
 
@@ -426,6 +432,11 @@
       el.appendChild(canvas);
       me.loop();
     };
+
+    $rootScope.$watch(function() {
+      return SiteBoxService.siteBoxList;
+    }, this.loadSiteBoxes);
+
   }
 
   angular.module('pattyApp.pointcloud')

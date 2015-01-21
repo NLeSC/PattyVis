@@ -4,27 +4,23 @@
     function SiteBoxService($rootScope, THREE, sitesservice) {
         var me = this;
 
-        var siteBoxList = [];
+        this.siteBoxList = [];
 
         this.onSitesChanged = function(sites) {
             //var features = sitesservice.getAllFeatures();
             console.log('onSitesChanged');
-            console.log(sites);
-            console.log(sites.features);
-            //console.log(features);
-            if(sites.isLoaded){
-
+            if(sitesservice.isLoaded){
                 me.siteBoxList = [];
                 for(i=0; i<sites.features.length; i++){
                     me.siteBoxList.push(me.createSiteBox(sites.features[i]));
                 }
                 console.log(me.siteBoxList);
-           }
+            }
         };
 
         $rootScope.$watch(function() {
-            console.log('watch');
-            console.log(sitesservice);
+            // console.log('watch');
+            // console.log(sitesservice);
             return sitesservice.all;
         }, this.onSitesChanged);
 
@@ -45,6 +41,8 @@
             });
             var bBox = new THREE.Mesh(boxGeometry, boxMaterial);
             bBox.position.set(siteCenter[0], siteCenter[1], siteCenter[2]);
+            bBox.name = site.id;
+
             return bBox;
         }
 
