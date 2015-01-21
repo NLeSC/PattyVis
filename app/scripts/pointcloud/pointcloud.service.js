@@ -42,6 +42,7 @@
     var scene;
     var pointcloud;
     var skybox;
+    var prevCameraOrientation;
 
     var referenceFrame;
     var mouse = {
@@ -173,21 +174,21 @@
       me.renderer.domElement.addEventListener('mousemove', onMouseMove, false);
 
       skybox = loadSkybox('bower_components/potree/resources/textures/skybox/');
-      
+
       // enable frag_depth extension for the interpolation shader, if available
       me.renderer.context.getExtension('EXT_frag_depth');
 
       referenceFrame = new THREE.Object3D();
-     
+
       DrivemapService.load().then(this.loadPointcloud);
-      
+
     };
 
     this.loadPointcloud = function() {
       // load pointcloud
       pointcloudPath = DrivemapService.getPointcloudUrl();
       me.stats.lasCoordinates.crs = DrivemapService.getCrs();
-      
+
       POCLoader.load(pointcloudPath, function(geometry) {
         pointcloud = new Potree.PointCloudOctree(geometry);
 
@@ -199,7 +200,7 @@
         referenceFrame.updateMatrixWorld(true);
 
         referenceFrame.position.set(-pointcloud.position.x, -pointcloud.position.y, 0);
-		
+
         referenceFrame.updateMatrixWorld(true);
         referenceFrame.applyMatrix(new THREE.Matrix4().set(
           1, 0, 0, 0,
@@ -207,33 +208,33 @@
           0, -1, 0, 0,
           0, 0, 0, 1
         ));
-		referenceFrame.updateMatrixWorld(true);
+        referenceFrame.updateMatrixWorld(true);
         scene.add(referenceFrame);
-		
-		var myPath = DrivemapService.getCoordinates().map( 
-				function(coord){ 
-					return toLocal(new THREE.Vector3(coord[0],coord[1],coord[2]));
-				} 
-			);
-		
+
+        var myPath = DrivemapService.getCoordinates().map(
+          function(coord) {
+            return toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
+          }
+        );
+
         PathControls.init(camera, myPath, me.renderer.domElement);
 
-		//TODO make this togglable - is that a word?
-		//scene.add( PathControls.createTube() );
-        
-      });
-      
+        //TODO make this togglable - is that a word?
+        //scene.add( PathControls.createTube() );
 
-      
+      });
+
+
+
     };
 
     /**
      * transform from geo coordinates to local scene coordinates
      */
-    function toLocal(position) {    	
-    	
+    function toLocal(position) {
+
       var scenePos = position.clone().applyMatrix4(referenceFrame.matrixWorld);
-       
+
       return scenePos;
     }
 
@@ -311,7 +312,7 @@
       var lookAtLocal = toLocal(lookAtGeo);
 
       camera.position.set(locationLocal.x, locationLocal.y, locationLocal.z);
-      
+
       camera.lookAt(lookAtLocal);
     };
 
@@ -358,8 +359,6 @@
     };
 
     this.update = function() {
-      var oldPos = camera.position.clone();
-      var oldRot = camera.rotation.clone();
 
       if (pointcloud) {
         pointcloud.material.size = me.settings.pointSize;
@@ -380,11 +379,13 @@
 
       PathControls.updateInput();
 
-      // TODO also update when rotate and scale changes
-      var cameraMoved = !(camera.position.equals(oldPos)) || !(camera.rotation.equals(oldRot));
-      if (cameraMoved) {
+      // create hash for camera state
+      var cameraOrientation = new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorld).determinant();
+      if (cameraOrientation !== prevCameraOrientation) {
         this.updateMapFrustum();
       }
+      // compare current camera state with state in previous render loop
+      prevCameraOrientation = cameraOrientation;
       updateStats();
     };
 
