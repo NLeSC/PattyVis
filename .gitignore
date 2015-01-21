@@ -2,7 +2,9 @@ node_modules
 dist
 .tmp
 .sass-cache
+.project
 bower_components
 app/data/out_8
 test/reports
 e2e/reports
+
