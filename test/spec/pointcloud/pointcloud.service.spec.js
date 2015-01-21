@@ -29,7 +29,8 @@ describe('pointcloud.service', function() {
         pointColorType: Potree.PointColorType.RGB,
         pointColorTypes: Potree.PointColorType,
         pointShapes: Potree.PointShape,
-        pointShape: Potree.PointShape.SQUARE
+        pointShape: Potree.PointShape.SQUARE,
+        showStats: false
       };
 
       expect(PointcloudService.settings).toEqual(expected);
