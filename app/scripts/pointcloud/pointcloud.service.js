@@ -1,7 +1,8 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, sitesservice, CameraService, PathControls) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, sitesservice, CameraService, SceneService, PathControls, SiteBoxService) {
+
     var me = this;
 
     this.elRenderArea = null;
@@ -20,6 +21,7 @@
       pointShapes: Potree.PointShape,
       pointShape: Potree.PointShape.CIRCLE
     };
+    
     me.stats = {
       nrPoints: 0,
       nrNodes: 0,
@@ -40,6 +42,7 @@
     this.renderer = null;
     var camera;
     var scene;
+    var raycaster;
     var pointcloud;
     var skybox;
 
@@ -53,8 +56,7 @@
     };
 
     function loadSkybox(path) {
-      var camera = new THREE.PerspectiveCamera(75, $window.innerWidth / $window.innerHeight, 1, 100000);
-      var scene = new THREE.Scene();
+      var scene = SceneService.getScene();
 
       var format = '.jpg';
       var urls = [
@@ -159,21 +161,21 @@
     }
 
     this.initThree = function() {
-      var fov = 75;
+
       var width = $window.innerWidth;
       var height = $window.innerHeight;
-      var aspect = width / height;
-      var near = 0.1;
-      var far = 100000;
 
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-      CameraService.camera = camera.clone();
+
+      scene = SceneService.getScene();
+      camera = CameraService.camera;
       CameraService.toGeo = toGeo;
+
       me.renderer = new THREE.WebGLRenderer();
       me.renderer.setSize(width, height);
       me.renderer.autoClear = false;
       me.renderer.domElement.addEventListener('mousemove', onMouseMove, false);
+
+      raycaster = new THREE.Raycaster();
 
       skybox = loadSkybox('bower_components/potree/resources/textures/skybox/');
 
@@ -183,7 +185,6 @@
       referenceFrame = new THREE.Object3D();
 
       DrivemapService.load().then(this.loadPointcloud);
-
     };
 
     this.loadPointcloud = function() {
@@ -199,11 +200,12 @@
         pointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
 
         referenceFrame.add(pointcloud);
-        referenceFrame.updateMatrixWorld(true);
-
+        referenceFrame.updateMatrixWorld(true); // doesn't seem to do anything
+        // reference frame position to pointcloud position:
         referenceFrame.position.set(-pointcloud.position.x, -pointcloud.position.y, 0);
-
+        // rotates to some unknown orientation:
         referenceFrame.updateMatrixWorld(true);
+        // rotates point cloud to align with horizon
         referenceFrame.applyMatrix(new THREE.Matrix4().set(
           1, 0, 0, 0,
           0, 0, 1, 0,
@@ -222,7 +224,7 @@
         PathControls.init(camera, myPath, me.renderer.domElement);
 
 		me.pathMesh = PathControls.createPath()
-		scene.add(me.pathMesh);		
+		scene.add(me.pathMesh);
 		me.pathMesh.visible = false; // disabled by default
 
       });
@@ -230,6 +232,15 @@
 
 
     };
+
+
+    this.loadSiteBoxes = function() {
+      for (var ix=0; ix < SiteBoxService.siteBoxList.length; ix++) {
+        referenceFrame.add(SiteBoxService.siteBoxList[ix]);
+      }
+    }
+
+
 
     /**
      * transform from geo coordinates to local scene coordinates
@@ -410,8 +421,35 @@
       }
       CameraService.camera.position.copy(camera.position);
 
+      // SiteBox selection (clicking & hovering)
+      var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+      vector.unproject(camera);
+      raycaster.params = {
+          "PointCloud" : {
+              threshold : 0.1
+          }
+      };
+      raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
+
+      // hovering over SiteBoxes
+      var intersects = raycaster.intersectObjects(SiteBoxService.siteBoxList, false);
+
+      // reset hovering
+      SiteBoxService.siteBoxList.forEach(function (siteBox){
+          SiteBoxService.hoverOut(siteBox);
+      });
+
+      if (intersects.length > 0){
+        intersects.forEach(function (intersectingObject) {
+          SiteBoxService.hoverOver(intersectingObject.object);
+        });
+      }
+
+
       // render scene
       me.renderer.render(scene, camera);
+
+	  //MeasuringService.measuringTool.render();
     };
 
     this.loop = function() {
@@ -428,6 +466,11 @@
       el.appendChild(canvas);
       me.loop();
     };
+
+    $rootScope.$watch(function() {
+      return SiteBoxService.siteBoxList;
+    }, this.loadSiteBoxes);
+
   }
 
   angular.module('pattyApp.pointcloud')
