@@ -455,10 +455,6 @@
       return SiteBoxService.siteBoxList;
     }, this.loadSiteBoxes);
 
-    // $rootScope.$watch(function (){
-    //   return raycaster.intersectObjects(SiteBoxService.siteBoxList, false);
-    // }, console.log);
-
   }
 
   angular.module('pattyApp.pointcloud')

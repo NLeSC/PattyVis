@@ -5,6 +5,8 @@
         var me = this;
 
         this.siteBoxList = [];
+        this.selectedSiteBox = null;
+        this.isSiteBoxSelected = false;
 
         this.onSitesChanged = function(sites) {
             if(sitesservice.isLoaded){
@@ -32,8 +34,9 @@
         };
 
         this.selectSite = function(event) {
-            console.log(event);
-            debugger;
+            if (me.isSiteBoxSelected) {
+                console.log("selected SiteBox: " + me.selectedSiteBox.name);
+            }
         };
 
         this.createSiteBox = function(site){
@@ -41,15 +44,12 @@
             var boxSize = sitesservice.getBoundingBoxSize(site);
 
             var boxGeometry = new THREE.BoxGeometry(boxSize[0], boxSize[1], boxSize[2]);
-            // 296254.971269128320273,4633691.809428597800434, 120,296256.456351440516300,4633693.518252233974636, 120.42
-            // [296247.246448120509740,4633726.192645221017301, 121.484,296264.387774608097970,4633743.168275895528495, 144.177]
             var boxMaterial = new THREE.MeshBasicMaterial({
                 color : 0xFF99CC,
                 // transparent: false,
                 wireframe : true,
                 // opacity: 1,
                 // overdraw: 0.5
-
             });
             var bBox = new THREE.Mesh(boxGeometry, boxMaterial);
             bBox.position.set(siteCenter[0], siteCenter[1], siteCenter[2]);
@@ -72,13 +72,13 @@
             });
 
             if (intersects.length > 0) {
-                me.hoverOver(intersects[0].object);
+                me.selectedSiteBox = intersects[0].object;
+                me.isSiteBoxSelected = true;
+                me.hoverOver(me.selectedSiteBox);
+            } else {
+                me.isSiteBoxSelected = false;
             }
         }
-
-
-        // onclick
-
 
     }
 
