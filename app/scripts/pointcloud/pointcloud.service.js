@@ -40,6 +40,7 @@
     this.renderer = null;
     var camera;
     var scene;
+    var raycaster;
     var pointcloud;
     var skybox;
     var clock = new THREE.Clock();
@@ -171,6 +172,8 @@
       me.renderer.setSize(width, height);
       me.renderer.autoClear = false;
       me.renderer.domElement.addEventListener('mousemove', onMouseMove, false);
+
+      raycaster = new THREE.Raycaster();
 
       skybox = loadSkybox('bower_components/potree/resources/textures/skybox/');
       // camera and controls
@@ -406,13 +409,37 @@
 
       me.renderer.setSize(width, height);
 
-
       // render skybox
       if (me.settings.showSkybox) {
         skybox.camera.rotation.copy(camera.rotation);
         me.renderer.render(skybox.scene, skybox.camera);
       }
       CameraService.camera.position.copy(camera.position);
+
+      // SiteBox selection (clicking & hovering)
+      var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+      vector.unproject(camera);
+      raycaster.params = {
+          "PointCloud" : {
+              threshold : 0.1
+          }
+      };
+      raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
+ 
+      // hovering over SiteBoxes
+      var intersects = raycaster.intersectObjects(SiteBoxService.siteBoxList, false);
+
+      // reset hovering
+      SiteBoxService.siteBoxList.forEach(function (siteBox){
+          SiteBoxService.hoverOut(siteBox);
+      });
+
+      if (intersects.length > 0){
+        intersects.forEach(function (intersectingObject) {
+          SiteBoxService.hoverOver(intersectingObject.object);
+        });
+      }
+
 
       // render scene
       me.renderer.render(scene, camera);

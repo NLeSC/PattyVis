@@ -24,6 +24,14 @@
             return sitesservice.all;
         }, this.onSitesChanged);
 
+        this.hoverOver = function(siteBox) {
+            siteBox.material.color.setHex(0x99FFFF);
+        };
+
+        this.hoverOut = function(siteBox) {
+            siteBox.material.color.setHex(0xFF99CC)
+        };
+
         this.createSiteBox = function(site){
             var siteCenter = sitesservice.centerOfSite(site);
             var boxSize = sitesservice.getBoundingBoxSize(site);
