@@ -443,9 +443,7 @@
       });
 
       if (intersects.length > 0){
-        intersects.forEach(function (intersectingObject) {
-          SiteBoxService.hoverOver(intersectingObject.object);
-        });
+        SiteBoxService.hoverOver(intersects[0].object);
       }
 
 
