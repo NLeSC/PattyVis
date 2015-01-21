@@ -48,11 +48,14 @@ sudo npm install -g bower grunt-cli
 
 Compass is used to convert the sass 2 css.
 
-1. Install Ruby using http://rubyinstaller.org/
-2. Run
+1. Install Ruby using https://www.ruby-lang.org/en/documentation/installation/#apt
+2. Install Ruby dev and other dependecy packages
 ```
 sudo apt-get install ruby-dev libffi-dev
-sudo gem install compass
+```
+3. Install compass (for sass compilation)
+```
+gem install compass
 ```
 
 ### Fetch git repository
