@@ -161,18 +161,15 @@
     }
 
     this.initThree = function() {
-      var fov = 75;
+
       var width = $window.innerWidth;
       var height = $window.innerHeight;
-      var aspect = width / height;
-      var near = 0.1;
-      var far = 100000;
+
 
       scene = SceneService.getScene();
-      camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-      CameraService.camera = camera.clone();	  	  
+      camera = CameraService.camera;
       CameraService.toGeo = toGeo;
-	  
+
       me.renderer = new THREE.WebGLRenderer();
       me.renderer.setSize(width, height);
       me.renderer.autoClear = false;
@@ -227,7 +224,7 @@
         PathControls.init(camera, myPath, me.renderer.domElement);
 
 		me.pathMesh = PathControls.createPath()
-		scene.add(me.pathMesh);		
+		scene.add(me.pathMesh);
 		me.pathMesh.visible = false; // disabled by default
 
       });
@@ -433,7 +430,7 @@
           }
       };
       raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
- 
+
       // hovering over SiteBoxes
       var intersects = raycaster.intersectObjects(SiteBoxService.siteBoxList, false);
 
@@ -451,7 +448,7 @@
 
       // render scene
       me.renderer.render(scene, camera);
-	  
+
 	  measuringService.measuringTool.render();
     };
 
