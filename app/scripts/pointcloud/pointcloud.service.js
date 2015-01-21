@@ -426,32 +426,9 @@
         skybox.camera.rotation.copy(camera.rotation);
         me.renderer.render(skybox.scene, skybox.camera);
       }
-      console.log("\n\n\n");
-      console.log(camera.position);
-      console.log(CameraService.camera.position);
       CameraService.camera.position.copy(camera.position);
-      console.log(camera.position);
-      console.log(CameraService.camera.position);
 
-      // console.log(angular.copy(CameraService.camera));
       SiteBoxService.siteBoxSelection(mouse.x, mouse.y, raycaster);
-
-            var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-            vector.unproject(camera);
-            raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
-     
-            // hovering over SiteBoxes
-            var intersects = raycaster.intersectObjects(SiteBoxService.siteBoxList, false);
-
-            // reset hovering
-            SiteBoxService.siteBoxList.forEach(function (siteBox) {
-                SiteBoxService.hoverOut(siteBox);
-            });
-
-            if (intersects.length > 0) {
-                SiteBoxService.hoverOver(intersects[0].object);
-            }
-
 
       // render scene
       me.renderer.render(scene, camera);
