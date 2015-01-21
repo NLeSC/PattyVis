@@ -18,10 +18,11 @@ describe('pointcloud.CameraService', function() {
     it('should record current camera location to waypoint array', function() {
       service.camera = {};
       service.camera.position = new THREE.Vector3(1, 2, 3);
+      service.toGeo = function(d) { return d.negate(); };
 
       service.recordLocation();
 
-      var expected = new THREE.Vector3(1, 2, 3);
+      var expected = [-1, -2, -3];
       var lastWaypoint = service.waypoints[service.waypoints.length - 1];
       expect(lastWaypoint).toEqual(expected);
     });
