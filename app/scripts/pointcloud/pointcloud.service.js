@@ -1,7 +1,8 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, sitesservice, CameraService, PathControls, SiteBoxService) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, sitesservice, CameraService, SceneService, PathControls, SiteBoxService) {
+
     var me = this;
 
     this.elRenderArea = null;
@@ -20,6 +21,7 @@
       pointShapes: Potree.PointShape,
       pointShape: Potree.PointShape.SQUARE
     };
+    
     me.stats = {
       nrPoints: 0,
       nrNodes: 0,
@@ -54,8 +56,7 @@
     };
 
     function loadSkybox(path) {
-      var camera = new THREE.PerspectiveCamera(75, $window.innerWidth / $window.innerHeight, 1, 100000);
-      var scene = new THREE.Scene();
+      var scene = SceneService.getScene();
 
       var format = '.jpg';
       var urls = [
@@ -160,17 +161,15 @@
     }
 
     this.initThree = function() {
-      var fov = 75;
+
       var width = $window.innerWidth;
       var height = $window.innerHeight;
-      var aspect = width / height;
-      var near = 0.1;
-      var far = 100000;
 
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-      CameraService.camera = camera.clone();
+
+      scene = SceneService.getScene();
+      camera = CameraService.camera;
       CameraService.toGeo = toGeo;
+
       me.renderer = new THREE.WebGLRenderer();
       me.renderer.setSize(width, height);
       me.renderer.autoClear = false;
@@ -232,7 +231,7 @@
         PathControls.init(camera, myPath, me.renderer.domElement);
 
 		me.pathMesh = PathControls.createPath()
-		scene.add(me.pathMesh);		
+		scene.add(me.pathMesh);
 		me.pathMesh.visible = false; // disabled by default
 
       });
@@ -456,6 +455,8 @@
 
       // render scene
       me.renderer.render(scene, camera);
+
+	  //MeasuringService.measuringTool.render();
     };
 
     this.loop = function() {

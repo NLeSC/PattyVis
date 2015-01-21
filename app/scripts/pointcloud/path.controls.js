@@ -9,7 +9,6 @@
 	'use strict';
 
 	var camera;
-	var cameraPath;
 	var clock;
 	var path;
 	var drag = false;
@@ -39,7 +38,7 @@
 	var firstPerson = true;
 
 	var positionOnRoad = 0;
-	
+
 	var THREE;
 
 //	poor man's lookat
@@ -66,23 +65,23 @@
 
 	var PathControls = function($window) {
 		THREE = $window.THREE;
-		
+
 		this.camera = null;
 		this.path = null;
 		this.useOculus = false;
-		
+
 		clock = new THREE.Clock();
-		
+
 
 	};
-	
-	
+
+
 	PathControls.prototype.init = function(cam, cameraPath, element) {
 		this.camera = cam;
 		camera = cam;
-		
+
 		path = new THREE.SplineCurve3(cameraPath);
-		
+
 		var pos = path.getPointAt(0);
 
 		camera.position.copy(pos);
@@ -102,7 +101,7 @@
 		document.addEventListener('keyup', onKeyUp, false);
 
 		element.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
-		
+
 		element.addEventListener('mousemove', mousemove, false);
 		element.addEventListener('mousedown', mousedown, false);
 		element.addEventListener('mouseup', mouseup, false);
@@ -110,11 +109,11 @@
 		element.addEventListener('mousewheel', mousewheel, false);
 		element.addEventListener('DOMMouseScroll', mousewheel, false); // firefox
 	};
-	
+
 	PathControls.prototype.createPath = function() {
 
 		var tube = new THREE.TubeGeometry(path, 1024, 0.5, 8, false);
-		
+
 		var tubeMesh = THREE.SceneUtils.createMultiMaterialObject( tube, [
 				new THREE.MeshLambertMaterial({
 					color: 0x0000ff
@@ -125,29 +124,29 @@
 					wireframe: false,
 					transparent: false
 			})]);
-			
-		
-		
+
+
+
 		var i;
 		for (i=0; i<path.points.length; i++) {
 			var sphereGeo = new THREE.SphereGeometry(1,32,32);
 			var meshMat = new THREE.MeshBasicMaterial({color: 0xff0000});
-			
+
 			var sphere = new THREE.Mesh(sphereGeo, meshMat);
-			
+
 			sphere.position.copy(path.points[i]);
-			
+
 			tubeMesh.add(sphere);
 		}
-		
+
 		return tubeMesh;
 	};
 
 	PathControls.prototype.updateInput = function() {
-		if (!path) { 
+		if (!path) {
 			return;
 		}
-				
+
 		var delta = clock.getDelta();
 		var elapsed = clock.getElapsedTime();
 		var step = 10 * delta;
@@ -168,7 +167,7 @@
 			camera.rotation.y = xAngle;
 			camera.rotation.x = yAngle;
 		}
-			
+
 		if (autoWalk) {
 
 			var looptime = 240;
