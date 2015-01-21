@@ -166,7 +166,7 @@
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
       CameraService.camera = camera.clone();
-      
+      CameraService.toGeo = toGeo;
       me.renderer = new THREE.WebGLRenderer();
       me.renderer.setSize(width, height);
       me.renderer.autoClear = false;
