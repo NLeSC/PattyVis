@@ -27,6 +27,14 @@
             siteBox.material.color.setHex(0xFF99CC)
         };
 
+        this.listenTo = function(element) {
+            element.addEventListener('dblclick', this.selectSite, false);
+        };
+
+        this.selectSite = function(event) {
+            console.log(event);
+        };
+
         this.createSiteBox = function(site){
             var siteCenter = sitesservice.centerOfSite(site);
             var boxSize = sitesservice.getBoundingBoxSize(site);

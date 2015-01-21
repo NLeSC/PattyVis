@@ -185,6 +185,8 @@
 
       referenceFrame = new THREE.Object3D();
 
+      SiteBoxService.listenTo(me.renderer.domElement);
+
       DrivemapService.load().then(this.loadPointcloud);
     };
 
@@ -469,6 +471,10 @@
     $rootScope.$watch(function() {
       return SiteBoxService.siteBoxList;
     }, this.loadSiteBoxes);
+
+    // $rootScope.$watch(function (){
+    //   return raycaster.intersectObjects(SiteBoxService.siteBoxList, false);
+    // }, console.log);
 
   }
 
