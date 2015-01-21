@@ -21,7 +21,7 @@
       pointShapes: Potree.PointShape,
       pointShape: Potree.PointShape.CIRCLE
     };
-    
+
     me.stats = {
       nrPoints: 0,
       nrNodes: 0,
@@ -56,7 +56,8 @@
     };
 
     function loadSkybox(path) {
-      var scene = SceneService.getScene();
+      var camera = new THREE.PerspectiveCamera(75, $window.innerWidth / $window.innerHeight, 1, 100000);
+      var scene = new THREE.Scene();
 
       var format = '.jpg';
       var urls = [
