@@ -1,19 +1,19 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, sitesservice, CameraService) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, sitesservice, CameraService, PathControls) {
     var me = this;
 
     this.elRenderArea = null;
 
     me.settings = {
-      pointCountTarget: 0.4,
-      pointSize: 0.7,
+      pointCountTarget: 1.0,
+      pointSize: 0.2,
       opacity: 1,
       showSkybox: true,
       interpolate: false,
       showStats: false,
-      pointSizeType: Potree.PointSizeType.ADAPTIVE,
+      pointSizeType: Potree.PointSizeType.ATTENUATED,
       pointSizeTypes: Potree.PointSizeType,
       pointColorType: Potree.PointColorType.RGB,
       pointColorTypes: Potree.PointColorType,
@@ -42,8 +42,7 @@
     var scene;
     var pointcloud;
     var skybox;
-    var clock = new THREE.Clock();
-    var controls;
+
     var referenceFrame;
     var mouse = {
       x: 0,
@@ -158,7 +157,7 @@
 
     this.initThree = function() {
       var fov = 75;
-      var width = $window.innterWidth;
+      var width = $window.innerWidth;
       var height = $window.innerHeight;
       var aspect = width / height;
       var near = 0.1;
@@ -167,30 +166,28 @@
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
       CameraService.camera = camera.clone();
+      
       me.renderer = new THREE.WebGLRenderer();
       me.renderer.setSize(width, height);
       me.renderer.autoClear = false;
       me.renderer.domElement.addEventListener('mousemove', onMouseMove, false);
 
       skybox = loadSkybox('bower_components/potree/resources/textures/skybox/');
-      // camera and controls
-      controls = new THREE.FirstPersonControls(camera, me.renderer.domElement);
-      camera.rotation.order = 'ZYX';
-      controls.moveSpeed *= 10;
-
+      
       // enable frag_depth extension for the interpolation shader, if available
       me.renderer.context.getExtension('EXT_frag_depth');
 
       referenceFrame = new THREE.Object3D();
-
+     
       DrivemapService.load().then(this.loadPointcloud);
+      
     };
 
     this.loadPointcloud = function() {
       // load pointcloud
       pointcloudPath = DrivemapService.getPointcloudUrl();
       me.stats.lasCoordinates.crs = DrivemapService.getCrs();
-
+      
       POCLoader.load(pointcloudPath, function(geometry) {
         pointcloud = new Potree.PointCloudOctree(geometry);
 
@@ -202,7 +199,7 @@
         referenceFrame.updateMatrixWorld(true);
 
         referenceFrame.position.set(-pointcloud.position.x, -pointcloud.position.y, 0);
-
+		
         referenceFrame.updateMatrixWorld(true);
         referenceFrame.applyMatrix(new THREE.Matrix4().set(
           1, 0, 0, 0,
@@ -210,17 +207,34 @@
           0, -1, 0, 0,
           0, 0, 0, 1
         ));
+		referenceFrame.updateMatrixWorld(true);
         scene.add(referenceFrame);
-        me.goHome();
+		
+		var myPath = DrivemapService.getCoordinates().map( 
+				function(coord){ 
+					return toLocal(new THREE.Vector3(coord[0],coord[1],coord[2]));
+				} 
+			);
+		
+        PathControls.init(camera, myPath, me.renderer.domElement);
+
+		//TODO make this togglable - is that a word?
+		//scene.add( PathControls.createTube() );
+        
       });
+      
+
+      
     };
 
     /**
      * transform from geo coordinates to local scene coordinates
      */
-    function toLocal(position) {
+    function toLocal(position) {    	
+    	
       var scenePos = position.clone().applyMatrix4(referenceFrame.matrixWorld);
-      return new THREE.Vector3(scenePos.x, scenePos.z, -scenePos.y);
+       
+      return scenePos;
     }
 
     /**
@@ -297,6 +311,7 @@
       var lookAtLocal = toLocal(lookAtGeo);
 
       camera.position.set(locationLocal.x, locationLocal.y, locationLocal.z);
+      
       camera.lookAt(lookAtLocal);
     };
 
@@ -305,8 +320,8 @@
       var posGeo = new THREE.Vector3(coordGeo[0], coordGeo[1], coordGeo[2]);
       var posLocal = toLocal(posGeo);
       camera.lookAt(posLocal);
-      var camPos = posLocal.clone().setZ(posLocal.z - 20);
-      camera.position.set(camPos.x, -camPos.z, camPos.y);
+      var camPos = posLocal.clone().setY(posLocal.y + 20);
+      camera.position.copy(camPos);
     };
 
     this.showLabel = function(site) {
@@ -363,7 +378,7 @@
 
       }
 
-      controls.update(clock.getDelta());
+      PathControls.updateInput();
 
       // TODO also update when rotate and scale changes
       var cameraMoved = !(camera.position.equals(oldPos)) || !(camera.rotation.equals(oldRot));
@@ -383,7 +398,6 @@
       camera.updateProjectionMatrix();
 
       me.renderer.setSize(width, height);
-
 
       // render skybox
       if (me.settings.showSkybox) {

@@ -5,87 +5,138 @@
  *  free look around with mouse drag
  */
 
-// TODO remove this and make it jshintable
-/* jshint ignore:start */
-var camera;
-var clock;
-var path;
-var drag = false;
+(function() {
+	'use strict';
 
-var bodyPosition;
-var xAngle = 0;
-var yAngle = 0;
+	var camera;
+	var clock;
+	var path;
+	var drag = false;
 
-var seq = 0;
+	var bodyPosition;
+	var xAngle = 0;
+	var yAngle = 0;
 
-var mouseX = window.innerWidth / 2;
-var mouseY = window.innerHeight / 2;
+	var mouseX = window.innerWidth / 2;
+	var mouseY = window.innerHeight / 2;
 
-//this factor controls mouse sensitivity
-//should be more than 2*Math.PI to get full rotation
-var factor = 8;
+//	this factor controls mouse sensitivity
+//	should be more than 2*Math.PI to get full rotation
+	var factor = 8;
 
-// Map for key states
-var keys = [];
-for (var i = 0; i < 130; i++) {
-	keys.push(false);
-}
-
-var zoom = 45;
-var maxZoom = 45;
-
-var autoWalk = false;
-var autoLook = true;
-var firstPerson = false;
-
-var positionOnRoad = 0;
-
-//poor man's lookat
-function lookat(camera, center) {
-	var zero = new THREE.Vector3(0, 0, -1);
-	var tmp = new THREE.Vector3(0, 0, 0);
-
-	var look = new THREE.Vector3(center.x, 0, center.z);
-	var cam = new THREE.Vector3(camera.position.x, 0, camera.position.z);
-
-	tmp.subVectors(look, cam).normalize();
-	//var angle = 2*Math.PI - Math.acos(zero.dot(tmp));
-	var angle = Math.acos(zero.dot(tmp));
-
-	if (tmp.x > 0) {
-		//this fixes the fact that acos only returns values between 0 and Pi
-		//and we want to be able to rotate around in a full circle
-		angle = 2 * Math.PI - angle;
+//	Map for key states
+	var keys = [];
+	for (var i = 0; i < 130; i++) {
+		keys.push(false);
 	}
 
-	camera.rotation.y = xAngle = angle;
-	camera.rotation.x = yAngle = 0;
-}
+	var zoom = 45;
+	var maxZoom = 45;
 
-PathControls = function(camera, path) {
-	this.camera = camera;
-	this.path = path;
-	init();
+	var autoWalk = false;
+	var autoLook = false;
+	var firstPerson = true;
 
-	var pos = path.getPointAt(0);
+	var positionOnRoad = 0;
+	
+	var THREE;
 
-	camera.position = pos;
-	camera.up.set(0, 1, 0);
-	camera.rotation.order = 'YXZ';
+//	poor man's lookat
+	function lookat(camera, center) {
+		var zero = new THREE.Vector3(0, 0, -1);
+		var tmp = new THREE.Vector3(0, 0, 0);
 
-	lookat(camera, path.getPointAt(0.0001));
+		var look = new THREE.Vector3(center.x, 0, center.z);
+		var cam = new THREE.Vector3(camera.position.x, 0, camera.position.z);
 
-	camera.updateProjectionMatrix();
+		tmp.subVectors(look, cam).normalize();
+		//var angle = 2*Math.PI - Math.acos(zero.dot(tmp));
+		var angle = Math.acos(zero.dot(tmp));
 
-	bodyPosition = camera.position;
+		if (tmp.x > 0) {
+			//this fixes the fact that acos only returns values between 0 and Pi
+			//and we want to be able to rotate around in a full circle
+			angle = 2 * Math.PI - angle;
+		}
 
-	zoom = camera.fov;
-	maxZoom = camera.fov;
+		camera.rotation.y = xAngle = angle;
+		camera.rotation.x = yAngle = 0;
+	}
 
-	this.updateInput = function() {
+	var PathControls = function($window) {
+		THREE = $window.THREE;
+		
+		this.camera = null;
+		this.path = null;
+		this.useOculus = false;
+		
+		clock = new THREE.Clock();
+		
+
+	};
+	
+	
+	PathControls.prototype.init = function(cam, cameraPath, element) {
+		this.camera = cam;
+		camera = cam;
+		
+		path = new THREE.SplineCurve3(cameraPath);
+		
+		var pos = path.getPointAt(0);
+
+		camera.position.copy(pos);
+		camera.up.set(0, 1, 0);
+		camera.rotation.order = 'YXZ';
+
+		lookat(camera, path.getPointAt(0.0001));
+
+		camera.updateProjectionMatrix();
+
+		bodyPosition = camera.position;
+
+		zoom = camera.fov;
+		maxZoom = camera.fov;
+
+		document.addEventListener('keydown', onKeyDown, false);
+		document.addEventListener('keyup', onKeyUp, false);
+
+		element.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
+		
+		element.addEventListener('mousemove', mousemove, false);
+		element.addEventListener('mousedown', mousedown, false);
+		element.addEventListener('mouseup', mouseup, false);
+
+		element.addEventListener('mousewheel', mousewheel, false);
+		element.addEventListener('DOMMouseScroll', mousewheel, false); // firefox
+	};
+	
+	PathControls.prototype.createTube = function() {
+
+		var tube = new THREE.TubeGeometry(path, 1024, 1, 8, false);
+		
+		var tubeMesh = THREE.SceneUtils.createMultiMaterialObject( tube, [
+				new THREE.MeshLambertMaterial({
+					color: 0x0000ff
+				}),
+				new THREE.MeshBasicMaterial({
+					color: 0x000000,
+					opacity: 0.3,
+					wireframe: false,
+					transparent: false
+			})]);
+			
+		return tubeMesh;
+	};
+
+	PathControls.prototype.updateInput = function() {
+		if (!path) { 
+			return;
+		}
+				
 		var delta = clock.getDelta();
 		var elapsed = clock.getElapsedTime();
 		var step = 10 * delta;
+		var pos;
 
 		if (keys[18]) {
 			step *= 6; // Alt
@@ -98,16 +149,16 @@ PathControls = function(camera, path) {
 			yAngle = 0.95 * Math.PI / 2;
 		}
 
-		if (!useOculus) {
+		if (!this.useOculus) {
 			camera.rotation.y = xAngle;
 			camera.rotation.x = yAngle;
 		}
-
+			
 		if (autoWalk) {
 
 			var looptime = 240;
 			positionOnRoad = ((positionOnRoad + elapsed) % looptime) / looptime;
-			var pos = path.getPointAt(positionOnRoad);
+			pos = path.getPointAt(positionOnRoad);
 
 			camera.position.set(pos.x, pos.y, pos.z);
 
@@ -168,171 +219,117 @@ PathControls = function(camera, path) {
 				positionOnRoad += 1;
 			}
 
-			var pos = path.getPointAt(positionOnRoad);
+			pos = path.getPointAt(positionOnRoad);
 
-			camera.position.set(pos.x, pos.y, pos.z);
+			camera.position.copy(pos);
 		}
 
+	};
+
+	function onKeyDown(event) {
+		keys[event.keyCode] = true;
+
+		if (keys[18]) { //catch shortcuts that use ALT key
+			event.preventDefault();
+		}
+
+		if (event.keyCode === 49) { //the 1 key
+			autoWalk = !autoWalk;
+			firstPerson = false;
+
+			//restart clock to continue from current position
+			if (autoWalk) {
+				clock.elapsedTime = 0;
+			}
+		}
+
+		if (event.keyCode === 50) { // the 2 key
+			autoWalk = false;
+			firstPerson = true;
+
+			if (firstPerson) {
+				//continue from current position
+				bodyPosition = camera.position;
+			}
+		}
+
+		if (event.keyCode === 51) { //the 3 key
+			autoLook = !autoLook;
+		}
+
+		//console.log(event.keyCode);
 	}
 
-}
-
-function degInRad(deg) {
-	return deg * Math.PI / 180;
-}
-
-function init() {
-	clock = new THREE.Clock();
-
-	document.addEventListener('keydown', onKeyDown, false);
-	document.addEventListener('keyup', onKeyUp, false);
-
-	document.addEventListener('mousemove', mousemove, false);
-	document.addEventListener('mousedown', mousedown, false);
-	document.addEventListener('mouseup', mouseup, false);
-
-	document.addEventListener('mousewheel', mousewheel, false);
-	document.addEventListener('DOMMouseScroll', mousewheel, false); // firefox
-
-}
-
-function onKeyDown(event) {
-	keys[event.keyCode] = true;
-
-	if (keys[18]) { //catch shortcuts that use ALT key
-		event.preventDefault();
+	function onKeyUp(event) {
+		keys[event.keyCode] = false;
 	}
 
-	if (event.keyCode == 49) { //the 1 key
-		autoWalk = !autoWalk;
-		firstPerson = false;
+	function mousedown(event) {
 
-		//restart clock to continue from current position
-		if (autoWalk) {
-			clock.elapsedTime = 0;
+		//right mouse button going down!!
+		if (event.button === 2) {
+
+			event.preventDefault();
+
+			mouseX = event.pageX;
+			mouseY = event.pageY;
+
+			drag = true;
 		}
 	}
 
-	if (event.keyCode == 50) { // the 2 key
-		autoWalk = false;
-		firstPerson = true;
+	function mouseup(event) {
 
-		if (firstPerson) {
-			//continue from current position
-			bodyPosition = camera.position;
+		//right mouse button going up!!
+		if (event.button === 2) {
+			event.preventDefault();
+			drag = false;
 		}
 	}
 
-	if (event.keyCode == 51) { //the 3 key
-		autoLook = !autoLook;
-	}
+	function mousemove(event) {
+		if (!drag) {
+			return;
+		}
 
-	if (event.keyCode == 4) { //the 4 key
-		toggleViewer = !toggleViewer;
-	}
-
-	//print position
-	if (event.keyCode == 80 || event.keyCode == 112) {
-
-		console
-				.log("{\n   \"type\": \"Feature\",\n   \"geometry\": {\n    \"type\": \"Point\",\n    \"coordinates\": ["
-						+ camera.position.x
-						+ ', '
-						+ camera.position.y
-						+ ', '
-						+ camera.position.z
-						+ "]\n   },\n   \"id\": "
-						+ seq++
-						+ "\n}​,");
-
-		var x = camera.position.x
-				+ (pointcloud.boundingBox.max.x - pointcloud.boundingBox.min.x)
-				/ 2.0 - pointcloud.pcoGeometry.offset.x;
-		var y = -camera.position.z
-				+ (pointcloud.boundingBox.max.y - pointcloud.boundingBox.min.y)
-				/ 2.0 - pointcloud.pcoGeometry.offset.y;
-		var z = 170.0;
-		var vec = new THREE.Vector3(x, y, z);
-		proj4
-				.defs('EPSG:32633',
-						"+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs");
-		var vec_proj = proj4('EPSG:32633', 'EPSG:4326', [ vec.x, vec.y, vec.z ]);
-
-		var MAPS = "https://www.google.nl/maps/@" + vec_proj[1] + ","
-				+ vec_proj[0] + ",19z";
-
-		console.log(MAPS);
-	}
-
-	//console.log(event.keyCode);
-}
-
-function onKeyUp(event) {
-	keys[event.keyCode] = false;
-}
-
-function mousedown(event) {
-
-	//right mouse button going down!!
-	if (event.button == 2) {
-
-		event.preventDefault();
+		xAngle -= factor * (event.pageX - mouseX) / (window.innerWidth);
+		yAngle -= factor * (event.pageY - mouseY) / (window.innerHeight);
 
 		mouseX = event.pageX;
 		mouseY = event.pageY;
 
-		drag = true;
 	}
-}
 
-function mouseup(event) {
-
-	//right mouse button going up!!
-	if (event.button == 2) {
+	function mousewheel(event) {
 		event.preventDefault();
-		drag = false;
-	}
-}
+		event.stopPropagation();
 
-function mousemove(event) {
-	if (!drag)
-		return;
+		var delta = 0;
 
-	xAngle -= factor * (event.pageX - mouseX) / (window.innerWidth);
-	yAngle -= factor * (event.pageY - mouseY) / (window.innerHeight);
+		if (event.wheelDelta !== undefined) { // WebKit / Opera / Explorer 9
+			delta = event.wheelDelta;
+		} else if (event.detail !== undefined) { // Firefox
+			delta = -event.detail;
+		}
 
-	mouseX = event.pageX;
-	mouseY = event.pageY;
+		if (delta < 0) {
+			zoom += 2.5;
+		} else {
+			zoom -= 2.5;
+		}
 
-}
+		if (zoom > maxZoom) {
+			zoom = maxZoom;
+		}
+		if (zoom < 5) {
+			zoom = 5;
+		}
 
-function mousewheel(event) {
-	event.preventDefault();
-	event.stopPropagation();
+		camera.fov = zoom;
+		camera.updateProjectionMatrix();
 
-	var delta = 0;
-
-	if (event.wheelDelta !== undefined) { // WebKit / Opera / Explorer 9
-		delta = event.wheelDelta;
-	} else if (event.detail !== undefined) { // Firefox
-		delta = -event.detail;
-	}
-
-	if (delta < 0) {
-		zoom += 2.5;
-	} else {
-		zoom -= 2.5;
 	}
 
-	if (zoom > maxZoom) {
-		zoom = maxZoom;
-	}
-	if (zoom < 5) {
-		zoom = 5;
-	}
-
-	camera.fov = zoom;
-	camera.updateProjectionMatrix();
-
-}
-/* jshint ignore:end */
+	  angular.module('pattyApp.pointcloud')
+	    .service('PathControls', PathControls);
+})();
