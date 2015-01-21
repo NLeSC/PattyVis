@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function SiteBoxService($rootScope, THREE, sitesservice) {
+    function SiteBoxService($rootScope, THREE, sitesservice, CameraService) {
         var me = this;
 
         this.siteBoxList = [];
@@ -24,7 +24,7 @@
         };
 
         this.hoverOut = function(siteBox) {
-            siteBox.material.color.setHex(0xFF99CC)
+            siteBox.material.color.setHex(0xFF99CC);
         };
 
         this.listenTo = function(element) {
@@ -33,6 +33,7 @@
 
         this.selectSite = function(event) {
             console.log(event);
+            debugger;
         };
 
         this.createSiteBox = function(site){
@@ -57,14 +58,30 @@
             return bBox;
         }
 
+        this.siteBoxSelection = function(mouseX, mouseY, raycaster) {
+            var vector = new THREE.Vector3(mouseX, mouseY, 0.5);
+            vector.unproject(CameraService.camera);
+            raycaster.ray.set(CameraService.camera.position, vector.sub(CameraService.camera.position).normalize());
+     
+            // hovering over SiteBoxes
+            var intersects = raycaster.intersectObjects(me.siteBoxList, false);
+
+            // reset hovering
+            me.siteBoxList.forEach(function (siteBox) {
+                me.hoverOut(siteBox);
+            });
+
+            if (intersects.length > 0) {
+                me.hoverOver(intersects[0].object);
+            }
+        }
 
 
-        // hover
         // onclick
 
 
     }
 
     angular.module('pattyApp.pointcloud')
-    .service('SiteBoxService', ['$rootScope', 'THREE', 'sitesservice', SiteBoxService]);
+    .service('SiteBoxService', ['$rootScope', 'THREE', 'sitesservice', 'CameraService', SiteBoxService]);
 })();

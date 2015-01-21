@@ -177,6 +177,11 @@
       me.renderer.domElement.addEventListener('mousemove', onMouseMove, false);
 
       raycaster = new THREE.Raycaster();
+      raycaster.params = {
+          "PointCloud" : {
+              threshold : 0.1
+          }
+      };
 
       skybox = loadSkybox('bower_components/potree/resources/textures/skybox/');
 
@@ -422,29 +427,31 @@
         skybox.camera.rotation.copy(camera.rotation);
         me.renderer.render(skybox.scene, skybox.camera);
       }
+      console.log("\n\n\n");
+      console.log(camera.position);
+      console.log(CameraService.camera.position);
       CameraService.camera.position.copy(camera.position);
+      console.log(camera.position);
+      console.log(CameraService.camera.position);
 
-      // SiteBox selection (clicking & hovering)
-      var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-      vector.unproject(camera);
-      raycaster.params = {
-          "PointCloud" : {
-              threshold : 0.1
-          }
-      };
-      raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
- 
-      // hovering over SiteBoxes
-      var intersects = raycaster.intersectObjects(SiteBoxService.siteBoxList, false);
+      // console.log(angular.copy(CameraService.camera));
+      SiteBoxService.siteBoxSelection(mouse.x, mouse.y, raycaster);
 
-      // reset hovering
-      SiteBoxService.siteBoxList.forEach(function (siteBox){
-          SiteBoxService.hoverOut(siteBox);
-      });
+            var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+            vector.unproject(camera);
+            raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
+     
+            // hovering over SiteBoxes
+            var intersects = raycaster.intersectObjects(SiteBoxService.siteBoxList, false);
 
-      if (intersects.length > 0){
-        SiteBoxService.hoverOver(intersects[0].object);
-      }
+            // reset hovering
+            SiteBoxService.siteBoxList.forEach(function (siteBox) {
+                SiteBoxService.hoverOut(siteBox);
+            });
+
+            if (intersects.length > 0) {
+                SiteBoxService.hoverOver(intersects[0].object);
+            }
 
 
       // render scene
