@@ -47,6 +47,10 @@ patty-pointcloud-canvas {
 }
 
 patty-pointcloud-controls {
+  position: absolute;
+  right: 5px;
+  bottom: 50px;
+  background: lightgrey;
 }
 
 patty-pointcloud-stats {
