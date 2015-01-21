@@ -9,6 +9,7 @@
 	'use strict';
 
 	var camera;
+	var cameraPath;
 	var clock;
 	var path;
 	var drag = false;
@@ -110,21 +111,35 @@
 		element.addEventListener('DOMMouseScroll', mousewheel, false); // firefox
 	};
 	
-	PathControls.prototype.createTube = function() {
+	PathControls.prototype.createPath = function() {
 
-		var tube = new THREE.TubeGeometry(path, 1024, 1, 8, false);
+		var tube = new THREE.TubeGeometry(path, 1024, 0.5, 8, false);
 		
 		var tubeMesh = THREE.SceneUtils.createMultiMaterialObject( tube, [
 				new THREE.MeshLambertMaterial({
 					color: 0x0000ff
 				}),
 				new THREE.MeshBasicMaterial({
-					color: 0x000000,
+					color: 0x00ffff,
 					opacity: 0.3,
 					wireframe: false,
 					transparent: false
 			})]);
 			
+		
+		
+		var i;
+		for (i=0; i<path.points.length; i++) {
+			var sphereGeo = new THREE.SphereGeometry(1,32,32);
+			var meshMat = new THREE.MeshBasicMaterial({color: 0xff0000});
+			
+			var sphere = new THREE.Mesh(sphereGeo, meshMat);
+			
+			sphere.position.copy(path.points[i]);
+			
+			tubeMesh.add(sphere);
+		}
+		
 		return tubeMesh;
 	};
 
@@ -138,7 +153,7 @@
 		var step = 10 * delta;
 		var pos;
 
-		if (keys[18]) {
+		if (keys[32]) {
 			step *= 6; // Alt
 		}
 
@@ -228,10 +243,6 @@
 
 	function onKeyDown(event) {
 		keys[event.keyCode] = true;
-
-		if (keys[18]) { //catch shortcuts that use ALT key
-			event.preventDefault();
-		}
 
 		if (event.keyCode === 49) { //the 1 key
 			autoWalk = !autoWalk;

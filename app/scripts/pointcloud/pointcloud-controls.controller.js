@@ -5,6 +5,7 @@
     this.showSettings = false;
     this.settings = PointcloudService.settings;
     this.goHome = PointcloudService.goHome;
+	this.PointcloudService = PointcloudService;
     this.recordCameraLocation = CameraService.recordLocation;
   }
 
