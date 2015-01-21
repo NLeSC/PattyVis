@@ -7,20 +7,15 @@
         this.siteBoxList = [];
 
         this.onSitesChanged = function(sites) {
-            //var features = sitesservice.getAllFeatures();
-            console.log('onSitesChanged');
             if(sitesservice.isLoaded){
                 me.siteBoxList = [];
                 for(i=0; i<sites.features.length; i++){
                     me.siteBoxList.push(me.createSiteBox(sites.features[i]));
                 }
-                console.log(me.siteBoxList);
             }
         };
 
         $rootScope.$watch(function() {
-            // console.log('watch');
-            // console.log(sitesservice);
             return sitesservice.all;
         }, this.onSitesChanged);
 

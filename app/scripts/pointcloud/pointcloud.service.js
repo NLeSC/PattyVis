@@ -236,17 +236,9 @@
 
 
     this.loadSiteBoxes = function() {
-      console.log("loadSiteBoxes");
-      // var ding = angular.copy(SiteBoxService);
-      // console.log(ding);
-      // for (var siteBox in SiteBoxService.siteBoxList) {
       for (var ix=0; ix < SiteBoxService.siteBoxList.length; ix++) {
-        // console.log('hier');
-        // console.log(siteBox);
         referenceFrame.add(SiteBoxService.siteBoxList[ix]);
-        // console.log('daar');
       }
-      console.log('klaar');
     }
 
 

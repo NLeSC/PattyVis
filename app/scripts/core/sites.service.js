@@ -51,18 +51,9 @@
         return me.all.crs.properties.name;
       },
       getAllFeatures: function() {
-//          var it = angular.copy(this);
-//          console.log('getAllFeatures');
-//          console.log('check');
-//          console.log(it);
-//          console.log(it.all);
-//          console.log('blala');
           if(!this.isLoaded){
-              console.log('leeg');
               return [];
           } else {
-              console.log('niet leeg');
-              console.log(all.features);
               return this.all.features;
           }
       },
