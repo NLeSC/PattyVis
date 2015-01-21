@@ -42,6 +42,8 @@
     var scene;
     var pointcloud;
     var skybox;
+	
+	me.pathMesh = null;
 
     var referenceFrame;
     var mouse = {
@@ -218,8 +220,11 @@
 		
         PathControls.init(camera, myPath, me.renderer.domElement);
 
-		//TODO make this togglable - is that a word?
-		//scene.add( PathControls.createTube() );
+		me.pathMesh = PathControls.createPath()
+		scene.add(me.pathMesh);		
+		me.pathMesh.visible = false; // disabled by default
+		
+		
         
       });
       
