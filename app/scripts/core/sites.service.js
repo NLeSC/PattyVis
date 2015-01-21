@@ -7,12 +7,14 @@
     function onLoad(data) {
       me.all = data;
       me.filtered = data;
+      me.isLoaded = true;
     }
 
     var me = {
       all: {},
       filtered: {},
       searched: {},
+      isLoaded: false,
       find: function(query) {
         if (query) {
           this.searched = angular.copy(this.all);
@@ -47,6 +49,22 @@
       },
       getCrs: function() {
         return me.all.crs.properties.name;
+      },
+      getAllFeatures: function() {
+//          var it = angular.copy(this);
+//          console.log('getAllFeatures');
+//          console.log('check');
+//          console.log(it);
+//          console.log(it.all);
+//          console.log('blala');
+          if(!this.isLoaded){
+              console.log('leeg');
+              return [];
+          } else {
+              console.log('niet leeg');
+              console.log(all.features);
+              return this.all.features;
+          }
       },
       getBoundingBox: function(site) {
         return site.bbox;
