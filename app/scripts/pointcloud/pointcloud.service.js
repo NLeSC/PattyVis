@@ -21,6 +21,7 @@
       pointShapes: Potree.PointShape,
       pointShape: Potree.PointShape.SQUARE
     };
+    
     me.stats = {
       nrPoints: 0,
       nrNodes: 0,
@@ -448,7 +449,7 @@
       // render scene
       me.renderer.render(scene, camera);
 
-	  measuringService.measuringTool.render();
+	  //MeasuringService.measuringTool.render();
     };
 
     this.loop = function() {

@@ -7,7 +7,7 @@
     this.goHome = PointcloudService.goHome;
 	this.PointcloudService = PointcloudService;
     this.recordCameraLocation = CameraService.recordLocation;
-	this.startMeasuring = MeasuringService.startMeasuring;
+	this.startMeasurement = MeasuringService.startMeasuring;
   }
 
   angular.module('pattyApp.pointcloud')

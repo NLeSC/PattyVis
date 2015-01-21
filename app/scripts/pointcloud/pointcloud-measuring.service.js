@@ -10,7 +10,10 @@
 	
 	var measuringTool = new Potree.MeasuringTool(scene, camera, renderer);
 		
+	console.log("init measurement");
+	
 	var startMeasuring = function() {
+		console.log("start measurement");
 		measuringTool.setEnabled(true);		
 	};
   }
