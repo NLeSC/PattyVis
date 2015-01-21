@@ -45,29 +45,46 @@ patty-pointcloud-canvas {
   width: 100%;
   height: 100%;
 }
-
-patty-pointcloud-controls {
+.controls-settings {
   position: absolute;
-  right: 5px;
-  bottom: 50px;
+  right: 0;
+  bottom: 0;
   background: lightgrey;
 }
-
 patty-pointcloud-stats {
   position: absolute;
-  left: 5px;
-  bottom: 50px;
+  left: 0;
+  bottom: 0;
   color: white;
   font-weight: bold;
   text-shadow: 1px 1px 1px black, 1px -1px 1px black, -1px 1px 1px black, -1px -1px 1px black;
 }
-
 .btn-trans {
   border-color: transparent;
   background-color: transparent;
   box-shadow: none;
 }
+.camera-modes {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 0);
+}
+.settings-panel .panel-body {
+  padding-left: 20px;
+  padding-right: 20px;
+}
 
-.settings-panel {
-  width: 400px;
+.camera-modes .btn {
+    height: 80px;
+    width: 80px;
+}
+
+.camera-modes .fly {
+    box-shadow: none; // move to .camera-modes .btn when all camera mode buttons have images
+    background-image: url(../images/icons/heli_icon_80px.png);
+}
+
+.camera-modes .fly.active {
+    background-image: url(../images/icons/heli_icon_green_80px.png);
 }
