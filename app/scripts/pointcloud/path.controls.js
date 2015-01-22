@@ -19,6 +19,7 @@
 	var bodyPosition;
 	var xAngle = 0;
 	var yAngle = 0;
+	
 
 	var mouseX = window.innerWidth / 2;
 	var mouseY = window.innerHeight / 2;
@@ -41,30 +42,12 @@
 	var firstPerson = true;
 
 	var positionOnRoad = 0.0;
+	
+	var looptime = 240;
 
 	var THREE;
 
-//	poor man's lookat
-	function lookat(camera, center) {
-		var zero = new THREE.Vector3(0, 0, -1);
-		var tmp = new THREE.Vector3(0, 0, 0);
 
-		var look = new THREE.Vector3(center.x, 0, center.z);
-		var cam = new THREE.Vector3(camera.position.x, 0, camera.position.z);
-
-		tmp.subVectors(look, cam).normalize();
-		//var angle = 2*Math.PI - Math.acos(zero.dot(tmp));
-		var angle = Math.acos(zero.dot(tmp));
-
-		if (tmp.x > 0) {
-			//this fixes the fact that acos only returns values between 0 and Pi
-			//and we want to be able to rotate around in a full circle
-			angle = 2 * Math.PI - angle;
-		}
-
-		camera.rotation.y = xAngle = angle;
-		camera.rotation.x = yAngle = 0;
-	}
 
 	var PathControls = function($window) {
 		THREE = $window.THREE;
@@ -101,7 +84,7 @@
 		camera.up.set(0, 1, 0);
 		camera.rotation.order = 'YXZ';
 
-		lookat(camera, path.getPointAt(0.0001));
+		this.lookat(path.getPointAt(0.1));
 
 		camera.updateProjectionMatrix();
 
@@ -122,7 +105,99 @@
 		element.addEventListener('mousewheel', mousewheel, false);
 		element.addEventListener('DOMMouseScroll', mousewheel, false); // firefox
 	};
+	
+	
+	/*
+	 * TODO: I have a weird bug that pressing the goHome button and executing the goHome function here does not always perform a lookat correctly
+	 * in particular for the firstperson (fly) mode. pressing the gohome button again fixes the lookat somehow, not sure why it does work the second time.
+	 */
+	PathControls.prototype.goHome = function() {
+		positionOnRoad = 0.0;
+		bodyPosition = path.getPointAt(0);
+		
+		this.lookat(path.getPointAt(0.1));
+	};
+	
 
+	PathControls.prototype.goTo = function(point) {
+		bodyPosition.copy(point);
+	};
+	
+	//go to a point on the road near the specified point
+	PathControls.prototype.goToPointOnRoad = function(point) {
+		
+		
+		//first find nearest point on road
+		var minDist = Number.MAX_VALUE;
+		var dist = 0;
+		var index = 0;
+		var i;
+		for (i=0; i < path.points.length; i++) {
+			dist = point.distanceTo(path.points[i]);
+			if (dist < minDist) {
+				minDist = dist;
+				index = i;
+			}
+		}
+		
+		
+		/*the not interpolated solution
+		positionOnRoad = (index / path.points.length) * looptime;
+		bodyPosition.copy(path.getPointAt(positionOnRoad / looptime));
+		camera.position.copy(path.getPointAt(positionOnRoad / looptime));
+		*/
+		
+		//interpolate to find precise positionOnRoad
+		//first find second nearest point on the road
+		var distOne = Number.MAX_VALUE;
+		var distTwo = Number.MAX_VALUE;
+		var secondIndex = i;
+		if (index !== 0) {
+			distOne = point.distanceTo(path.points[index-1]);
+		}
+		if (index < path.points.length-1) {
+			distTwo = point.distanceTo(path.points[index+1]);
+		}
+		if (distOne > distTwo) {
+			secondIndex = index+1;
+		} else {
+			index = index-1;
+			secondIndex = index+1;
+		}
+		
+		//interpolate using dot product of vector A and B
+		
+		//vector A is the vector from index to point
+		var A = point.clone();
+		A.sub(path.points[index]);
+		
+		//vector B is the vector from index to secondIndex
+		var B = path.points[secondIndex].clone();
+		B.sub(path.points[index]);
+		B.normalize();
+		
+		//project vector A onto vector B
+		var delta = A.dot(B) / A.length();
+		
+		//compute new position on road
+		positionOnRoad = ((index + delta) / path.points.length) * looptime;
+		
+		//move the camera there
+		bodyPosition.copy(path.getPointAt(positionOnRoad / looptime));
+		
+	};
+
+
+	PathControls.prototype.lookat = function(center) {
+		
+		camera.up = new THREE.Vector3(0,1,0);
+		camera.lookAt(center);
+		
+		xAngle = camera.rotation.y;
+		yAngle = camera.rotation.x;
+
+	};
+	
 	PathControls.prototype.createPath = function() {
 
 		var tube = new THREE.TubeGeometry(path, 1024, 0.5, 8, false);
@@ -159,8 +234,7 @@
 		}
 
 		var delta = clock.getDelta();
-		var looptime = 240;
-
+				
 		if (keys[32]) {
 			delta *= 6;
 		}
@@ -178,9 +252,11 @@
 		if (!this.useOculus) {
 			camera.rotation.y = xAngle;
 			camera.rotation.x = yAngle;
+			
+			camera.rotation.set(yAngle, xAngle, 0, 'YXZ');
 		}
-
-		if (this.mode == this.modes.DEMO) {
+			
+		if (this.mode === this.modes.DEMO) {
 
 			positionOnRoad += delta;
 			positionOnRoad = positionOnRoad % looptime;
@@ -188,9 +264,9 @@
 
 			camera.position.set(pos.x, pos.y, pos.z);
 
-			lookat(camera, path.getPointAt((positionOnRoad / looptime) + 0.0001));
-
-		} else if (this.mode == this.modes.FLY) {
+			this.lookat(path.getPointAt((positionOnRoad / looptime) + 0.0001));
+			
+		} else if (this.mode === this.modes.FLY) {
 
 			// Forward/backward
 			if (keys[87] || keys[119] || keys[38]) { // W or UP
@@ -227,7 +303,7 @@
 
 			camera.position.set(bodyPosition.x, bodyPosition.y, bodyPosition.z);
 
-		} else if (this.mode == this.modes.ONRAILS) {
+		} else if (this.mode === this.modes.ONRAILS) {
 			// Forward/backward on the rails
 			if (keys[87] || keys[38]) { // W or UP
 				positionOnRoad += delta;
@@ -251,16 +327,33 @@
 
 	function onKeyDown(event) {
 		keys[event.keyCode] = true;
-
-		if (event.keyCode === 49) { //the 1 key
-			me.mode = me.modes.ONRAILS;
+		
+		if (event.keyCode === 32) {
+			event.preventDefault();
 		}
 
 		if (event.keyCode === 50) { // the 2 key
 			me.mode = me.modes.FLY;
 		}
+		
+		
+		if (event.keyCode === 49) { //the 1 key
+		
+		    //if we were flying previously snap to point on the road near current position
+		    if (me.mode === me.modes.FLY) {
+				me.goToPointOnRoad(bodyPosition);
+			}
+		
+			me.mode = me.modes.ONRAILS;
+		}
 
 		if (event.keyCode === 51) { //the 3 key
+		
+			//if we were flying previously snap to point on the road near current position
+		    if (me.mode === me.modes.FLY) {
+				me.goToPointOnRoad(bodyPosition);
+			}
+		
 			me.mode = me.modes.DEMO;
 		}
 

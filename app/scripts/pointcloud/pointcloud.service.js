@@ -324,23 +324,22 @@
     }
 
     this.goHome = function() {
-      var locationGeo = DrivemapService.getHomeLocation();
-      var lookAtGeo = DrivemapService.getHomeLookAt();
-      var locationLocal = toLocal(locationGeo);
-      var lookAtLocal = toLocal(lookAtGeo);
-
-      camera.position.set(locationLocal.x, locationLocal.y, locationLocal.z);
-
-      camera.lookAt(lookAtLocal);
+	  
+	  PathControls.goHome();
+	  
     };
 
     this.lookAtSite = function(site) {
       var coordGeo = sitesservice.centerOfSite(site);
       var posGeo = new THREE.Vector3(coordGeo[0], coordGeo[1], coordGeo[2]);
       var posLocal = toLocal(posGeo);
-      camera.lookAt(posLocal);
-      var camPos = posLocal.clone().setY(posLocal.y + 20);
-      camera.position.copy(camPos);
+      //camera.lookAt(posLocal);
+      //var camPos = posLocal.clone().setY(posLocal.y + 20);
+      //camera.position.copy(camPos);
+	  
+	  PathControls.goToPointOnRoad(posLocal);
+	  PathControls.lookat(posLocal);
+	  
     };
 
     this.showLabel = function(site) {
