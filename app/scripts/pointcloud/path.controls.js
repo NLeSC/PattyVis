@@ -328,6 +328,26 @@
 			console.log('error: unknown control mode in path.controls');
 		}
 
+		
+		PathControls.prototype.enableFlightMode = function() {
+			this.mode = this.modes.FLY;
+		};
+		
+		PathControls.prototype.enableRailsMode = function() {
+			if (this.mode === this.modes.FLY) {
+				this.goToPointOnRoad(bodyPosition);
+			}
+			this.mode = this.modes.ONRAILS;
+		};
+		
+		PathControls.prototype.enableDemoMode = function() {
+			if (this.mode === this.modes.FLY) {
+				this.goToPointOnRoad(bodyPosition);
+			}
+			this.mode = this.modes.DEMO;
+		};
+		
+		
 	};
 
 	function onKeyDown(event) {
@@ -338,32 +358,23 @@
 		}
 
 		if (event.keyCode === 50) { // the 2 key
-			me.mode = me.modes.FLY;
-		}
-		
+			me.enableFlightMode();
+		}	
 		
 		if (event.keyCode === 49) { //the 1 key
-		
-		    //if we were flying previously snap to point on the road near current position
-		    if (me.mode === me.modes.FLY) {
-				me.goToPointOnRoad(bodyPosition);
-			}
-		
-			me.mode = me.modes.ONRAILS;
+			me.enableRailsMode();
 		}
 
 		if (event.keyCode === 51) { //the 3 key
-		
-			//if we were flying previously snap to point on the road near current position
-		    if (me.mode === me.modes.FLY) {
-				me.goToPointOnRoad(bodyPosition);
-			}
-		
-			me.mode = me.modes.DEMO;
+			me.enableDemoMode();
 		}
-
 		//console.log(event.keyCode);
 	}
+	
+
+	
+	
+	
 
 	function onKeyUp(event) {
 		keys[event.keyCode] = false;
