@@ -8,6 +8,9 @@
 (function() {
 	'use strict';
 
+
+	var me;
+
 	var camera;
 	var clock;
 	var path;
@@ -37,7 +40,7 @@
 	var autoLook = false;
 	var firstPerson = true;
 
-	var positionOnRoad = 0;
+	var positionOnRoad = 0.0;
 
 	var THREE;
 
@@ -66,13 +69,21 @@
 	var PathControls = function($window) {
 		THREE = $window.THREE;
 
+		me = this;
+
 		this.camera = null;
 		this.path = null;
 		this.useOculus = false;
 
 		clock = new THREE.Clock();
 
+		this.modes = {
+			ONRAILS: 'onrails',
+			FLY: 'fly',
+			DEMO: 'demo'
+		};
 
+		this.mode = this.modes.ONRAILS;
 	};
 
 
@@ -80,7 +91,9 @@
 		this.camera = cam;
 		camera = cam;
 
-		path = new THREE.SplineCurve3(cameraPath);
+		var definedPath = new THREE.SplineCurve3(cameraPath);
+
+		path = new THREE.SplineCurve3(definedPath.getSpacedPoints(100));
 
 		var pos = path.getPointAt(0);
 
@@ -125,8 +138,6 @@
 					transparent: false
 			})]);
 
-
-
 		var i;
 		for (i=0; i<path.points.length; i++) {
 			var sphereGeo = new THREE.SphereGeometry(1,32,32);
@@ -148,13 +159,14 @@
 		}
 
 		var delta = clock.getDelta();
-		var elapsed = clock.getElapsedTime();
-		var step = 10 * delta;
-		var pos;
+		var looptime = 240;
 
 		if (keys[32]) {
-			step *= 6; // Alt
+			delta *= 6;
 		}
+
+		var step = 10 * delta;
+		var pos;
 
 		if (yAngle < -0.95 * Math.PI / 2) {
 			yAngle = -0.95 * Math.PI / 2;
@@ -168,19 +180,17 @@
 			camera.rotation.x = yAngle;
 		}
 
-		if (autoWalk) {
+		if (this.mode == this.modes.DEMO) {
 
-			var looptime = 240;
-			positionOnRoad = ((positionOnRoad + elapsed) % looptime) / looptime;
-			pos = path.getPointAt(positionOnRoad);
+			positionOnRoad += delta;
+			positionOnRoad = positionOnRoad % looptime;
+			pos = path.getPointAt(positionOnRoad / looptime);
 
 			camera.position.set(pos.x, pos.y, pos.z);
 
-			if (autoLook) {
-				lookat(camera, path.getPointAt(positionOnRoad + 0.0001));
-			}
+			lookat(camera, path.getPointAt((positionOnRoad / looptime) + 0.0001));
 
-		} else if (firstPerson) {
+		} else if (this.mode == this.modes.FLY) {
 
 			// Forward/backward
 			if (keys[87] || keys[119] || keys[38]) { // W or UP
@@ -195,7 +205,7 @@
 				bodyPosition.z += Math.sin(-xAngle + Math.PI / 2) * step;
 			}
 
-			// Turn
+			// Fly up or down
 			if (keys[90] || keys[122]) { // Z
 				bodyPosition.y -= step;
 			}
@@ -217,25 +227,24 @@
 
 			camera.position.set(bodyPosition.x, bodyPosition.y, bodyPosition.z);
 
-		} else {
-			// Forward/backward
+		} else if (this.mode == this.modes.ONRAILS) {
+			// Forward/backward on the rails
 			if (keys[87] || keys[38]) { // W or UP
-				positionOnRoad += 0.01 * delta;
+				positionOnRoad += delta;
 			}
 			if (keys[83] || keys[40]) { // S or DOWN
-				positionOnRoad -= 0.01 * delta;
+				positionOnRoad -= delta;
 			}
 
-			if (positionOnRoad > 1) {
-				positionOnRoad = positionOnRoad % 1;
-			}
-			if (positionOnRoad < 0) {
-				positionOnRoad += 1;
+			if (positionOnRoad > looptime) {
+				positionOnRoad = positionOnRoad % looptime;
 			}
 
-			pos = path.getPointAt(positionOnRoad);
+			pos = path.getPointAt(positionOnRoad / looptime);
 
 			camera.position.copy(pos);
+		} else {
+			console.log('error: unknown control mode in path.controls');
 		}
 
 	};
@@ -244,27 +253,15 @@
 		keys[event.keyCode] = true;
 
 		if (event.keyCode === 49) { //the 1 key
-			autoWalk = !autoWalk;
-			firstPerson = false;
-
-			//restart clock to continue from current position
-			if (autoWalk) {
-				clock.elapsedTime = 0;
-			}
+			me.mode = me.modes.ONRAILS;
 		}
 
 		if (event.keyCode === 50) { // the 2 key
-			autoWalk = false;
-			firstPerson = true;
-
-			if (firstPerson) {
-				//continue from current position
-				bodyPosition = camera.position;
-			}
+			me.mode = me.modes.FLY;
 		}
 
 		if (event.keyCode === 51) { //the 3 key
-			autoLook = !autoLook;
+			me.mode = me.modes.DEMO;
 		}
 
 		//console.log(event.keyCode);
