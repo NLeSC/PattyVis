@@ -53,8 +53,17 @@
         this.selectSite = function(event) {
             var selectedSiteBox = me.siteBoxSelection(me.mouse.x, me.mouse.y);
             if (selectedSiteBox) {
-                me.addTextLabel(selectedSiteBox);
+                if (selectedSiteBox.hasOwnProperty('textLabel')) {
+                    me.toggleTextLabel(selectedSiteBox);
+                } else {
+                    me.addTextLabel(selectedSiteBox);
+                }
             }
+        };
+
+        this.toggleTextLabel = function(siteBox) {
+            // toggle visibility of textLabel
+            siteBox.textLabel.visible = !siteBox.textLabel.visible;
         };
 
         this.addTextLabel = function( siteBox ){
@@ -146,15 +155,14 @@
             sprite.position.set(x, y, z);
             sprite.name = "textLabel for SiteBox " + siteBox.site.id;
 
-            // var scene = SceneService.getScene();
-            // scene.add( sprite );
-            me.referenceFrame.add( sprite );
-
             // var imageObj = new Image();
             // imageObj.onload = function(){
             //     context.drawImage(imageObj, 10, 10);
             // };
             // imageObj.src = "data/label-small.png";
+
+            siteBox.textLabel = sprite;
+            me.referenceFrame.add( siteBox.textLabel );
         };
 
         this.createSiteBox = function(site){
