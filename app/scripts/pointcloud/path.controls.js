@@ -260,6 +260,10 @@
 
 			positionOnRoad += delta;
 			positionOnRoad = positionOnRoad % looptime;
+			//javascript modulus operator allows negative numbers, correct for that
+			if (positionOnRoad < 0) {
+				positionOnRoad = looptime + positionOnRoad;
+			}
 			pos = path.getPointAt(positionOnRoad / looptime);
 
 			camera.position.set(pos.x, pos.y, pos.z);
@@ -312,8 +316,10 @@
 				positionOnRoad -= delta;
 			}
 
-			if (positionOnRoad > looptime) {
-				positionOnRoad = positionOnRoad % looptime;
+			positionOnRoad = positionOnRoad % looptime;
+			//javascript modulus operator allows negative numbers, correct for that
+			if (positionOnRoad < 0) {
+				positionOnRoad = looptime + positionOnRoad;
 			}
 
 			pos = path.getPointAt(positionOnRoad / looptime);
