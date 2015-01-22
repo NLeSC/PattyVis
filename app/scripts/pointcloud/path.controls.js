@@ -14,6 +14,7 @@
 	var camera;
 	var clock;
 	var path;
+	var lookatPath;
 	var drag = false;
 
 	var bodyPosition;
@@ -66,21 +67,22 @@
 	};
 
 
-	PathControls.prototype.init = function(cam, cameraPath, element) {
+	PathControls.prototype.init = function(cam, cameraPath, lookPath, element) {
 		this.camera = cam;
 		camera = cam;
+		
+		var defLookPath = new THREE.SplineCurve3(lookPath);
+		lookatPath = new THREE.SplineCurve3(defLookPath.getSpacedPoints(100));
 
 		var definedPath = new THREE.SplineCurve3(cameraPath);
-
 		path = new THREE.SplineCurve3(definedPath.getSpacedPoints(100));
-
 		var pos = path.getPointAt(0);
 
 		camera.position.copy(pos);
 		camera.up.set(0, 1, 0);
 		camera.rotation.order = 'YXZ';
 
-		this.lookat(path.getPointAt(0.1));
+		this.lookat(lookatPath.getPointAt(0.05));
 
 		camera.updateProjectionMatrix();
 
@@ -122,10 +124,8 @@
 		bodyPosition.copy(point);
 	};
 	
-	//go to a point on the road near the specified point
-	PathControls.prototype.goToPointOnRoad = function(point) {
-		
-		
+	
+	function findNearestPointOnPath(path, point) {
 		//first find nearest point on road
 		var minDist = Number.MAX_VALUE;
 		var dist = 0;
@@ -139,12 +139,13 @@
 			}
 		}
 		
+		return index;
+	}
+	
+	function findPrecisePositionOnPath(cpath, point) {
 		
-		/*the not interpolated solution
-		positionOnRoad = (index / path.points.length) * looptime;
-		bodyPosition.copy(path.getPointAt(positionOnRoad / looptime));
-		camera.position.copy(path.getPointAt(positionOnRoad / looptime));
-		*/
+		//first find nearest point on road
+		var index = findNearestPointOnPath(cpath, point);
 		
 		//interpolate to find precise positionOnRoad
 		//first find second nearest point on the road
@@ -152,10 +153,10 @@
 		var distTwo = Number.MAX_VALUE;
 		var secondIndex = i;
 		if (index !== 0) {
-			distOne = point.distanceTo(path.points[index-1]);
+			distOne = point.distanceTo(cpath.points[index-1]);
 		}
-		if (index < path.points.length-1) {
-			distTwo = point.distanceTo(path.points[index+1]);
+		if (index < cpath.points.length-1) {
+			distTwo = point.distanceTo(cpath.points[index+1]);
 		}
 		if (distOne > distTwo) {
 			secondIndex = index+1;
@@ -163,27 +164,35 @@
 			index = index-1;
 			secondIndex = index+1;
 		}
-		
+		         
 		//interpolate using dot product of vector A and B
 		
 		//vector A is the vector from index to point
 		var A = point.clone();
-		A.sub(path.points[index]);
+		A.sub(cpath.points[index]);
 		
 		//vector B is the vector from index to secondIndex
-		var B = path.points[secondIndex].clone();
-		B.sub(path.points[index]);
+		var B = cpath.points[secondIndex].clone();
+		B.sub(cpath.points[index].clone());
 		B.normalize();
 		
 		//project vector A onto vector B
 		var delta = A.dot(B) / A.length();
 		
+		//delta = delta / B.length();
+		
 		//compute new position on road
-		positionOnRoad = ((index + delta) / path.points.length) * looptime;
+		return ((index + delta) / cpath.points.length) * looptime;
+	}
+	
+	
+	//go to a point on the road near the specified point
+	PathControls.prototype.goToPointOnRoad = function(point) {	
+		//find position on road
+		positionOnRoad = findPrecisePositionOnPath(path, point);
 		
 		//move the camera there
 		bodyPosition.copy(path.getPointAt(positionOnRoad / looptime));
-		
 	};
 
 
@@ -199,11 +208,12 @@
 	
 	PathControls.prototype.createPath = function() {
 
-		var tube = new THREE.TubeGeometry(path, 1024, 0.5, 8, false);
-
+		var tube = new THREE.TubeGeometry(path, 1024, 0.25, 8, false);
+		var lookTube = new THREE.TubeGeometry(lookatPath, 1024, 0.25, 8, false);
+		
 		var tubeMesh = THREE.SceneUtils.createMultiMaterialObject( tube, [
 				new THREE.MeshLambertMaterial({
-					color: 0x0000ff
+					color: 0x00ffff
 				}),
 				new THREE.MeshBasicMaterial({
 					color: 0x00ffff,
@@ -211,16 +221,38 @@
 					wireframe: false,
 					transparent: false
 			})]);
+		var lookTubeMesh = THREE.SceneUtils.createMultiMaterialObject( lookTube, [
+				new THREE.MeshLambertMaterial({
+					color: 0x0000ff
+				}),
+				new THREE.MeshBasicMaterial({
+					color: 0x0000ff,
+					opacity: 0.3,
+					wireframe: false,
+					transparent: false
+			})]);
 
 		var i;
+		
+		tubeMesh.add(lookTubeMesh);
+		
+		var sphereGeo;
+		var meshMat;
+		var sphere;
+		
 		for (i=0; i<path.points.length; i++) {
-			var sphereGeo = new THREE.SphereGeometry(1,32,32);
-			var meshMat = new THREE.MeshBasicMaterial({color: 0xff0000});
-
-			var sphere = new THREE.Mesh(sphereGeo, meshMat);
-
+			sphereGeo = new THREE.SphereGeometry(0.5,32,32);
+			meshMat = new THREE.MeshBasicMaterial({color: 0xff0000});
+			sphere = new THREE.Mesh(sphereGeo, meshMat);
 			sphere.position.copy(path.points[i]);
-
+			tubeMesh.add(sphere);
+		}
+		
+		for (i=0; i<lookatPath.points.length; i++) {
+			sphereGeo = new THREE.SphereGeometry(0.5,32,32);
+			meshMat = new THREE.MeshBasicMaterial({color: 0x00ff00});
+			sphere = new THREE.Mesh(sphereGeo, meshMat);
+			sphere.position.copy(lookatPath.points[i]);
 			tubeMesh.add(sphere);
 		}
 
@@ -267,7 +299,15 @@
 
 			camera.position.set(pos.x, pos.y, pos.z);
 
-			this.lookat(path.getPointAt((positionOnRoad / looptime) + 0.0001));
+			//this.lookat(path.getPointAt((positionOnRoad / looptime) + 0.0001));
+			
+			var positionOnLookPath = (positionOnRoad / looptime) * (  path.getLength() / lookatPath.getLength() ) * 1.08 ;
+			
+			var lookPoint = lookatPath.getPointAt(positionOnLookPath);
+			
+			this.lookat(lookPoint);
+			
+			
 			
 		} else if (this.mode === this.modes.FLY) {
 

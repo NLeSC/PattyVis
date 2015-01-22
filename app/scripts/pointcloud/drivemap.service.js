@@ -36,6 +36,9 @@
     this.getCoordinates = function() {
       return this.data.features[0].geometry.coordinates;
     };
+    this.getLookPath = function() {
+      return this.data.features[0].geometry.lookatpath;
+    };
     this.getCrs = function() {
       return this.data.crs.properties.name;
     };

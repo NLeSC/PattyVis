@@ -223,8 +223,14 @@
             return toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
           }
         );
+		
+		var lookPath = DrivemapService.getLookPath().map(
+          function(coord) {
+            return toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
+          }
+        );
 
-        PathControls.init(camera, myPath, me.renderer.domElement);
+        PathControls.init(camera, myPath, lookPath, me.renderer.domElement);
 
 		me.pathMesh = PathControls.createPath();
 		scene.add(me.pathMesh);
