@@ -40,24 +40,24 @@
 
         this.selectSite = function(event) {
             if (me.isSiteBoxSelected) {
-                console.log("selected SiteBox: " + me.selectedSiteBox.name);
-                console.log(me.selectedSiteBox);
-                var name = me.selectedSiteBox.name;
-                var x = me.selectedSiteBox.position.x;
-                var y = me.selectedSiteBox.position.y;
-                var z = me.selectedSiteBox.position.z;
-                me.addTextLabel("selected SiteBox: " + name, x, y, z, "textLabel for SiteBox " + name);
+                me.addTextLabel(me.selectedSiteBox);
             }
         };
 
-        this.addTextLabel = function( message, x, y, z, name ){
+        this.addTextLabel = function( siteBox ){
+            var x = siteBox.position.x;
+            var y = siteBox.position.y;
+            var z = siteBox.position.z;
+            var message = "selected SiteBox: " + siteBox.name;
+            var name = "textLabel for SiteBox " + siteBox.name;
+
             var canvas = document.createElement('canvas');
             var context = canvas.getContext('2d');
             //context.font = "Bold " + fontsize + "px " + fontface;
 
             // get size data (height depends only on font size)
-            var metrics = context.measureText( message );
-            var textWidth = metrics.width;
+            // var metrics = context.measureText( message );
+            // var textWidth = metrics.width;
 
             // background color
             //context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
