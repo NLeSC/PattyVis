@@ -9,7 +9,7 @@
     this.goHome = PointcloudService.goHome;
     this.PointcloudService = PointcloudService;
     this.recordCameraLocation = CameraService.recordLocation;
-    this.startMeasurement = MeasuringService.startMeasuring;
+    this.measure = MeasuringService;
     this.PathControls = PathControls;
   }
 

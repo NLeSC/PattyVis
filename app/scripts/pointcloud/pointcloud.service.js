@@ -19,7 +19,9 @@
       pointColorType: Potree.PointColorType.RGB,
       pointColorTypes: Potree.PointColorType,
       pointShapes: Potree.PointShape,
-      pointShape: Potree.PointShape.CIRCLE
+      pointShape: Potree.PointShape.CIRCLE,
+      clipMode: Potree.ClipMode.HIGHLIGHT_INSIDE,
+      clipModes: Potree.ClipMode
     };
 
     me.stats = {
@@ -46,7 +48,7 @@
     var sitePointcloud;
     var skybox;
 
-	me.pathMesh = null;
+    me.pathMesh = null;
     var prevCameraOrientation;
 
     var referenceFrame;
@@ -173,7 +175,7 @@
       me.renderer.setSize(width, height);
       me.renderer.autoClear = false;
       me.renderer.domElement.addEventListener('mousemove', onMouseMove, false);
-      
+
       MeasuringService.init(me.renderer);
 
       skybox = loadSkybox('bower_components/potree/resources/textures/skybox/');
@@ -226,10 +228,10 @@
 
         PathControls.init(camera, myPath, me.renderer.domElement);
 
-		me.pathMesh = PathControls.createPath();
-		scene.add(me.pathMesh);
-		me.pathMesh.visible = false; // disabled by default
-
+        me.pathMesh = PathControls.createPath();
+        scene.add(me.pathMesh);
+        me.pathMesh.visible = false; // disabled by default
+        MeasuringService.setPointcloud(pointcloud);
       });
     };
 
@@ -245,18 +247,16 @@
         sitePointcloud.material.size = me.settings.pointSize;
         sitePointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
 
-        referenceFrame.add(sitePointcloud);   
+        referenceFrame.add(sitePointcloud);
       });
     };
 
 
-    this.loadSiteBoxes = function() {SitePointcloudService
-      for (var ix=0; ix < SiteBoxService.siteBoxList.length; ix++) {
+    this.loadSiteBoxes = function() {
+      for (var ix = 0; ix < SiteBoxService.siteBoxList.length; ix++) {
         referenceFrame.add(SiteBoxService.siteBoxList[ix]);
       }
     };
-
-
 
     /**
      * transform from geo coordinates to local scene coordinates
@@ -336,9 +336,9 @@
     }
 
     this.goHome = function() {
-	  
-	  PathControls.goHome();
-	  
+
+      PathControls.goHome();
+
     };
 
     this.lookAtSite = function(site) {
@@ -348,10 +348,10 @@
       //camera.lookAt(posLocal);
       //var camPos = posLocal.clone().setY(posLocal.y + 20);
       //camera.position.copy(camPos);
-	  
-	  PathControls.goToPointOnRoad(posLocal);
-	  PathControls.lookat(posLocal);
-	  
+
+      PathControls.goToPointOnRoad(posLocal);
+      PathControls.lookat(posLocal);
+
     };
 
     this.showLabel = function(site) {
@@ -390,6 +390,7 @@
     this.update = function() {
 
       if (pointcloud) {
+        pointcloud.material.clipMode = me.settings.clipMode;
         pointcloud.material.size = me.settings.pointSize;
         pointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
         pointcloud.material.opacity = me.settings.opacity;
@@ -405,7 +406,7 @@
         pointcloud.update(camera, me.renderer);
 
       }
-      
+
       if (sitePointcloud) {
         sitePointcloud.material.size = me.settings.pointSize;
         sitePointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
@@ -423,6 +424,8 @@
       }
 
       PathControls.updateInput();
+
+      MeasuringService.update();
 
       // create hash for camera state
       var cameraOrientation = new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorld).determinant();
@@ -457,7 +460,7 @@
       // render scene
       me.renderer.render(scene, camera);
 
-	  MeasuringService.render();
+      MeasuringService.render();
     };
 
     this.loop = function() {
