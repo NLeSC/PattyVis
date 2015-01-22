@@ -1,84 +1,111 @@
 <div class="controls-settings">
-<div collapse='!pc.showSettings' class="panel panel-default settings-panel">
-  <div class="panel-heading">Settings</div>
-  <div class="panel-body">
+  <div collapse='!pc.showSettings' class="panel panel-default settings-panel">
+    <div class="panel-heading">Settings</div>
+    <div class="panel-body">
       <form class="form-horizontal">
-      <div class="form-group">
-        <label>
-          points(m)
-          <input type="number" min="0.1" max="10.0" step="0.1" ng-model="pc.settings.pointCountTarget" />
-        </label>
-      </div>
-      <div class="form-group">
-        <label>
-          PointSize
-          <input type="number" min="0.01" max="3.0" step="0.01" ng-model="pc.settings.pointSize" />
-        </label>
-      </div>
-      <div class="form-group">
-        <label>
-          opacity
-          <input type="number" min="0.0" max="2.0" step="0.1" ng-model="pc.settings.opacity" />
-        </label>
-      </div>
-      <div class="form-group">
-        <label>
-          Size type
-          <select ng-model="pc.settings.pointSizeType" ng-options="value as key|lowercase for (key, value) in pc.settings.pointSizeTypes | orderBy:value">
-          </select>
-        </label>
-      </div>
-      <div class="form-group">
-        <label>
-          Color type
-          <select ng-model="pc.settings.pointColorType" ng-options="value as key|lowercase for (key, value) in pc.settings.pointColorTypes | orderBy:value">
-          </select>
-        </label>
-      </div>
-      <div class="form-group">
-        <label>
-          Shape
-          <select ng-model="pc.settings.pointShape" ng-options="value as key|lowercase for (key, value) in pc.settings.pointShapes | orderBy:value">
-          </select>
-        </label>
-      </div>
-      <div class="form-group">
-        <label>
-          skybox
-          <input type="checkbox" ng-model="pc.settings.showSkybox">
-        </label>
-      </div>
-      <div class="form-group">
-        <label>
-          interpolate
-          <input type="checkbox" ng-model="pc.settings.interpolate">
-        </label>
-      </div>
-      <div class="form-group">
-        <label>
-          Stats
-          <input type="checkbox" ng-model="pc.settings.showStats">
-        </label>
-      </div>
-      <div class="form-group">
-        <label>
-          Path
-          <input type="checkbox" ng-model="pc.PointcloudService.pathMesh.visible">
-        </label>
-      </div>
-    </form>
+        <div class="form-group">
+          <label>
+            points(m)
+            <input type="number" min="0.1" max="10.0" step="0.1" ng-model="pc.settings.pointCountTarget" />
+          </label>
+        </div>
+        <div class="form-group">
+          <label>
+            PointSize
+            <input type="number" min="0.01" max="3.0" step="0.01" ng-model="pc.settings.pointSize" />
+          </label>
+        </div>
+        <div class="form-group">
+          <label>
+            opacity
+            <input type="number" min="0.0" max="2.0" step="0.1" ng-model="pc.settings.opacity" />
+          </label>
+        </div>
+        <div class="form-group">
+          <label>
+            Size type
+            <select ng-model="pc.settings.pointSizeType" ng-options="value as key|lowercase for (key, value) in pc.settings.pointSizeTypes | orderBy:value">
+            </select>
+          </label>
+        </div>
+        <div class="form-group">
+          <label>
+            Color type
+            <select ng-model="pc.settings.pointColorType" ng-options="value as key|lowercase for (key, value) in pc.settings.pointColorTypes | orderBy:value">
+            </select>
+          </label>
+        </div>
+        <div class="form-group">
+          <label>
+            Shape
+            <select ng-model="pc.settings.pointShape" ng-options="value as key|lowercase for (key, value) in pc.settings.pointShapes | orderBy:value">
+            </select>
+          </label>
+        </div>
+        <div class="form-group">
+          <label>
+            skybox
+            <input type="checkbox" ng-model="pc.settings.showSkybox">
+          </label>
+        </div>
+        <div class="form-group">
+          <label>
+            interpolate
+            <input type="checkbox" ng-model="pc.settings.interpolate">
+          </label>
+        </div>
+        <div class="form-group">
+          <label>
+            Stats
+            <input type="checkbox" ng-model="pc.settings.showStats">
+          </label>
+        </div>
+        <div class="form-group">
+          <label>
+            Path
+            <input type="checkbox" ng-model="pc.PointcloudService.pathMesh.visible">
+          </label>
+          <button ng-click="pc.recordCameraLocation()" class="btn btn-lg btn-trans glyphicon glyphicon-record" title="Record camera location"></button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
-<div class="controls">
-  <button ng-click="pc.goHome()" class="btn btn-lg btn-trans glyphicon glyphicon-home" title="Go to home location"></button>
-  <button ng-click="pc.recordCameraLocation()" class="btn btn-lg btn-trans glyphicon glyphicon-record" title="Record camera location"></button>
-  <button ng-click="pc.showSettings=!pc.showSettings" class="btn btn-lg btn-trans glyphicon glyphicon-cog" ng-class="{active: pc.showSettings}" title="Settings"></button>
-  <button ng-click="pc.startMeasurement()" class="btn btn-lg btn-trans glyphicon glyphicon-resize-horizontal" title="Start measurement"></button>
-</div>
+
+<div collapse='!pc.showHelp' class="panel panel-default help-panel">
+  <div class="panel-heading">Help</div>
+  <div class="panel-body">
+    This is the help.
+
+
+  </div>
 </div>
 
-<div class="camera-modes btn-group">
-<label class="btn btn-lg btn-trans glyphicon glyphicon-grain" ng-model="pc.PathControls.mode" btn-radio="'onrails'" title="On rails"></label>
-<label class="btn fly" ng-model="pc.PathControls.mode" btn-radio="'fly'" title="Free fly"></label>
-<label class="btn btn-lg btn-trans glyphicon glyphicon-sunglasses" ng-model="pc.PathControls.mode" btn-radio="'demo'" title="Demo mode"></label>
+<div class="toolbox big-icon">
+  <button ng-click="pc.showToolboxTray=!pc.showToolboxTray" class="btn " ng-class="{active: pc.showToolboxTray}"></button>
+</div>
+
+
+<div class="controls big-icon">
+  <button ng-click="pc.showSettings=!pc.showSettings" class="btn gear" ng-class="{active: pc.showSettings}" title="Settings"></button>
+  <button ng-click="pc.showHelp=!pc.showHelp" class="btn help" ng-class="{active: pc.showHelp}" title="Help"></button>
+
+</div>
+
+<div class="camera-modes btn-group big-icon">
+  <label class="btn onrails" ng-model="pc.PathControls.mode" btn-radio="'onrails'" title="On rails"></label>
+  <label class="btn fly" ng-model="pc.PathControls.mode" btn-radio="'fly'" title="Free fly"></label>
+  <label class="btn demo" ng-model="pc.PathControls.mode" btn-radio="'demo'" title="Demo mode"></label>
+</div>
+
+<div class="toolbox-tray tool-icon" collapse='!pc.showToolboxTray'>
+  <button ng-click="pc.showToolboxTray=!pc.showToolboxTray" class="btn toolbox-tray-top"></button>
+  <div class="toolbox-tools">
+    <button ng-click="pc.startMeasurement()" class="btn distance" title="Start distance measurement"></button>
+    <button class="btn angle" title="Start angle measurement"></button>
+    <button class="btn area" title="Start area measurement"></button>
+    <button class="btn volume" title="Start volume measurement"></button>
+    <button class="btn heightprofile" title="Start heightprofile measurement"></button>
+    <button class="btn clipvolume" title="Start clip volume measurement"></button>
+  </div>
 </div>
