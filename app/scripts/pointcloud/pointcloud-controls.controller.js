@@ -3,6 +3,8 @@
 
   function PointcloudControlsController(PointcloudService, CameraService, MeasuringService, PathControls) {
     this.showSettings = false;
+    this.showHelp = false;
+    this.showToolboxTray = false;
     this.settings = PointcloudService.settings;
     this.goHome = PointcloudService.goHome;
     this.PointcloudService = PointcloudService;

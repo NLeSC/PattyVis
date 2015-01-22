@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, sitesservice, CameraService, SceneService, PathControls, SiteBoxService, MeasuringService) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, SitePointcloudService, sitesservice, CameraService, SceneService, PathControls, SiteBoxService, MeasuringService) {
 
     var me = this;
 
@@ -43,6 +43,7 @@
     var camera;
     var scene;
     var pointcloud;
+    var sitePointcloud;
     var skybox;
 
 	me.pathMesh = null;
@@ -161,10 +162,8 @@
     }
 
     this.initThree = function() {
-
       var width = $window.innerWidth;
       var height = $window.innerHeight;
-
 
       scene = SceneService.getScene();
       camera = CameraService.camera;
@@ -189,6 +188,7 @@
       SiteBoxService.listenTo(me.renderer.domElement);
 
       DrivemapService.load().then(this.loadPointcloud);
+      SitePointcloudService.load('162').then(this.loadSitePointcloud);
     };
 
     this.loadPointcloud = function() {
@@ -232,13 +232,26 @@
 		me.pathMesh.visible = false; // disabled by default
 
       });
+    };
 
+    this.loadSitePointcloud = function() {
+      // load pointcloud
+      pointcloudPath = SitePointcloudService.getPointcloudUrl();
+      me.stats.lasCoordinates.crs = SitePointcloudService.getCrs();
 
+      POCLoader.load(pointcloudPath, function(geometry) {
+        sitePointcloud = new Potree.PointCloudOctree(geometry);
 
+        sitePointcloud.material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
+        sitePointcloud.material.size = me.settings.pointSize;
+        sitePointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
+
+        referenceFrame.add(sitePointcloud);   
+      });
     };
 
 
-    this.loadSiteBoxes = function() {
+    this.loadSiteBoxes = function() {SitePointcloudService
       for (var ix=0; ix < SiteBoxService.siteBoxList.length; ix++) {
         referenceFrame.add(SiteBoxService.siteBoxList[ix]);
       }
@@ -392,6 +405,22 @@
 
         pointcloud.update(camera, me.renderer);
 
+      }
+      
+      if (sitePointcloud) {
+        sitePointcloud.material.size = me.settings.pointSize;
+        sitePointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
+        sitePointcloud.material.opacity = me.settings.opacity;
+        sitePointcloud.material.pointSizeType = me.settings.pointSizeType;
+        sitePointcloud.material.pointColorType = me.settings.pointColorType;
+        sitePointcloud.material.pointShape = me.settings.pointShape;
+        sitePointcloud.material.interpolate = me.settings.interpolate;
+        sitePointcloud.material.heightMin = 0;
+        sitePointcloud.material.heightMax = 8;
+        sitePointcloud.material.intensityMin = 0;
+        sitePointcloud.material.intensityMax = 65000;
+
+        sitePointcloud.update(camera, me.renderer);
       }
 
       PathControls.updateInput();
