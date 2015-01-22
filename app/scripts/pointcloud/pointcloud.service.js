@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, sitesservice, CameraService, SceneService, PathControls, SiteBoxService) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, sitesservice, CameraService, SceneService, PathControls, SiteBoxService, MeasuringService) {
 
     var me = this;
 
@@ -175,6 +175,8 @@
       me.renderer.setSize(width, height);
       me.renderer.autoClear = false;
       me.renderer.domElement.addEventListener('mousemove', onMouseMove, false);
+      
+      MeasuringService.init(me.renderer);
 
       raycaster = new THREE.Raycaster();
 
@@ -224,7 +226,7 @@
 
         PathControls.init(camera, myPath, me.renderer.domElement);
 
-		me.pathMesh = PathControls.createPath()
+		me.pathMesh = PathControls.createPath();
 		scene.add(me.pathMesh);
 		me.pathMesh.visible = false; // disabled by default
 
@@ -239,7 +241,7 @@
       for (var ix=0; ix < SiteBoxService.siteBoxList.length; ix++) {
         referenceFrame.add(SiteBoxService.siteBoxList[ix]);
       }
-    }
+    };
 
 
 
@@ -426,7 +428,7 @@
       var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
       vector.unproject(camera);
       raycaster.params = {
-          "PointCloud" : {
+          'PointCloud' : {
               threshold : 0.1
           }
       };
@@ -450,7 +452,7 @@
       // render scene
       me.renderer.render(scene, camera);
 
-	  //MeasuringService.measuringTool.render();
+	  MeasuringService.render();
     };
 
     this.loop = function() {

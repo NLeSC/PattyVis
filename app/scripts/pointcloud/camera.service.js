@@ -8,8 +8,7 @@
     var aspect = width / height;
     var near = 0.1;
     var far = 100000;
-
-    var scene = new THREE.Scene();
+    
     this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     var me = this;
     this.toGeo = null;
