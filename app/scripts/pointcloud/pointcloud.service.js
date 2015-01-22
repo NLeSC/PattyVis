@@ -42,7 +42,6 @@
     this.renderer = null;
     var camera;
     var scene;
-    var raycaster;
     var pointcloud;
     var skybox;
 
@@ -178,20 +177,14 @@
       
       MeasuringService.init(me.renderer);
 
-      raycaster = new THREE.Raycaster();
-      raycaster.params = {
-          "PointCloud" : {
-              threshold : 0.1
-          }
-      };
-
       skybox = loadSkybox('bower_components/potree/resources/textures/skybox/');
 
       // enable frag_depth extension for the interpolation shader, if available
       me.renderer.context.getExtension('EXT_frag_depth');
 
       referenceFrame = new THREE.Object3D();
-      SiteBoxService.init(referenceFrame);
+
+      SiteBoxService.init(referenceFrame, mouse);
 
       SiteBoxService.listenTo(me.renderer.domElement);
 
@@ -432,12 +425,12 @@
       }
       CameraService.camera.position.copy(camera.position);
 
-      SiteBoxService.siteBoxSelection(mouse.x, mouse.y, raycaster);
+      SiteBoxService.siteBoxSelection(mouse.x, mouse.y);
 
       // render scene
       me.renderer.render(scene, camera);
 
-	  MeasuringService.render();
+  	  MeasuringService.render();
     };
 
     this.loop = function() {

@@ -4,13 +4,25 @@
     function SiteBoxService($rootScope, THREE, sitesservice, CameraService, SceneService) {
         var me = this;
 
+        var raycaster;
+        this.mouse = {
+            x: 0,
+            y: 0
+        };
+
         this.siteBoxList = [];
-        this.selectedSiteBox = null;
-        this.isSiteBoxSelected = false;
         this.referenceFrame = null;
 
-        this.init = function(referenceFrame) {
+        this.init = function(referenceFrame, mouse) {
             me.referenceFrame = referenceFrame;
+            raycaster = new THREE.Raycaster();
+            raycaster.params = {
+                "PointCloud" : {
+                    threshold : 0.1
+                }
+            };
+
+            me.mouse = mouse;
         };
 
         this.onSitesChanged = function(sites) {
@@ -39,8 +51,9 @@
         };
 
         this.selectSite = function(event) {
-            if (me.isSiteBoxSelected) {
-                me.addTextLabel(me.selectedSiteBox);
+            var selectedSiteBox = me.siteBoxSelection(me.mouse.x, me.mouse.y);
+            if (selectedSiteBox) {
+                me.addTextLabel(selectedSiteBox);
             }
         };
 
@@ -48,16 +61,15 @@
             var x = siteBox.position.x;
             var y = siteBox.position.y;
             var z = siteBox.position.z;
-            var message = "selected SiteBox: " + siteBox.name;
-            var name = "textLabel for SiteBox " + siteBox.name;
+
+            var message = "SiteBox #" + siteBox.site.id;
 
             var canvas = document.createElement('canvas');
             var context = canvas.getContext('2d');
-            //context.font = "Bold " + fontsize + "px " + fontface;
 
             // get size data (height depends only on font size)
-            // var metrics = context.measureText( message );
-            // var textWidth = metrics.width;
+            var metrics = context.measureText( message );
+            var textWidth = metrics.width;
 
             // background color
             //context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
@@ -73,7 +85,7 @@
             // text color
             //context.fillStyle = "rgba(0, 0, 0, 1.0)";
 
-            //context.fillText( message, borderThickness, fontsize + borderThickness);
+            //context.fillText(message, borderThickness, fontsize + borderThickness);
 
             context.font = "40pt Calibri";
             context.fillText(message, 30, 70);
@@ -88,7 +100,7 @@
             sprite.scale.set(10, 5, 1.0);
 
             sprite.position.set(x, y, z);
-            sprite.name = name; 
+            sprite.name = "textLabel for SiteBox " + siteBox.site.id; 
 
             // var scene = SceneService.getScene();
             // scene.add( sprite );
@@ -115,12 +127,15 @@
             });
             var bBox = new THREE.Mesh(boxGeometry, boxMaterial);
             bBox.position.set(siteCenter[0], siteCenter[1], siteCenter[2]);
-            bBox.name = site.id;
+            // bBox.name = site.id;
+            bBox.site = site;
 
             return bBox;
         }
 
-        this.siteBoxSelection = function(mouseX, mouseY, raycaster) {
+        this.siteBoxSelection = function(mouseX, mouseY) {
+            //console.log('mouse x: ' + mouseX);
+            //console.log('mouse y: ' + mouseY);
             var vector = new THREE.Vector3(mouseX, mouseY, 0.5);
             vector.unproject(CameraService.camera);
             raycaster.ray.set(CameraService.camera.position, vector.sub(CameraService.camera.position).normalize());
@@ -134,11 +149,10 @@
             });
 
             if (intersects.length > 0) {
-                me.selectedSiteBox = intersects[0].object;
-                me.isSiteBoxSelected = true;
-                me.hoverOver(me.selectedSiteBox);
+                me.hoverOver(intersects[0].object);
+                return intersects[0].object;
             } else {
-                me.isSiteBoxSelected = false;
+                return null;
             }
         }
 
