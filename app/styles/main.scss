@@ -47,9 +47,8 @@ patty-pointcloud-canvas {
 }
 .controls-settings {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  background: lightgrey;
+  left: 5px;
+  bottom: 70px;
 }
 patty-pointcloud-stats {
   position: absolute;
@@ -67,24 +66,96 @@ patty-pointcloud-stats {
 .camera-modes {
   position: absolute;
   left: 50%;
-  bottom: 0;
+  bottom: 5px;
   transform: translate(-50%, 0);
+}
+.controls {
+  position: absolute;
+  left: 5px;
+  bottom: 5px;
+}
+.toolbox {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+}
+.toolbox-tray{
+  position: absolute;
+  right: 5px;
+  bottom: 70px;
+  width: 80px;
 }
 .settings-panel .panel-body {
   padding-left: 20px;
   padding-right: 20px;
 }
 
-.camera-modes .btn {
-    height: 80px;
+.big-icon .btn {
     width: 80px;
+    height: 80px;
+    border-color: transparent;
+    background-color: transparent;
+    box-shadow: none;
 }
 
 .camera-modes .fly {
-    box-shadow: none; // move to .camera-modes .btn when all camera mode buttons have images
     background-image: url(../images/icons/heli_icon_80px.png);
 }
 
 .camera-modes .fly.active {
     background-image: url(../images/icons/heli_icon_green_80px.png);
+}
+
+.camera-modes .onrails {
+  background-image: url(../images/icons/person_icon_80px.png);
+}
+
+.camera-modes .onrails.active {
+  background-image: url(../images/icons/person_icon_green_80px.png);
+}
+
+.camera-modes .demo {
+  background-image: url(../images/icons/play_icon_80px.png);
+}
+
+.camera-modes .demo.active {
+  background-image: url(../images/icons/play_icon_green_80px.png);
+}
+
+.controls .gear {
+  background-image: url(../images/icons/gear_icon_80px.png);
+}
+
+.controls .gear.active {
+  background-image: url(../images/icons/gear_icon_green_80px.png);
+}
+
+.controls .help {
+  background-image: url(../images/icons/help_icon_80px.png);
+}
+
+.controls .help.active {
+  background-image: url(../images/icons/help_icon_green_80px.png);
+}
+
+.toolbox .btn {
+  background-image: url(../images/icons/toolbox_icon_80px.png);
+}
+
+.toolbox .btn.active {
+  background-image: url(../images/icons/toolbox_bottom_icon_green_80px.png);
+}
+
+.toolbox-tray .distance {
+  background-image: url(../images/icons/toolbox_distance_icon_80px.png);
+}
+
+.toolbox-tray .distance.active {
+  background-image: url(../images/icons/toolbox_distance_icon_green_80px.png);
+}
+
+.toolbox-tray-top {
+  width: 80px;
+  height: 80px;
+  background-image: url(../images/icons/toolbox_distance_icon_green_80px.png);
 }
