@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, sitesservice, CameraService, SceneService, PathControls, SiteBoxService) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, sitesservice, CameraService, SceneService, PathControls, SiteBoxService, MeasuringService) {
 
     var me = this;
 
@@ -21,7 +21,7 @@
       pointShapes: Potree.PointShape,
       pointShape: Potree.PointShape.CIRCLE
     };
-    
+
     me.stats = {
       nrPoints: 0,
       nrNodes: 0,
@@ -42,7 +42,6 @@
     this.renderer = null;
     var camera;
     var scene;
-    var raycaster;
     var pointcloud;
     var skybox;
 
@@ -56,7 +55,8 @@
     };
 
     function loadSkybox(path) {
-      var scene = SceneService.getScene();
+      var camera = new THREE.PerspectiveCamera(75, $window.innerWidth / $window.innerHeight, 1, 100000);
+      var scene = new THREE.Scene();
 
       var format = '.jpg';
       var urls = [
@@ -174,8 +174,8 @@
       me.renderer.setSize(width, height);
       me.renderer.autoClear = false;
       me.renderer.domElement.addEventListener('mousemove', onMouseMove, false);
-
-      raycaster = new THREE.Raycaster();
+      
+      MeasuringService.init(me.renderer);
 
       skybox = loadSkybox('bower_components/potree/resources/textures/skybox/');
 
@@ -183,6 +183,9 @@
       me.renderer.context.getExtension('EXT_frag_depth');
 
       referenceFrame = new THREE.Object3D();
+
+      SiteBoxService.init(mouse);
+      SiteBoxService.listenTo(me.renderer.domElement);
 
       DrivemapService.load().then(this.loadPointcloud);
     };
@@ -420,35 +423,12 @@
       }
       CameraService.camera.position.copy(camera.position);
 
-      // SiteBox selection (clicking & hovering)
-      var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-      vector.unproject(camera);
-      raycaster.params = {
-          "PointCloud" : {
-              threshold : 0.1
-          }
-      };
-      raycaster.ray.set(camera.position, vector.sub(camera.position).normalize());
-
-      // hovering over SiteBoxes
-      var intersects = raycaster.intersectObjects(SiteBoxService.siteBoxList, false);
-
-      // reset hovering
-      SiteBoxService.siteBoxList.forEach(function (siteBox){
-          SiteBoxService.hoverOut(siteBox);
-      });
-
-      if (intersects.length > 0){
-        intersects.forEach(function (intersectingObject) {
-          SiteBoxService.hoverOver(intersectingObject.object);
-        });
-      }
-
+      SiteBoxService.siteBoxSelection(mouse.x, mouse.y);
 
       // render scene
       me.renderer.render(scene, camera);
 
-	  //MeasuringService.measuringTool.render();
+	  MeasuringService.render();
     };
 
     this.loop = function() {

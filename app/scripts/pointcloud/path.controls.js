@@ -8,9 +8,9 @@
 (function() {
 	'use strict';
 
-	
+
 	var me;
-	
+
 	var camera;
 	var clock;
 	var path;
@@ -36,7 +36,11 @@
 
 	var zoom = 45;
 	var maxZoom = 45;
-	
+
+	var autoWalk = false;
+	var autoLook = false;
+	var firstPerson = true;
+
 	var positionOnRoad = 0.0;
 	
 	var looptime = 240;
@@ -55,11 +59,11 @@
 		this.useOculus = false;
 
 		clock = new THREE.Clock();
-		
+
 		this.modes = {
-			ONRAILS: 1,
-			FLY: 2,
-			DEMO: 3
+			ONRAILS: 'onrails',
+			FLY: 'fly',
+			DEMO: 'demo'
 		};
 
 		this.mode = this.modes.ONRAILS;
@@ -71,7 +75,7 @@
 		camera = cam;
 
 		var definedPath = new THREE.SplineCurve3(cameraPath);
-		
+
 		path = new THREE.SplineCurve3(definedPath.getSpacedPoints(100));
 
 		var pos = path.getPointAt(0);
@@ -230,12 +234,11 @@
 		}
 
 		var delta = clock.getDelta();
-	
 				
 		if (keys[32]) {
 			delta *= 6;
 		}
-		
+
 		var step = 10 * delta;
 		var pos;
 
@@ -258,7 +261,7 @@
 			positionOnRoad += delta;
 			positionOnRoad = positionOnRoad % looptime;
 			pos = path.getPointAt(positionOnRoad / looptime);
-			
+
 			camera.position.set(pos.x, pos.y, pos.z);
 
 			this.lookat(path.getPointAt((positionOnRoad / looptime) + 0.0001));
@@ -312,7 +315,7 @@
 			if (positionOnRoad > looptime) {
 				positionOnRoad = positionOnRoad % looptime;
 			}
-			
+
 			pos = path.getPointAt(positionOnRoad / looptime);
 
 			camera.position.copy(pos);

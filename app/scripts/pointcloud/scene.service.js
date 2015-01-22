@@ -6,7 +6,7 @@
 	  
 	  this.getScene = function() {
 		return scene;
-	  }
+	  };
   }
 
   angular.module('pattyApp.pointcloud')

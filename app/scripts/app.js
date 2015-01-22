@@ -13,6 +13,7 @@ angular
     'ngAnimate',
     'ngSanitize',
     'ngTouch',
+    'ui.bootstrap',
     'pattyApp.searchbox',
     'pattyApp.minimap',
     'pattyApp.pointcloud'
