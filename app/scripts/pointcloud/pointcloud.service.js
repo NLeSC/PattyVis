@@ -188,6 +188,7 @@
       me.renderer.context.getExtension('EXT_frag_depth');
 
       referenceFrame = new THREE.Object3D();
+      SiteBoxService.init(referenceFrame);
 
       SiteBoxService.listenTo(me.renderer.domElement);
 

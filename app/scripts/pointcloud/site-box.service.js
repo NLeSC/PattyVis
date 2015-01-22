@@ -1,12 +1,17 @@
 (function() {
     'use strict';
 
-    function SiteBoxService($rootScope, THREE, sitesservice, CameraService) {
+    function SiteBoxService($rootScope, THREE, sitesservice, CameraService, SceneService) {
         var me = this;
 
         this.siteBoxList = [];
         this.selectedSiteBox = null;
         this.isSiteBoxSelected = false;
+        this.referenceFrame = null;
+
+        this.init = function(referenceFrame) {
+            me.referenceFrame = referenceFrame;
+        };
 
         this.onSitesChanged = function(sites) {
             if(sitesservice.isLoaded){
@@ -36,7 +41,64 @@
         this.selectSite = function(event) {
             if (me.isSiteBoxSelected) {
                 console.log("selected SiteBox: " + me.selectedSiteBox.name);
+                console.log(me.selectedSiteBox);
+                var name = me.selectedSiteBox.name;
+                var x = me.selectedSiteBox.position.x;
+                var y = me.selectedSiteBox.position.y;
+                var z = me.selectedSiteBox.position.z;
+                me.addTextLabel("selected SiteBox: " + name, x, y, z, "textLabel for SiteBox " + name);
             }
+        };
+
+        this.addTextLabel = function( message, x, y, z, name ){
+            var canvas = document.createElement('canvas');
+            var context = canvas.getContext('2d');
+            //context.font = "Bold " + fontsize + "px " + fontface;
+
+            // get size data (height depends only on font size)
+            var metrics = context.measureText( message );
+            var textWidth = metrics.width;
+
+            // background color
+            //context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
+            //+ backgroundColor.b + "," + backgroundColor.a + ")";
+
+            //context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
+            //+ borderColor.b + "," + borderColor.a + ")";
+
+            //context.lineWidth = borderThickness;
+            //roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
+            // 1.4 is extra height factor for text below baseline: g,j,p,q.
+
+            // text color
+            //context.fillStyle = "rgba(0, 0, 0, 1.0)";
+
+            //context.fillText( message, borderThickness, fontsize + borderThickness);
+
+            context.font = "40pt Calibri";
+            context.fillText(message, 30, 70);
+            // canvas contents will be used for a texture
+            var texture = new THREE.Texture(canvas)
+            texture.needsUpdate = true;
+
+            var spriteMaterial = new THREE.SpriteMaterial(
+                { map: texture, useScreenCoordinates: false,} );
+            var sprite = new THREE.Sprite( spriteMaterial );
+            //sprite.scale.set(100,50,1.0);
+            sprite.scale.set(10, 5, 1.0);
+
+            sprite.position.set(x, y, z);
+            sprite.name = name; 
+
+            // var scene = SceneService.getScene();
+            // scene.add( sprite );
+            me.referenceFrame.add( sprite );
+
+            var imageObj = new Image();
+            imageObj.onload = function(){
+                context.drawImage(imageObj, 10, 10);
+            };
+            imageObj.src = "data/label-small.png";
         };
 
         this.createSiteBox = function(site){
@@ -83,5 +145,5 @@
     }
 
     angular.module('pattyApp.pointcloud')
-    .service('SiteBoxService', ['$rootScope', 'THREE', 'sitesservice', 'CameraService', SiteBoxService]);
+        .service('SiteBoxService', ['$rootScope', 'THREE', 'sitesservice', 'CameraService', 'SceneService', SiteBoxService]);
 })();
