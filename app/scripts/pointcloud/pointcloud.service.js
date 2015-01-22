@@ -183,7 +183,8 @@
 
       referenceFrame = new THREE.Object3D();
 
-      SiteBoxService.init(mouse);
+      SiteBoxService.init(referenceFrame, mouse);
+
       SiteBoxService.listenTo(me.renderer.domElement);
 
       DrivemapService.load().then(this.loadPointcloud);
@@ -457,7 +458,7 @@
       // render scene
       me.renderer.render(scene, camera);
 
-	  MeasuringService.render();
+  	  MeasuringService.render();
     };
 
     this.loop = function() {
