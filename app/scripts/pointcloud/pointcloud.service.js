@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, SitePointcloudService, sitesservice, CameraService, SceneService, PathControls, SiteBoxService, MeasuringService) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, SiteLoaderService, sitesservice, CameraService, SceneService, PathControls, SiteBoxService, MeasuringService) {
 
     var me = this;
 
@@ -46,6 +46,7 @@
     var scene;
     var pointcloud;
     var sitePointcloud;
+    
     var skybox;
 
     me.pathMesh = null;
@@ -190,7 +191,7 @@
       SiteBoxService.listenTo(me.renderer.domElement);
 
       DrivemapService.load().then(this.loadPointcloud);
-      SitePointcloudService.load('162').then(this.loadSitePointcloud);
+      SiteLoaderService.load('162').then(this.loadSite);
     };
 
     this.loadPointcloud = function() {
@@ -236,10 +237,11 @@
       });
     };
 
-    this.loadSitePointcloud = function() {
+    this.loadSite = function() {
       // load pointcloud
-      pointcloudPath = SitePointcloudService.getPointcloudUrl();
-      me.stats.lasCoordinates.crs = SitePointcloudService.getCrs();
+      var pointcloudPath = SiteLoaderService.getPointcloudUrl();
+      
+      me.stats.lasCoordinates.crs = SiteLoaderService.getCrs();
 
       POCLoader.load(pointcloudPath, function(geometry) {
         sitePointcloud = new Potree.PointCloudOctree(geometry);
@@ -250,10 +252,44 @@
 
         referenceFrame.add(sitePointcloud);
       });
+      
+      /*
+      var meshPath = SiteLoaderService.getMeshUrl();
+      var meshMtlPath = SiteLoaderService.getMeshMtlUrl();
+            
+      var objmtl_loader = new THREE.OBJMTLLoader();  
+                
+      objmtl_loader.load(meshPath, meshMtlPath, function(object) {
+          referenceFrame.add(object);
+      }, function(){ 
+        return 1;
+      }, function() { 
+        console.log('Error while loading mesh for site');
+      });      
+      
+      var reconstructionMeshPath = SiteLoaderService.getReconstructionMeshUrl();
+      
+      var obj_loader = new THREE.OBJLoader();  
+                
+      obj_loader.load(reconstructionMeshPath, function(object) {
+          var scale = SiteLoaderService.getReconstructionScale();
+          var bbox = SiteLoaderService.getBbox();
+          object.scale.set(scale[0], scale[1], scale[2]);
+          object.position.set(bbox[0]+(bbox[3]-bbox[0]),bbox[1]+(bbox[4]-bbox[1]),bbox[2]+(bbox[5]-bbox[2]));
+          referenceFrame.add(object);
+      }, function(){ 
+        return 1;
+      }, function() { 
+        console.log('Error while loading reconstruction mesh for site');
+      }); 
+      
+      */
+      
     };
 
 
     this.loadSiteBoxes = function() {
+
       for (var ix = 0; ix < SiteBoxService.siteBoxList.length; ix++) {
         referenceFrame.add(SiteBoxService.siteBoxList[ix]);
       }
@@ -423,6 +459,7 @@
 
         sitePointcloud.update(camera, me.renderer);
       }
+      
 
       PathControls.updateInput();
 
