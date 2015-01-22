@@ -140,6 +140,8 @@
                 map: texture,
                 useScreenCoordinates: false,
                 // transparent: true,
+                depthTest: false, 
+                depthWrite: false,
             });
             var sprite = new THREE.Sprite( spriteMaterial );
 
