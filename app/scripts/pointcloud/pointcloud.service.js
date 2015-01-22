@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, SitePointcloudService, sitesservice, CameraService, SceneService, PathControls, SiteBoxService, MeasuringService) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, SiteLoaderService, sitesservice, CameraService, SceneService, PathControls, SiteBoxService, MeasuringService) {
 
     var me = this;
 
@@ -19,7 +19,9 @@
       pointColorType: Potree.PointColorType.RGB,
       pointColorTypes: Potree.PointColorType,
       pointShapes: Potree.PointShape,
-      pointShape: Potree.PointShape.CIRCLE
+      pointShape: Potree.PointShape.CIRCLE,
+      clipMode: Potree.ClipMode.HIGHLIGHT_INSIDE,
+      clipModes: Potree.ClipMode
     };
 
     me.stats = {
@@ -44,9 +46,10 @@
     var scene;
     var pointcloud;
     var sitePointcloud;
+    
     var skybox;
 
-	me.pathMesh = null;
+    me.pathMesh = null;
     var prevCameraOrientation;
 
     var referenceFrame;
@@ -173,7 +176,7 @@
       me.renderer.setSize(width, height);
       me.renderer.autoClear = false;
       me.renderer.domElement.addEventListener('mousemove', onMouseMove, false);
-      
+
       MeasuringService.init(me.renderer);
 
       skybox = loadSkybox('bower_components/potree/resources/textures/skybox/');
@@ -183,11 +186,12 @@
 
       referenceFrame = new THREE.Object3D();
 
-      SiteBoxService.init(mouse);
+      SiteBoxService.init(referenceFrame, mouse);
+
       SiteBoxService.listenTo(me.renderer.domElement);
 
       DrivemapService.load().then(this.loadPointcloud);
-      SitePointcloudService.load('162').then(this.loadSitePointcloud);
+      SiteLoaderService.load('162').then(this.loadSite);
     };
 
     this.loadPointcloud = function() {
@@ -232,17 +236,18 @@
 
         PathControls.init(camera, myPath, lookPath, me.renderer.domElement);
 
-		me.pathMesh = PathControls.createPath();
-		scene.add(me.pathMesh);
-		me.pathMesh.visible = false; // disabled by default
-
+        me.pathMesh = PathControls.createPath();
+        scene.add(me.pathMesh);
+        me.pathMesh.visible = false; // disabled by default
+        MeasuringService.setPointcloud(pointcloud);
       });
     };
 
-    this.loadSitePointcloud = function() {
+    this.loadSite = function() {
       // load pointcloud
-      pointcloudPath = SitePointcloudService.getPointcloudUrl();
-      me.stats.lasCoordinates.crs = SitePointcloudService.getCrs();
+      var pointcloudPath = SiteLoaderService.getPointcloudUrl();
+      
+      me.stats.lasCoordinates.crs = SiteLoaderService.getCrs();
 
       POCLoader.load(pointcloudPath, function(geometry) {
         sitePointcloud = new Potree.PointCloudOctree(geometry);
@@ -251,18 +256,50 @@
         sitePointcloud.material.size = me.settings.pointSize;
         sitePointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
 
-        referenceFrame.add(sitePointcloud);   
+        referenceFrame.add(sitePointcloud);
       });
+      
+      /*
+      var meshPath = SiteLoaderService.getMeshUrl();
+      var meshMtlPath = SiteLoaderService.getMeshMtlUrl();
+            
+      var objmtl_loader = new THREE.OBJMTLLoader();  
+                
+      objmtl_loader.load(meshPath, meshMtlPath, function(object) {
+          referenceFrame.add(object);
+      }, function(){ 
+        return 1;
+      }, function() { 
+        console.log('Error while loading mesh for site');
+      });      
+      
+      var reconstructionMeshPath = SiteLoaderService.getReconstructionMeshUrl();
+      
+      var obj_loader = new THREE.OBJLoader();  
+                
+      obj_loader.load(reconstructionMeshPath, function(object) {
+          var scale = SiteLoaderService.getReconstructionScale();
+          var bbox = SiteLoaderService.getBbox();
+          object.scale.set(scale[0], scale[1], scale[2]);
+          object.position.set(bbox[0]+(bbox[3]-bbox[0]),bbox[1]+(bbox[4]-bbox[1]),bbox[2]+(bbox[5]-bbox[2]));
+          referenceFrame.add(object);
+      }, function(){ 
+        return 1;
+      }, function() { 
+        console.log('Error while loading reconstruction mesh for site');
+      }); 
+      
+      */
+      
     };
 
 
-    this.loadSiteBoxes = function() {SitePointcloudService
-      for (var ix=0; ix < SiteBoxService.siteBoxList.length; ix++) {
+    this.loadSiteBoxes = function() {
+
+      for (var ix = 0; ix < SiteBoxService.siteBoxList.length; ix++) {
         referenceFrame.add(SiteBoxService.siteBoxList[ix]);
       }
     };
-
-
 
     /**
      * transform from geo coordinates to local scene coordinates
@@ -342,9 +379,9 @@
     }
 
     this.goHome = function() {
-	  
-	  PathControls.goHome();
-	  
+
+      PathControls.goHome();
+
     };
 
     this.lookAtSite = function(site) {
@@ -354,10 +391,10 @@
       //camera.lookAt(posLocal);
       //var camPos = posLocal.clone().setY(posLocal.y + 20);
       //camera.position.copy(camPos);
-	  
-	  PathControls.goToPointOnRoad(posLocal);
-	  PathControls.lookat(posLocal);
-	  
+
+      PathControls.goToPointOnRoad(posLocal);
+      PathControls.lookat(posLocal);
+
     };
 
     this.showLabel = function(site) {
@@ -396,6 +433,7 @@
     this.update = function() {
 
       if (pointcloud) {
+        pointcloud.material.clipMode = me.settings.clipMode;
         pointcloud.material.size = me.settings.pointSize;
         pointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
         pointcloud.material.opacity = me.settings.opacity;
@@ -411,7 +449,7 @@
         pointcloud.update(camera, me.renderer);
 
       }
-      
+
       if (sitePointcloud) {
         sitePointcloud.material.size = me.settings.pointSize;
         sitePointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
@@ -427,8 +465,11 @@
 
         sitePointcloud.update(camera, me.renderer);
       }
+      
 
       PathControls.updateInput();
+
+      MeasuringService.update();
 
       // create hash for camera state
       var cameraOrientation = new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorld).determinant();
@@ -463,7 +504,7 @@
       // render scene
       me.renderer.render(scene, camera);
 
-	  MeasuringService.render();
+      MeasuringService.render();
     };
 
     this.loop = function() {

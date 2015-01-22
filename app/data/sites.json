@@ -8,12 +8,16 @@
 	    },
 	    "id": 162,
 	    "properties": {
-		    "pointcloud": "data/sites/SITE_162/aligned/cloud.js",
+		    "pointcloud": "http://145.100.116.30:8090/POTREE/PC/SITE/162/SITE_162/SITE_162_8_levels_32cm_spacing/cloud.js",
+            "mesh": "data/sites/SITE_162/aligned/SITE_162_FEB+JUL_MAX_cleaned.obj",
+            "meshMtl": "data/sites/SITE_162/aligned/SITE_162_FEB+JUL_MAX_cleaned_tex.mtl",
+            "reconstructionMesh": "data/sites/SITE_162/aligned/RECONSTRUCTION.obj",
 		    "description": "Pyramid",
 		    "thumbnail": "data/sites/162/P1120067.JPG",
 		    "site_context": "Funerary",
-                    "site_interpretation": "Funerary tower",
-                    "condition": "Damaged"
+            "site_interpretation": "Funerary tower",
+            "condition": "Damaged",
+            "reconstructionScale": [0.025, 0.025, 0.025]                    
 	    },
 	    "bbox": [296247.246448120509740,4633726.192645221017301, 121.484,296264.387774608097970,4633743.168275895528495, 144.177]
 	}, {
@@ -24,7 +28,7 @@
 	    },
 	    "id": 13,
 	    "properties": {
-		    "pointcloud": "data/sites/13/cloud_las.js",
+		    "pointcloud": "http://145.100.116.30:8090/POTREE/PC/SITE/13/SITE_13/SITE_13_8_levels_32cm_spacing/cloud_las.js",
 		    "description": "Block",
 		    "thumbnail": "data/sites/13/IMG_0040.JPG",
 		    "site_context": "Unknown",
