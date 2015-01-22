@@ -58,18 +58,27 @@
         };
 
         this.addTextLabel = function( siteBox ){
+            // parameters
+            var canvas_size = 1000; // pt != on-screen pixels
+            var fontsize = 40; // pt (same as canvas size)
+            var textBoxPadding = fontsize/2; // pt
+            var textBoxBorderWidth = 1; // pt
+            var textBoxBorderColor = "rgba(0,0,0, 0.8)";
+            var textBoxFillColor = "rgba(255,255,255, 0.8)";
+            var fontColor = "rgb(0,0,0)";
+
             var x = siteBox.position.x;
             var y = siteBox.position.y;
             var z = siteBox.position.z;
 
-            var message = "SiteBox #" + siteBox.site.id;
 
             var canvas = document.createElement('canvas');
+            // keep canvas square to avoid stretching problems (see sprite size
+            // below as well):
+            canvas.width = canvas_size;
+            canvas.height = canvas_size;
             var context = canvas.getContext('2d');
 
-            // get size data (height depends only on font size)
-            var metrics = context.measureText( message );
-            var textWidth = metrics.width;
 
             // background color
             //context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
@@ -79,7 +88,7 @@
             //+ borderColor.b + "," + borderColor.a + ")";
 
             //context.lineWidth = borderThickness;
-            //roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
+            //roundRect(context, borderThickness/2, borderThickness/2, messageWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
             // 1.4 is extra height factor for text below baseline: g,j,p,q.
 
             // text color
@@ -87,30 +96,65 @@
 
             //context.fillText(message, borderThickness, fontsize + borderThickness);
 
-            context.font = "40pt Calibri";
-            context.fillText(message, 30, 70);
+            context.font = fontsize + "pt Calibri";
+            context.textAlign = "right";
+
+            // the text we want to write
+            var message = siteBox.site.properties.description;
+                          // "SiteBox #" + siteBox.site.id + "\n" +
+                          // "description: " + siteBox.site.properties.description + "\n" +
+                          // "site_context: " + siteBox.site.properties.site_context + "\n" +
+                          // "site_interpretation: " + siteBox.site.properties.site_interpretation + "\n" +
+                          // "condition: " + siteBox.site.properties.condition + "\n";
+            // get size data (height depends only on font size)
+            var messageWidth = context.measureText( message ).width;
+
+            // a placeholder box around the text, pending final design by Lode
+            var textBoxWidth = messageWidth + 2*textBoxPadding;
+            var textBoxHeight = fontsize + 2*textBoxPadding;
+            context.fillStyle = textBoxBorderColor;
+            context.fillRect(canvas.width - (textBoxWidth + 2*textBoxBorderWidth), 0, textBoxWidth + 2*textBoxBorderWidth, textBoxHeight + 2*textBoxBorderWidth);
+            context.fillStyle = textBoxFillColor;
+            context.fillRect(canvas.width - (textBoxWidth + textBoxBorderWidth), textBoxBorderWidth, textBoxWidth, textBoxHeight);
+
+            // The two fillText number arguments are canvas-coordinates, so
+            // depend on the size of the canvas defined above. The y-coordinate
+            // is set to fontsize, otherwise the words fall off the top of the
+            // canvas.
+            context.fillStyle = fontColor;
+            context.fillText(message, canvas_size - textBoxPadding, fontsize + textBoxPadding);
             // canvas contents will be used for a texture
             var texture = new THREE.Texture(canvas)
             texture.needsUpdate = true;
 
-            var spriteMaterial = new THREE.SpriteMaterial(
-                { map: texture, useScreenCoordinates: false,} );
+            var spriteMaterial = new THREE.SpriteMaterial({
+                map: texture,
+                useScreenCoordinates: false,
+                // transparent: true,
+            });
             var sprite = new THREE.Sprite( spriteMaterial );
-            //sprite.scale.set(100,50,1.0);
-            sprite.scale.set(10, 5, 1.0);
+
+            // set scale based on sitebox size (add a certain minimum perhaps?)
+            var depth = siteBox.geometry.parameters.depth;
+            var height = siteBox.geometry.parameters.height;
+            var width = siteBox.geometry.parameters.width;
+            var radius = Math.sqrt(depth*depth + height*height + width*width);
+            // stretch sprite scale equally in both directions (otherwise canvas
+            // gets distorted)
+            sprite.scale.set(1.5*radius, 1.5*radius, 1.0);
 
             sprite.position.set(x, y, z);
-            sprite.name = "textLabel for SiteBox " + siteBox.site.id; 
+            sprite.name = "textLabel for SiteBox " + siteBox.site.id;
 
             // var scene = SceneService.getScene();
             // scene.add( sprite );
             me.referenceFrame.add( sprite );
 
-            var imageObj = new Image();
-            imageObj.onload = function(){
-                context.drawImage(imageObj, 10, 10);
-            };
-            imageObj.src = "data/label-small.png";
+            // var imageObj = new Image();
+            // imageObj.onload = function(){
+            //     context.drawImage(imageObj, 10, 10);
+            // };
+            // imageObj.src = "data/label-small.png";
         };
 
         this.createSiteBox = function(site){
