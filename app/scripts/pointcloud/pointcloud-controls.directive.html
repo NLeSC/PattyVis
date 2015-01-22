@@ -71,6 +71,16 @@
     </div>
   </div>
 </div>
+
+<div collapse='!pc.showHelp' class="panel panel-default help-panel">
+  <div class="panel-heading">Help</div>
+  <div class="panel-body">
+    This is the help.
+
+
+  </div>
+</div>
+
 <div class="toolbox big-icon">
   <button ng-click="pc.showToolboxTray=!pc.showToolboxTray" class="btn " ng-class="{active: pc.showToolboxTray}"></button>
 </div>
@@ -88,8 +98,14 @@
   <label class="btn demo" ng-model="pc.PathControls.mode" btn-radio="'demo'" title="Demo mode"></label>
 </div>
 
-<div class="toolbox-tray big-icon" collapse='!pc.showToolboxTray'>
+<div class="toolbox-tray tool-icon" collapse='!pc.showToolboxTray'>
   <button ng-click="pc.showToolboxTray=!pc.showToolboxTray" class="btn toolbox-tray-top"></button>
-
-  <button ng-click="pc.startMeasurement()" class="btn distance" title="Start measurement"></button>
+  <div class="toolbox-tools">
+    <button ng-click="pc.startMeasurement()" class="btn distance" title="Start distance measurement"></button>
+    <button class="btn angle" title="Start angle measurement"></button>
+    <button class="btn area" title="Start area measurement"></button>
+    <button class="btn volume" title="Start volume measurement"></button>
+    <button class="btn heightprofile" title="Start heightprofile measurement"></button>
+    <button class="btn clipvolume" title="Start clip volume measurement"></button>
+  </div>
 </div>

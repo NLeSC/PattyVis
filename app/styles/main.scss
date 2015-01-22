@@ -1,6 +1,6 @@
-$icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
+$icon-font-path: '../bower_components/bootstrap-sass-official/assets/fonts/bootstrap/';
 // bower:scss
-@import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
+@import 'bootstrap-sass-official/assets/stylesheets/_bootstrap.scss';
 // endbower
 .browsehappy {
   margin: 0.2em 0;
@@ -45,7 +45,8 @@ patty-pointcloud-canvas {
   width: 100%;
   height: 100%;
 }
-.controls-settings {
+.controls-settings,
+.help-panel {
   position: absolute;
   left: 5px;
   bottom: 70px;
@@ -53,7 +54,7 @@ patty-pointcloud-canvas {
 patty-pointcloud-stats {
   position: absolute;
   left: 0;
-  bottom: 0;
+  bottom: 70px;
   color: white;
   font-weight: bold;
   text-shadow: 1px 1px 1px black, 1px -1px 1px black, -1px 1px 1px black, -1px -1px 1px black;
@@ -79,7 +80,7 @@ patty-pointcloud-stats {
   right: 5px;
   bottom: 5px;
 }
-.toolbox-tray{
+.toolbox-tray {
   position: absolute;
   right: 5px;
   bottom: 70px;
@@ -89,73 +90,87 @@ patty-pointcloud-stats {
   padding-left: 20px;
   padding-right: 20px;
 }
-
 .big-icon .btn {
-    width: 80px;
-    height: 80px;
-    border-color: transparent;
-    background-color: transparent;
-    box-shadow: none;
+  width: 80px;
+  height: 80px;
+  border-color: transparent;
+  background-color: transparent;
+  box-shadow: none;
 }
-
 .camera-modes .fly {
-    background-image: url(../images/icons/heli_icon_80px.png);
+  background-image: url('../images/icons/heli_icon_80px.png');
 }
-
 .camera-modes .fly.active {
-    background-image: url(../images/icons/heli_icon_green_80px.png);
+  background-image: url('../images/icons/heli_icon_green_80px.png');
 }
-
 .camera-modes .onrails {
-  background-image: url(../images/icons/person_icon_80px.png);
+  background-image: url('../images/icons/person_icon_80px.png');
 }
-
 .camera-modes .onrails.active {
-  background-image: url(../images/icons/person_icon_green_80px.png);
+  background-image: url('../images/icons/person_icon_green_80px.png');
 }
-
 .camera-modes .demo {
-  background-image: url(../images/icons/play_icon_80px.png);
+  background-image: url('../images/icons/play_icon_80px.png');
 }
-
 .camera-modes .demo.active {
-  background-image: url(../images/icons/play_icon_green_80px.png);
+  background-image: url('../images/icons/play_icon_green_80px.png');
 }
-
 .controls .gear {
-  background-image: url(../images/icons/gear_icon_80px.png);
+  background-image: url('../images/icons/gear_icon_80px.png');
 }
-
 .controls .gear.active {
-  background-image: url(../images/icons/gear_icon_green_80px.png);
+  background-image: url('../images/icons/gear_icon_green_80px.png');
 }
-
 .controls .help {
-  background-image: url(../images/icons/help_icon_80px.png);
+  background-image: url('../images/icons/help_icon_80px.png');
 }
-
 .controls .help.active {
-  background-image: url(../images/icons/help_icon_green_80px.png);
+  background-image: url('../images/icons/help_icon_green_80px.png');
 }
-
 .toolbox .btn {
-  background-image: url(../images/icons/toolbox_icon_80px.png);
+  background-image: url('../images/icons/toolbox_icon_80px.png');
+}
+.toolbox .btn.active {
+  background-image: url('../images/icons/toolbox_bottom_icon_green_80px.png');
 }
 
-.toolbox .btn.active {
-  background-image: url(../images/icons/toolbox_bottom_icon_green_80px.png);
+.tool-icon .btn {
+  width: 50px;
+  height: 50px;
+  border-color: transparent;
+  background-color: transparent;
+  box-shadow: none;
 }
 
 .toolbox-tray .distance {
-  background-image: url(../images/icons/toolbox_distance_icon_80px.png);
+  background-image: url('../images/icons/toolbox_distance_icon_50px.png');
+}
+.toolbox-tray .distance.active {
+  background-image: url('../images/icons/toolbox_distance_icon_green_50px.png');
 }
 
-.toolbox-tray .distance.active {
-  background-image: url(../images/icons/toolbox_distance_icon_green_80px.png);
+.toolbox-tray .angle {
+  background-image: url('../images/icons/toolbox_angle_icon_50px.png');
+}
+.toolbox-tray .area {
+  background-image: url('../images/icons/toolbox_area_icon_50px.png');
+}
+.toolbox-tray .volume {
+  background-image: url('../images/icons/toolbox_volume_icon_50px.png');
+}
+.toolbox-tray .heightprofile {
+  background-image: url('../images/icons/toolbox_heightprofile_icon_50px.png');
+}
+
+.toolbox-tray .clipvolume {
+  background-image: url('../images/icons/toolbox_clipvolume_icon_50px.png');
 }
 
 .toolbox-tray-top {
-  width: 80px;
+  background-image: url('../images/icons/toolbox_top_icon_green_80px.png');
   height: 80px;
-  background-image: url(../images/icons/toolbox_distance_icon_green_80px.png);
+  width: 80px !important;
+}
+.toolbox-tools {
+  padding-left: 13px;
 }
