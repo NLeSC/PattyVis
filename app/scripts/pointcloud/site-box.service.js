@@ -4,9 +4,13 @@
     function SiteBoxService($rootScope, THREE, sitesservice, CameraService) {
         var me = this;
 
+        var raycaster;
+
         this.siteBoxList = [];
-        this.selectedSiteBox = null;
-        this.isSiteBoxSelected = false;
+        this.mouse = {
+            x: 0,
+            y: 0
+        };
 
         this.onSitesChanged = function(sites) {
             if(sitesservice.isLoaded){
@@ -21,6 +25,17 @@
             return sitesservice.all;
         }, this.onSitesChanged);
 
+        this.init = function(mouse){
+            raycaster = new THREE.Raycaster();
+            raycaster.params = {
+                "PointCloud" : {
+                    threshold : 0.1
+                }
+            };
+
+            me.mouse = mouse;
+        }
+
         this.hoverOver = function(siteBox) {
             siteBox.material.color.setHex(0x99FFFF);
         };
@@ -34,8 +49,10 @@
         };
 
         this.selectSite = function(event) {
-            if (me.isSiteBoxSelected) {
-                console.log("selected SiteBox: " + me.selectedSiteBox.name);
+            var selectedSiteBox = me.siteBoxSelection(me.mouse.x, me.mouse.y);
+
+            if (selectedSiteBox) {
+                console.log("selected SiteBox: " + selectedSiteBox.name);
             }
         };
 
@@ -58,7 +75,9 @@
             return bBox;
         }
 
-        this.siteBoxSelection = function(mouseX, mouseY, raycaster) {
+        this.siteBoxSelection = function(mouseX, mouseY) {
+            //console.log('mouse x: ' + mouseX);
+            //console.log('mouse y: ' + mouseY);
             var vector = new THREE.Vector3(mouseX, mouseY, 0.5);
             vector.unproject(CameraService.camera);
             raycaster.ray.set(CameraService.camera.position, vector.sub(CameraService.camera.position).normalize());
@@ -72,11 +91,10 @@
             });
 
             if (intersects.length > 0) {
-                me.selectedSiteBox = intersects[0].object;
-                me.isSiteBoxSelected = true;
-                me.hoverOver(me.selectedSiteBox);
+                me.hoverOver(intersects[0].object);
+                return intersects[0].object;
             } else {
-                me.isSiteBoxSelected = false;
+                return null;
             }
         }
 

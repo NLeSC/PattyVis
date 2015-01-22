@@ -42,7 +42,6 @@
     this.renderer = null;
     var camera;
     var scene;
-    var raycaster;
     var pointcloud;
     var skybox;
 
@@ -178,13 +177,6 @@
       
       MeasuringService.init(me.renderer);
 
-      raycaster = new THREE.Raycaster();
-      raycaster.params = {
-          "PointCloud" : {
-              threshold : 0.1
-          }
-      };
-
       skybox = loadSkybox('bower_components/potree/resources/textures/skybox/');
 
       // enable frag_depth extension for the interpolation shader, if available
@@ -192,6 +184,7 @@
 
       referenceFrame = new THREE.Object3D();
 
+      SiteBoxService.init(mouse);
       SiteBoxService.listenTo(me.renderer.domElement);
 
       DrivemapService.load().then(this.loadPointcloud);
@@ -431,7 +424,7 @@
       }
       CameraService.camera.position.copy(camera.position);
 
-      SiteBoxService.siteBoxSelection(mouse.x, mouse.y, raycaster);
+      SiteBoxService.siteBoxSelection(mouse.x, mouse.y);
 
       // render scene
       me.renderer.render(scene, camera);
