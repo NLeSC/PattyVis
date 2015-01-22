@@ -37,10 +37,6 @@
 	var zoom = 45;
 	var maxZoom = 45;
 
-	var autoWalk = false;
-	var autoLook = false;
-	var firstPerson = true;
-
 	var positionOnRoad = 0.0;
 	
 	var looptime = 240;
@@ -98,6 +94,9 @@
 
 		element.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
 
+		element.addEventListener('mouseleave', onBlur, false);
+		element.addEventListener('mouseout', onBlur, false);
+		
 		element.addEventListener('mousemove', mousemove, false);
 		element.addEventListener('mousedown', mousedown, false);
 		element.addEventListener('mouseup', mouseup, false);
@@ -370,6 +369,20 @@
 		keys[event.keyCode] = false;
 	}
 
+	//a blur event is fired when we lose focus
+	//in such an event we want to turn off all keys
+	function onBlur() {
+		
+		drag = false;
+		
+		var i;
+		for (i=0; i < keys.length; i++) {
+			keys[i] = false;
+		}
+				
+	}
+	
+	
 	function mousedown(event) {
 
 		//right mouse button going down!!
