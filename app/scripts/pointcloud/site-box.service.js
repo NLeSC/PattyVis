@@ -106,7 +106,7 @@
             //context.fillText(message, borderThickness, fontsize + borderThickness);
 
             context.font = fontsize + "pt Calibri";
-            context.textAlign = "right";
+            context.textAlign = "center";
 
             // the text we want to write
             var message = siteBox.site.properties.description;
@@ -122,16 +122,16 @@
             var textBoxWidth = messageWidth + 2*textBoxPadding;
             var textBoxHeight = fontsize + 2*textBoxPadding;
             context.fillStyle = textBoxBorderColor;
-            context.fillRect(canvas.width - (textBoxWidth + 2*textBoxBorderWidth), 0, textBoxWidth + 2*textBoxBorderWidth, textBoxHeight + 2*textBoxBorderWidth);
+            context.fillRect(canvas.width/2 - (textBoxWidth/2 + textBoxBorderWidth), canvas_size - fontsize - textBoxPadding*2 - textBoxBorderWidth*2, textBoxWidth + 2*textBoxBorderWidth, textBoxHeight + 2*textBoxBorderWidth);
             context.fillStyle = textBoxFillColor;
-            context.fillRect(canvas.width - (textBoxWidth + textBoxBorderWidth), textBoxBorderWidth, textBoxWidth, textBoxHeight);
+            context.fillRect(canvas.width/2 - (textBoxWidth/2), canvas_size - fontsize - textBoxPadding*2 - textBoxBorderWidth, textBoxWidth, textBoxHeight);
 
             // The two fillText number arguments are canvas-coordinates, so
             // depend on the size of the canvas defined above. The y-coordinate
             // is set to fontsize, otherwise the words fall off the top of the
             // canvas.
             context.fillStyle = fontColor;
-            context.fillText(message, canvas_size - textBoxPadding, fontsize + textBoxPadding);
+            context.fillText(message, canvas_size/2 , canvas_size - fontsize/2 - textBoxPadding/2 - textBoxBorderWidth/2);
             // canvas contents will be used for a texture
             var texture = new THREE.Texture(canvas)
             texture.needsUpdate = true;
