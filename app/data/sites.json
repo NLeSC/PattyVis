@@ -8,7 +8,7 @@
 	    },
 	    "id": 162,
 	    "properties": {
-		    "pointcloud": "data/sites/162/cloud_las.js",
+		    "pointcloud": "data/sites/SITE_162/aligned/cloud.js",
 		    "description": "Pyramid",
 		    "thumbnail": "data/sites/162/P1120067.JPG",
 		    "site_context": "Funerary",
