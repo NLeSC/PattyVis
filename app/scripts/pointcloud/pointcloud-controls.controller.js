@@ -11,6 +11,7 @@
     this.recordCameraLocation = CameraService.recordLocation;
     this.measure = MeasuringService;
     this.PathControls = PathControls;
+    this.cameraMode = PathControls.mode;
   }
 
   angular.module('pattyApp.pointcloud')
