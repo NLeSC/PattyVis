@@ -24,13 +24,15 @@ describe('pointcloud.service', function() {
         opacity: 1,
         showSkybox: true,
         interpolate: false,
+        showStats: false,
         pointSizeType: Potree.PointSizeType.ATTENUATED,
         pointSizeTypes: Potree.PointSizeType,
         pointColorType: Potree.PointColorType.RGB,
         pointColorTypes: Potree.PointColorType,
         pointShapes: Potree.PointShape,
-        pointShape: Potree.PointShape.SQUARE,
-        showStats: false
+        pointShape: Potree.PointShape.CIRCLE,
+        clipMode: Potree.ClipMode.HIGHLIGHT_INSIDE,
+        clipModes: Potree.ClipMode
       };
 
       expect(PointcloudService.settings).toEqual(expected);

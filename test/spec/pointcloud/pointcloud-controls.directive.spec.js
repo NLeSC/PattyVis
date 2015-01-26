@@ -20,6 +20,6 @@ describe('pointcloud-controls.directive', function() {
     var html = '<patty-pointcloud-controls></patty-pointcloud-controls>';
     var result = $compile(html)(scope);
     scope.$digest();
-    expect(result.html()).toContain('glyphicon-cog');
+    expect(result.html()).toContain('gear');
   });
 });
