@@ -129,7 +129,6 @@ To get geometry, bbox and crs.
 
 Height and properties need to be filled manually.
 
-
 Frame rate report
 ----------------
 
