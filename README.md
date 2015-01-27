@@ -1,6 +1,8 @@
 PattyVis
 ========
 
+[![Build Status](https://travis-ci.org/NLeSC/PattyVis.svg?branch=master)](https://travis-ci.org/NLeSC/PattyVis)
+
 Getting started (windows, from scratch)
 ---------------------------------------
 
