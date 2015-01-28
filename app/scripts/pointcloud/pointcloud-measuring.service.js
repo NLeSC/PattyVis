@@ -10,7 +10,10 @@
       heightprofile: null,
       clipvolume: null
     };
+    
     this.pointcloud = null;
+    this.sitePointcloud = null;
+    
     this.profileWidth = 0.1;
     var initCalled = false;
 
@@ -82,6 +85,10 @@
 
     this.setPointcloud = function(pointcloud) {
       this.pointcloud = pointcloud;
+    };
+
+    this.setSitePointcloud = function(pointcloud) {
+      this.sitePointcloud = pointcloud;
     };
 
     this.startDistance = function() {
@@ -175,6 +182,10 @@
 
         if (this.pointcloud) {
           this.pointcloud.material.setClipBoxes(clipBoxes);
+        }
+
+        if (this.sitePointcloud) {
+          this.sitePointcloud.material.setClipBoxes(clipBoxes);
         }
       }
     };

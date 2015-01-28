@@ -5,10 +5,8 @@
     var me = this;
     this.url = 'data/sites.json';
     this.data = {};
-    this.siteID = '';
 
-    this.load = function(siteID) {
-      me.siteID = siteID; 
+    this.load = function() {
       return $http.get(this.url).success(this.onLoad).error(this.onLoadFailure);
     };
 
@@ -31,61 +29,41 @@
 
       return new THREE.Vector3(coords[0], coords[1], coords[2]);
     };
-
-    this.getMeshUrl = function() {
-      for (var i = 0; i < this.data.features.length; i++) {
-          if (this.data.features[i].id === me.siteID) {
-              return this.data.features[i].properties.mesh;
-          }
-      }
-    };
-
-    this.getMeshMtlUrl = function() {
-      for (var i = 0; i < this.data.features.length; i++) {
-          if (this.data.features[i].id === me.siteID) {
-              return this.data.features[i].properties.meshMtl;
-          }
-      }
-    };
     
-    this.getReconstructionMeshUrl = function() {
-      for (var i = 0; i < this.data.features.length; i++) {
-          if (this.data.features[i].id === me.siteID) {
-              return this.data.features[i].properties.reconstructionMesh;
-          }
-      }
-    };
-    
-    this.getReconstructionScale = function() {
-      for (var i = 0; i < this.data.features.length; i++) {
-          if (this.data.features[i].id === me.siteID) {
-              return this.data.features[i].properties.reconstructionScale;
-          }
-      }
-    };
-
-    this.getPointcloudUrl = function() {
-      for (var i = 0; i < this.data.features.length; i++) {
-          if (this.data.features[i].id === me.siteID) {
-              return this.data.features[i].properties.pointcloud;
-          }
-      }
-    };
-    
-    this.getCoordinates = function() {        
+    this.findFeatureByID = function(id) {
         for (var i = 0; i < this.data.features.length; i++) {
-          if (this.data.features[i].id === me.siteID) {
-            return this.data.features[i].geometry.coordinates;
-          }
+            if (this.data.features[i].id === id) {
+                return this.data.features[i];
+            }
         }
     };
+
+    this.getMeshUrl = function(siteID) {
+        return this.findFeatureByID(siteID).properties.mesh;
+    };
+
+    this.getMeshMtlUrl = function(siteID) {
+        return this.findFeatureByID(siteID).properties.meshMtl;
+    };
     
-    this.getBbox = function() {
-        for (var i = 0; i < this.data.features.length; i++) {
-          if (this.data.features[i].id === me.siteID) {
-            return this.data.features[i].bbox;
-          }
-        }        
+    this.getReconstructionMeshUrl = function(siteID) {
+        return this.findFeatureByID(siteID).properties.reconstructionMesh;
+    };
+    
+    this.getReconstructionScale = function(siteID) {
+        return this.findFeatureByID(siteID).properties.reconstructionScale;
+    };
+
+    this.getPointcloudUrl = function(siteID) {
+        return this.findFeatureByID(siteID).properties.pointcloud;
+    };
+    
+    this.getCoordinates = function(siteID) {        
+        return this.findFeatureByID(siteID).properties.coordinates;
+    };
+    
+    this.getBbox = function(siteID) {
+        return this.findFeatureByID(siteID).bbox;
     };
     
     this.getCrs = function() {

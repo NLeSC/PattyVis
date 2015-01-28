@@ -191,7 +191,7 @@
       SiteBoxService.listenTo(me.renderer.domElement);
 
       DrivemapService.load().then(this.loadPointcloud);
-      SiteLoaderService.load('162').then(this.loadSite);
+      SiteLoaderService.load().then(this.loadSite);
     };
 
     this.loadPointcloud = function() {
@@ -245,7 +245,7 @@
 
     this.loadSite = function() {
       // load pointcloud
-      var pointcloudPath = SiteLoaderService.getPointcloudUrl();
+      var pointcloudPath = SiteLoaderService.getPointcloudUrl(162);
       
       me.stats.lasCoordinates.crs = SiteLoaderService.getCrs();
 
@@ -257,6 +257,7 @@
         sitePointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
 
         referenceFrame.add(sitePointcloud);
+        MeasuringService.setSitePointcloud(sitePointcloud);
       });
       
       /*
@@ -451,6 +452,7 @@
       }
 
       if (sitePointcloud) {
+        sitePointcloud.material.clipMode = me.settings.clipMode;
         sitePointcloud.material.size = me.settings.pointSize;
         sitePointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
         sitePointcloud.material.opacity = me.settings.opacity;

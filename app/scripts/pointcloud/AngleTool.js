@@ -20,7 +20,7 @@ Potree.AngleTool = function(scene, camera, renderer){
 	
 	var state = STATE.DEFAULT;
 	
-	this.activeMeasurement = {};
+	this.activeMeasurement = null;
 	this.measurements = [];
 	this.sceneMeasurement = new THREE.Scene();
 	this.sceneRoot = new THREE.Object3D();
@@ -153,6 +153,12 @@ Potree.AngleTool = function(scene, camera, renderer){
 			
 			this.update();
 		};
+        
+        this.getAngleBetweenLines = function(cornerPoint, point1, point2) {
+            var v1 = new THREE.Vector3().subVectors(point1, cornerPoint);
+            var v2 = new THREE.Vector3().subVectors(point2, cornerPoint);
+            return v1.angleTo(v2);
+        };
 	
 		this.getAngle = function(index){
 			var angle = 0;
@@ -161,20 +167,12 @@ Potree.AngleTool = function(scene, camera, renderer){
             var p1 = this.points[1];
             var p2 = this.points[2];
             
-            var v1,v2;
-            
 			if (index === 0) {
-                v1 = new THREE.Vector3().subVectors(p1, p0);
-                v2 = new THREE.Vector3().subVectors(p2, p0);
-                angle = v1.angleTo(v2);
+                angle = this.getAngleBetweenLines(p0, p1, p2);
             } else if (index === 1) {
-                v1 = new THREE.Vector3().subVectors(p0, p1);
-                v2 = new THREE.Vector3().subVectors(p2, p1);
-                angle = v1.angleTo(v2);
+                angle = this.getAngleBetweenLines(p1, p0, p2);
             } else if (index === 2) {
-                v1 = new THREE.Vector3().subVectors(p0, p2);
-                v2 = new THREE.Vector3().subVectors(p1, p2);
-                angle = v1.angleTo(v2);
+                angle = this.getAngleBetweenLines(p2, p0, p1);
             }
 			
 			return angle;
@@ -460,8 +458,7 @@ Potree.AngleTool = function(scene, camera, renderer){
 		if(this.activeMeasurement){
 			measurements.push(this.activeMeasurement);
 		}
-		
-		
+				
 		for(i = 0; i < measurements.length; i++){
 			var measurement = measurements[i];
 			for(j = 0; j < measurement.spheres.length; j++){
