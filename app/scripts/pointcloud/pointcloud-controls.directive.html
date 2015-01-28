@@ -95,7 +95,7 @@
 </div>
 
 <div class="toolbox big-icon">
-  <button ng-click="pc.showToolboxTray=!pc.showToolboxTray" class="btn " ng-class="{active: pc.showToolboxTray}"></button>
+  <button ng-click="pc.toggleToolbox()" class="btn " ng-class="{active: pc.showToolboxTray}"></button>
 </div>
 
 
@@ -112,10 +112,10 @@
 </div>
 
 <div class="toolbox-tray tool-icon" collapse='!pc.showToolboxTray'>
-  <button ng-click="pc.showToolboxTray=!pc.showToolboxTray" class="btn toolbox-tray-top"></button>
+  <button ng-click="pc.toggleToolbox()" class="btn toolbox-tray-top"></button>
   <div class="toolbox-tools">
     <button ng-click="pc.measure.startDistance()" class="btn distance" title="Start distance measurement"></button>
-    <button disabled ng-click="pc.measure.startAngle()" class="btn angle" title="Start angle measurement"></button>
+    <button ng-click="pc.measure.startAngle()" class="btn angle" title="Start angle measurement"></button>
     <button ng-click="pc.measure.startArea()" class="btn area" title="Start area measurement"></button>
     <button ng-click="pc.measure.startVolume()" class="btn volume" title="Start volume measurement"></button>
     <button ng-click="pc.measure.startHeighProfile()" class="btn heightprofile" title="Start heightprofile measurement"></button>
