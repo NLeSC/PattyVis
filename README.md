@@ -92,20 +92,35 @@ grunt test
 ```
 Generates test report and coverage inside `test/reports` folder.
 
-### Run end-to-end tests
+### Run end-to-end tests with local browser (chrome)
 
 Before tests can be run the webdrivers must be updated/installed with
 ```
 npm run webdriver-update
 ```
 
-Tests in Firefox and Chrome can be run with
+Tests in Chrome can be run with
 ```
 grunt e2e-local
 ```
 
 The pointcloud and minimap use a canvas and can't be tested automatically so they must be verified manually using the screenshots in the report.
 Open `e2e/reports/report.html` in a web-browser.
+
+### Run end-to-end tests on [saucelabs](https://saucelabs.com/)
+
+Before tests can be run the webdrivers must be updated/installed with
+```
+npm run webdriver-update
+```
+
+Tests in Chrome, Firefox on Windows Linux and OSX can be run with
+```
+grunt e2e-sauce
+```
+
+The pointcloud and minimap use a canvas and can't be tested automatically so they must be verified manually using the screenshots in the report.
+Open `https://saucelabs.com/u/patty-vis` in a web-browser.
 
 ### Build a distro
 
