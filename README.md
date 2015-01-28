@@ -101,7 +101,7 @@ npm run webdriver-update
 
 Tests in Firefox and Chrome can be run with
 ```
-grunt e2e
+grunt e2e-local
 ```
 
 The pointcloud and minimap use a canvas and can't be tested automatically so they must be verified manually using the screenshots in the report.

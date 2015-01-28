@@ -11,12 +11,12 @@ before_script:
   - 'bower install'
 script:
   - 'grunt test'
-  - 'grunt e2e'
+  - 'grunt e2e-sauce'
 after_script:
   - codeclimate < test/reports/coverage/*/lcov.info
 env:
   global:
-    - secure: GCnckgA+OB9QPimL7E3U/3ou1HTxv/m5eDkxPi2jF3prx1TkfJNe3zMw3Ve+AA39Rnw/pyXrpFIGajA5FLHJv7hV2cMWjhRiyUkmSFTMd+Xf58ogmV2tUWyBQxULFlNjMMQ28w+b8qVhGgQ+FcTanz//8RMZg+UDZ5DTiXaF+xg=
-    - secure: jcan2L7Di589Jp/zzKXwLCiCvXIE10ZmQrfkGS8d7OWEo20KI9WPdK92fze8OyzUXPBm7hJxjqrWHS8L/etwE6eRUxPFt/ux+UHmWJm9PMRYZJPucN27wjCcOR+GPR3jDmIS6z7qm+zWJUh3jW0YxuJHiZpkjcV0cUGa4/vyV5c=
+    - secure: f0zQxOSew2ysDBhyHzB8CwRdp3Ll6MNVCHrAibIUVzDZuwuxCPBkIM7qd8mvnpJGr3GHFirNxT8khBvWKyhKDZct4DsceJVeYqoeB9J7gTbj1sxa9BKGof0p+0wqIWZ77Sp5i5UE32FP8X434OF/u5xpxttMllug0s5gdpxWlXo=
+    - secure: oMss10tPTQ0EwaBM/CVuTGVfFpwFFtlnlvF98YmkHTGZkW5HnrGW52prVMUUrGkEnyI6yqAhZEsYBNh7ZUSveraeMcPdDx5/oYrLi8vj7CRcKoidc+XZso66pvoL1SA+ea+5KTM0LFtMp4/vaxTzIo4Xi5mkO79fRqV/1MRU/ew=
 addons:
   sauce_connect: true
