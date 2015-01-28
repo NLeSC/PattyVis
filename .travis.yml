@@ -9,6 +9,9 @@ before_install:
 before_script:
   - 'npm install -g bower grunt-cli'
   - 'bower install'
+script:
+  - 'grunt test'
+  - 'grunt e2e'
 after_script:
   - codeclimate < test/reports/coverage/*/lcov.info
 env:
