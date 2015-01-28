@@ -9,6 +9,7 @@ before_install:
 before_script:
   - 'npm install -g bower grunt-cli'
   - 'bower install'
+  - 'npm run webdriver-update'
 script:
   - 'grunt test'
   - 'grunt e2e-sauce'
