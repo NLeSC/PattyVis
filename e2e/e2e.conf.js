@@ -7,10 +7,25 @@ exports.config = {
     '*.js'
   ],
 
+  sauceUser: 'mkuzak',
+  sauceKey: '2e7a055d-0a1d-40ce-81dd-f6bff479c555',
+
   multiCapabilities: [{
-      'browserName': 'chrome'
-  // }, {
-  //     'browserName': 'firefox'
+    'browserName': 'chrome',
+    'version': '39.0',
+    'platform': 'WIN8_1'
+  }, {
+    'browserName': 'chrome',
+    'version': '39.0',
+    'platform': 'Linux'
+  }, {
+    'browserName': 'chrome',
+    'version': '39.0',
+    'platform': 'OS X 10.10'
+  }, {
+    'browserName': 'Firefox',
+    'version': '34.0',
+    'platform': 'Linux'
   }],
 
   baseUrl: 'http://localhost:9001/',
