@@ -1,5 +1,8 @@
 'use strict';
 
+/* global describe, beforeEach, it, expect */
+/* global element, by, browser */
+
 describe('pattyApp', function() {
 
   beforeEach(function() {
@@ -16,7 +19,12 @@ describe('pattyApp', function() {
     });
     it('should not show settings panel', function() {
       var panel = element(by.css('.settings-panel'));
-      expect(panel.isDisplayed()).toBe(false);
+      expect(panel.isDisplayed()).toBeFalsy();
+    });
+
+    it('should not show tools', function() {
+      var panel = element(by.css('.toolbox-tools'));
+      expect(panel.isDisplayed()).toBeFalsy();
     });
   });
 
@@ -42,12 +50,59 @@ describe('pattyApp', function() {
 
   describe('click on settings gear', function() {
     beforeEach(function() {
-      element(by.css('.glyphicon-cog')).click();
+      element(by.css('.btn.gear')).click();
     });
 
     it('should show settings panel', function() {
       var panel = element(by.css('.settings-panel'));
-      expect(panel.isDisplayed()).toBe(true);
+      expect(panel.isDisplayed()).toBeTruthy();
     });
   });
+
+  describe('click on help icon', function() {
+    beforeEach(function() {
+      element(by.css('.btn.help')).click();
+    });
+
+    it('should show help panel', function() {
+      var panel = element(by.css('.help-panel'));
+      expect(panel.isDisplayed()).toBeTruthy();
+    });
+  });
+
+  describe('clicking on toolbox icon', function() {
+    beforeEach(function() {
+      element(by.css('.toolbox .btn')).click();
+    });
+
+    it('should show tools', function() {
+      var panel = element(by.css('.toolbox-tools'));
+      expect(panel.isDisplayed()).toBeTruthy();
+    });
+
+    describe('and then clicking on bottom toolbox icon', function() {
+
+      beforeEach(function() {
+        element(by.css('.toolbox .btn')).click();
+      });
+
+      it('should hide tools', function() {
+        var panel = element(by.css('.toolbox-tools'));
+        expect(panel.isDisplayed()).toBeFalsy();
+      });
+    });
+
+    describe('and then clicking on top toolbox icon', function() {
+
+      beforeEach(function() {
+        element(by.css('.toolbox-tray-top')).click();
+      });
+
+      it('should hide tools', function() {
+        var panel = element(by.css('.toolbox-tools'));
+        expect(panel.isDisplayed()).toBeFalsy();
+      });
+    });
+  });
+
 });
