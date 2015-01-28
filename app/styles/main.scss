@@ -83,7 +83,7 @@ patty-pointcloud-stats {
 .toolbox-tray {
   position: absolute;
   right: 5px;
-  bottom: 70px;
+  bottom: 44px;
   width: 80px;
 }
 .settings-panel .panel-body {
@@ -139,6 +139,7 @@ patty-pointcloud-stats {
 }
 .toolbox .btn.active {
   background-image: url('../images/icons/toolbox_bottom_icon_green_80px.png');
+  height: 60px;
 }
 
 .tool-icon .btn {
