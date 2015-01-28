@@ -12,6 +12,12 @@
     this.measure = MeasuringService;
     this.PathControls = PathControls;
     this.cameraMode = PathControls.mode;
+    
+    this.toggleToolbox = function() {
+        this.showToolboxTray = !this.showToolboxTray;
+        
+        this.measure.clear();
+    }
   }
 
   angular.module('pattyApp.pointcloud')
