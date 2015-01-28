@@ -90,6 +90,13 @@ patty-pointcloud-stats {
   padding-left: 20px;
   padding-right: 20px;
 }
+
+.help-panel .panel-body {
+  width: 700px;
+  height: 500px;
+  overflow-y: auto;
+}
+
 .big-icon .btn {
   width: 80px;
   height: 80px;
