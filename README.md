@@ -4,6 +4,7 @@ PattyVis
 [![Build Status](https://travis-ci.org/NLeSC/PattyVis.svg?branch=master)](https://travis-ci.org/NLeSC/PattyVis)
 [![Code Climate](https://codeclimate.com/github/NLeSC/PattyVis/badges/gpa.svg)](https://codeclimate.com/github/NLeSC/PattyVis)
 [![Test Coverage](https://codeclimate.com/github/NLeSC/PattyVis/badges/coverage.svg)](https://codeclimate.com/github/NLeSC/PattyVis)
+[![Sauce Test Status](https://saucelabs.com/buildstatus/patty-vis)](https://saucelabs.com/u/patty-vis)
 [![devDependency Status](https://david-dm.org/NLeSC/PattyVis/dev-status.svg)](https://david-dm.org/NLeSC/PattyVis#info=devDependencies)
 
 Getting started (windows, from scratch)
@@ -107,20 +108,27 @@ grunt e2e-local
 The pointcloud and minimap use a canvas and can't be tested automatically so they must be verified manually using the screenshots in the report.
 Open `e2e/reports/report.html` in a web-browser.
 
-### Run end-to-end tests on [saucelabs](https://saucelabs.com/)
+### Run end-to-end tests on [sauce labs](https://saucelabs.com/)
 
-Before tests can be run the webdrivers must be updated/installed with
+Before tests can be run the sauce labs credentials must be setup
+```
+export SAUCE_USER=<your sauce labs username>
+export SAUCE_ACCESS_KEY=<your sauce labs access key>
+```
+
+Also before tests can be run the webdrivers must be updated/installed with
 ```
 npm run webdriver-update
 ```
 
-Tests in Chrome, Firefox on Windows Linux and OSX can be run with
+Tests in Chrome, Firefox on Windows, Linux and OSX can be run with
 ```
 grunt e2e-sauce
 ```
 
-The pointcloud and minimap use a canvas and can't be tested automatically so they must be verified manually using the screenshots in the report.
-Open `https://saucelabs.com/u/patty-vis` in a web-browser.
+The pointcloud and minimap use a canvas and can't be tested automatically so they must be verified manually using the screencast in the report at https://saucelabs.com/u/patty-vis.
+
+Travis-ci also runs end-to-end tests on sauce labs.
 
 ### Build a distro
 
