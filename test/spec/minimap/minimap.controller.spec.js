@@ -1,5 +1,7 @@
 'use strict';
 
+/* global proj4 */
+
 describe('minimap.controller', function() {
 
   // load the module

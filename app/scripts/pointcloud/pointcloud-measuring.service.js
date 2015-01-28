@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function MeasuringService(Potree, THREE, SceneService, CameraService, $window) {    
+  function MeasuringService(Potree, THREE, SceneService, CameraService, $window) {   
     var tools = {
       distance: null,
       angle: null,
@@ -33,41 +33,35 @@
     }
     
     this.clear = function() {      
-      tools.distance.measurements = [];
-      tools.distance.sceneMeasurement = new THREE.Scene();
-      tools.distance.sceneRoot = new THREE.Object3D();
-      tools.distance.sceneMeasurement.add(tools.distance.sceneRoot);
-      tools.distance.light = new THREE.DirectionalLight( 0xffffff, 1 );
-      tools.distance.light.position.set( 0, 0, 10 );
-      tools.distance.light.lookAt(new THREE.Vector3(0,0,0));
-      tools.distance.sceneMeasurement.add( tools.distance.light );
+        this.clearStandardPotreeMeasurementTool(tools.distance);   
+        this.clearStandardPotreeMeasurementTool(tools.area);   
+        this.clearStandardPotreeMeasurementTool(tools.angle);   
+        this.clearVolumes();   
+        this.clearProfile();
+    };
     
-      tools.angle.measurements = [];
-      tools.angle.sceneMeasurement = new THREE.Scene();
-      tools.angle.sceneRoot = new THREE.Object3D();
-      tools.angle.sceneMeasurement.add(tools.angle.sceneRoot);
-      tools.angle.light = new THREE.DirectionalLight( 0xffffff, 1 );
-      tools.angle.light.position.set( 0, 0, 10 );
-      tools.angle.light.lookAt(new THREE.Vector3(0,0,0));
-      tools.angle.sceneMeasurement.add( tools.angle.light );
-      
-      tools.area.measurements = [];
-      tools.area.sceneMeasurement = new THREE.Scene();
-      tools.area.sceneRoot = new THREE.Object3D();
-      tools.area.sceneMeasurement.add(tools.area.sceneRoot);
-      tools.area.light = new THREE.DirectionalLight( 0xffffff, 1 );
-      tools.area.light.position.set( 0, 0, 10 );
-      tools.area.light.lookAt(new THREE.Vector3(0,0,0));
-      tools.area.sceneMeasurement.add( tools.area.light );
-      
+    this.clearStandardPotreeMeasurementTool = function(tool) {
+        tool.measurements = [];
+        tool.sceneMeasurement = new THREE.Scene();
+        tool.sceneRoot = new THREE.Object3D();
+        tool.sceneMeasurement.add(tool.sceneRoot);
+        tool.light = new THREE.DirectionalLight( 0xffffff, 1 );
+        tool.light.position.set( 0, 0, 10 );
+        tool.light.lookAt(new THREE.Vector3(0,0,0));
+        tool.sceneMeasurement.add( tool.light );        
+    };
+    
+    this.clearVolumes = function() {
       tools.volume.volumes = [];
-      tools.volume.sceneVolume = new THREE.Scene();
+      tools.volume.sceneVolume = new THREE.Scene();        
+    };
     
+    this.clearProfile = function() {
       tools.heightprofile.profiles = [];
       tools.heightprofile.sceneProfile = new THREE.Scene();
       tools.heightprofile.sceneRoot = new THREE.Object3D();
-      tools.heightprofile.sceneProfile.add(tools.heightprofile.sceneRoot);
-    }
+      tools.heightprofile.sceneProfile.add(tools.heightprofile.sceneRoot);        
+    };
     
     this.init = function(renderer) {
       var scene = SceneService.getScene();
