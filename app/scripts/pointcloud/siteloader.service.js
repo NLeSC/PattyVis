@@ -34,7 +34,7 @@
 
     this.getMeshUrl = function() {
       for (var i = 0; i < this.data.features.length; i++) {
-          if (this.data.features[i].id == me.siteID) {
+          if (this.data.features[i].id === me.siteID) {
               return this.data.features[i].properties.mesh;
           }
       }
@@ -42,7 +42,7 @@
 
     this.getMeshMtlUrl = function() {
       for (var i = 0; i < this.data.features.length; i++) {
-          if (this.data.features[i].id == me.siteID) {
+          if (this.data.features[i].id === me.siteID) {
               return this.data.features[i].properties.meshMtl;
           }
       }
@@ -50,7 +50,7 @@
     
     this.getReconstructionMeshUrl = function() {
       for (var i = 0; i < this.data.features.length; i++) {
-          if (this.data.features[i].id == me.siteID) {
+          if (this.data.features[i].id === me.siteID) {
               return this.data.features[i].properties.reconstructionMesh;
           }
       }
@@ -58,7 +58,7 @@
     
     this.getReconstructionScale = function() {
       for (var i = 0; i < this.data.features.length; i++) {
-          if (this.data.features[i].id == me.siteID) {
+          if (this.data.features[i].id === me.siteID) {
               return this.data.features[i].properties.reconstructionScale;
           }
       }
@@ -66,7 +66,7 @@
 
     this.getPointcloudUrl = function() {
       for (var i = 0; i < this.data.features.length; i++) {
-          if (this.data.features[i].id == me.siteID) {
+          if (this.data.features[i].id === me.siteID) {
               return this.data.features[i].properties.pointcloud;
           }
       }
@@ -74,7 +74,7 @@
     
     this.getCoordinates = function() {        
         for (var i = 0; i < this.data.features.length; i++) {
-          if (this.data.features[i].id == me.siteID) {
+          if (this.data.features[i].id === me.siteID) {
             return this.data.features[i].geometry.coordinates;
           }
         }
@@ -82,11 +82,11 @@
     
     this.getBbox = function() {
         for (var i = 0; i < this.data.features.length; i++) {
-          if (this.data.features[i].id == me.siteID) {
+          if (this.data.features[i].id === me.siteID) {
             return this.data.features[i].bbox;
           }
         }        
-    }
+    };
     
     this.getCrs = function() {
       return this.data.crs.properties.name;

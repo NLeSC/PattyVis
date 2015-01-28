@@ -1,12 +1,7 @@
-
-//
-// calculating area of a polygon:
-// http://www.mathopenref.com/coordpolygonarea2.html
-//
-//
-//
+﻿/* global THREE, Potree */
 
 Potree.AngleTool = function(scene, camera, renderer){
+    'use strict';
 	
 	var scope = this;
 	this.enabled = false;
@@ -25,9 +20,7 @@ Potree.AngleTool = function(scene, camera, renderer){
 	
 	var state = STATE.DEFAULT;
 	
-	var sphereGeometry = new THREE.SphereGeometry(0.4, 10, 10);
-	
-	this.activeMeasurement;
+	this.activeMeasurement = {};
 	this.measurements = [];
 	this.sceneMeasurement = new THREE.Scene();
 	this.sceneRoot = new THREE.Object3D();
@@ -71,7 +64,9 @@ Potree.AngleTool = function(scene, camera, renderer){
 	};
 	
 	var dropEvent = function(event){
-	
+		if(event === undefined) {
+			return;
+		}	
 	};
 	
 	
@@ -104,10 +99,10 @@ Potree.AngleTool = function(scene, camera, renderer){
 
 			// sphere
 			var sphere = new THREE.Mesh(sphereGeometry, createSphereMaterial());
-			sphere.addEventListener("mousemove", moveEvent);
-			sphere.addEventListener("mouseleave", leaveEvent);
-			sphere.addEventListener("mousedrag", dragEvent);
-			sphere.addEventListener("drop", dropEvent);
+			sphere.addEventListener('mousemove', moveEvent);
+			sphere.addEventListener('mouseleave', leaveEvent);
+			sphere.addEventListener('mousedrag', dragEvent);
+			sphere.addEventListener('drop', dropEvent);
 			
 			// edge
 			var lineGeometry = new THREE.Geometry();
@@ -151,8 +146,7 @@ Potree.AngleTool = function(scene, camera, renderer){
 		
 		this.removeAll = function(){
             while (this.points.length > 1) {
-                this.remove(0);
-                index++;            
+                this.remove(0);      
             }	
 
             this.sceneRoot.visible = false;            
@@ -167,17 +161,19 @@ Potree.AngleTool = function(scene, camera, renderer){
             var p1 = this.points[1];
             var p2 = this.points[2];
             
-			if (index == 0) {
-                var v1 = new THREE.Vector3().subVectors(p1, p0);
-                var v2 = new THREE.Vector3().subVectors(p2, p0);
+            var v1,v2;
+            
+			if (index === 0) {
+                v1 = new THREE.Vector3().subVectors(p1, p0);
+                v2 = new THREE.Vector3().subVectors(p2, p0);
                 angle = v1.angleTo(v2);
-            } else if (index == 1) {
-                var v1 = new THREE.Vector3().subVectors(p0, p1);
-                var v2 = new THREE.Vector3().subVectors(p2, p1);
+            } else if (index === 1) {
+                v1 = new THREE.Vector3().subVectors(p0, p1);
+                v2 = new THREE.Vector3().subVectors(p2, p1);
                 angle = v1.angleTo(v2);
-            } else if (index == 2) {
-                var v1 = new THREE.Vector3().subVectors(p0, p2);
-                var v2 = new THREE.Vector3().subVectors(p1, p2);
+            } else if (index === 2) {
+                v1 = new THREE.Vector3().subVectors(p0, p2);
+                v2 = new THREE.Vector3().subVectors(p1, p2);
                 angle = v1.angleTo(v2);
             }
 			
@@ -200,8 +196,10 @@ Potree.AngleTool = function(scene, camera, renderer){
 		this.update = function(){
 			//this.areaLabel.visible = this.points.length >= 3;
             		
+            var point, i;
+            
 			if(this.points.length === 1){
-				var point = this.points[0];
+				point = this.points[0];
 				this.spheres[0].position.copy(point);
 				this.edges[0].visible = false;
                 this.angleLabels[0].visible = false;
@@ -213,13 +211,10 @@ Potree.AngleTool = function(scene, camera, renderer){
 			
 			var centroid = new THREE.Vector3();
 			
-			for(var i = 0; i <= lastIndex; i++){
-				var point = this.points[i];
+			for(i = 0; i <= lastIndex; i++){
+				point = this.points[i];
 				var sphere = this.spheres[i];
 				var leftIndex = (i === 0) ? lastIndex : i - 1;
-				var rightIndex = (i === lastIndex) ? 0 : i + 1;
-				var leftVertex = this.points[leftIndex];
-				var rightVertex = this.points[rightIndex];
 				var leftEdge = this.edges[leftIndex];
 				var rightEdge = this.edges[i];
 								
@@ -240,51 +235,30 @@ Potree.AngleTool = function(scene, camera, renderer){
 				centroid.add(point);
 			}
 			centroid.multiplyScalar(1 / this.points.length);
-			
-			
-			//var msg = Potree.utils.addCommas(this.getArea().toFixed(1)) + "�";
-			//this.areaLabel.setText(msg);
-			//this.areaLabel.position.copy(centroid);
-                        
+			                        
             if (this.points.length >= 3) {
-                for(var i = 0; i <= lastIndex; i++){
+                for(i = 0; i <= lastIndex; i++){
                     this.angleLabels[i].visible = true;
                     
-                    this.angleLabels[i].setText(Potree.utils.addCommas((this.getAngle(i)*(180.0/Math.PI)).toFixed(1)));
+                    this.angleLabels[i].setText(Potree.utils.addCommas((this.getAngle(i)*(180.0/Math.PI)).toFixed(1)) + '°');
                     var anglePos = new THREE.Vector3().addVectors(this.points[i], centroid).multiplyScalar(0.5);
                     this.angleLabels[i].position.copy(anglePos);
                 }
             } else {
-                 for(var i = 0; i <= lastIndex; i++){
+                 for(i = 0; i <= lastIndex; i++){
                     this.angleLabels[i].visible = false;
                  }
             }			
-		};
-		
-		
+		};	
 	}
 	
-	function createSphereMaterial(){
-		var sphereMaterial = new THREE.MeshLambertMaterial({
-			shading: THREE.SmoothShading, 
-			color: 0xff0000, 
-			ambient: 0xaaaaaa,
-			depthTest: false, 
-			depthWrite: false}
-		);
-		
-		return sphereMaterial;
-	};
-
-	
-	function onClick(event){
-	
-		if(!scope.enabled){
+	function onClick(event) {	
+		if(!scope.enabled || event === undefined) {
 			return;
 		}
 	
 		var I = getMousePointCloudIntersection();
-		if(I){
+		if(I) {
 			var pos = I.clone();
 
 			if(state === STATE.DEFAULT){
@@ -292,7 +266,7 @@ Potree.AngleTool = function(scene, camera, renderer){
 				scope.activeMeasurement = new Measure();
 			}    
 
-            if (state == STATE.PICKING && scope.activeMeasurement && scope.activeMeasurement.points.length > 2) {
+            if (state === STATE.PICKING && scope.activeMeasurement && scope.activeMeasurement.points.length > 2) {
                 scope.measurements.push(scope.activeMeasurement);
                 scope.activeMeasurement = undefined;
                 state = STATE.DEFAULT;
@@ -300,25 +274,31 @@ Potree.AngleTool = function(scene, camera, renderer){
             } else {
                 scope.activeMeasurement.add(pos);
                 
-                var event = {
+                var newEvent = {
                     type: 'newpoint',
                     position: pos.clone()
                 };
-                scope.dispatchEvent(event);
+                scope.dispatchEvent(newEvent);
             }
 		}
-	};
+	}
 	
 	function onMouseMove(event){
+		if(event === undefined) {
+			return;
+		}
+        
 		scope.mouse.x = ( event.clientX / scope.domElement.clientWidth ) * 2 - 1;
 		scope.mouse.y = - ( event.clientY / scope.domElement.clientHeight ) * 2 + 1;
+        
+        var I;
 		
 		if(scope.dragstart){
 			
-			scope.dragstart.object.dispatchEvent({type: "mousedrag", event: event});
+			scope.dragstart.object.dispatchEvent({type: 'mousedrag', event: event});
 			
-		}else if(state == STATE.PICKING && scope.activeMeasurement){
-			var I = getMousePointCloudIntersection();
+		}else if(state === STATE.PICKING && scope.activeMeasurement){
+			I = getMousePointCloudIntersection();
 			
 			if(I){
 			
@@ -327,14 +307,14 @@ Potree.AngleTool = function(scene, camera, renderer){
 			}
 			
 		}else{
-			var I = getHoveredElement();
+			I = getHoveredElement();
 			
 			if(I){
 				
-				I.object.dispatchEvent({type: "mousemove", target: I.object, event: event});
+				I.object.dispatchEvent({type: 'mousemove', target: I.object, event: event});
 				
 				if(scope.hoveredElement && scope.hoveredElement !== I.object){
-					scope.hoveredElement.dispatchEvent({type: "mouseleave", target: scope.hoveredElement, event: event});
+					scope.hoveredElement.dispatchEvent({type: 'mouseleave', target: scope.hoveredElement, event: event});
 				}
 				
 				scope.hoveredElement = I.object;
@@ -342,17 +322,21 @@ Potree.AngleTool = function(scene, camera, renderer){
 			}else{
 			
 				if(scope.hoveredElement){
-					scope.hoveredElement.dispatchEvent({type: "mouseleave", target: scope.hoveredElement, event: event});
+					scope.hoveredElement.dispatchEvent({type: 'mouseleave', target: scope.hoveredElement, event: event});
 				}
 				
 				scope.hoveredElement = null;
 			
 			}
 		}
-	};
+	}
 	
 	function onRightClick(event){
-		if(state == STATE.PICKING){		        
+		if(event === undefined) {
+			return;
+		}
+        
+		if(state === STATE.PICKING){		        
 			scope.activeMeasurement.removeAll();
 			scope.activeMeasurement = undefined;
 		
@@ -383,7 +367,7 @@ Potree.AngleTool = function(scene, camera, renderer){
 	function onMouseUp(event){
 		
 		if(scope.dragstart){
-			scope.dragstart.object.dispatchEvent({type: "drop", event: event});
+			scope.dragstart.object.dispatchEvent({type: 'drop', event: event});
 			scope.dragstart = null;
 		}
 		
@@ -412,7 +396,7 @@ Potree.AngleTool = function(scene, camera, renderer){
 		}else{
 			return false;
 		}
-	};
+	}
 	
 	function getMousePointCloudIntersection(){
 		var vector = new THREE.Vector3( scope.mouse.x, scope.mouse.y, 0.5 );
@@ -468,7 +452,9 @@ Potree.AngleTool = function(scene, camera, renderer){
 	
 	this.update = function(){
 		var measurements = [];
-		for(var i = 0; i < this.measurements.length; i++){
+        var i, j, wp, w;
+        
+		for(i = 0; i < this.measurements.length; i++){
 			measurements.push(this.measurements[i]);
 		}
 		if(this.activeMeasurement){
@@ -476,20 +462,19 @@ Potree.AngleTool = function(scene, camera, renderer){
 		}
 		
 		
-		for(var i = 0; i < measurements.length; i++){
+		for(i = 0; i < measurements.length; i++){
 			var measurement = measurements[i];
-			for(var j = 0; j < measurement.spheres.length; j++){
+			for(j = 0; j < measurement.spheres.length; j++){
 				var sphere = measurement.spheres[j];
-				var wp = sphere.getWorldPosition().applyMatrix4(this.camera.matrixWorldInverse);
-				var pp = new THREE.Vector4(wp.x, wp.y, wp.z).applyMatrix4(camera.projectionMatrix);
-				var w = Math.abs((wp.z  / 60)); // * (2 - pp.z / pp.w);
+				wp = sphere.getWorldPosition().applyMatrix4(this.camera.matrixWorldInverse);
+				w = Math.abs((wp.z  / 60));
 				sphere.scale.set(w, w, w);
 			}
 			
-			for(var j = 0; j < measurement.angleLabels.length; j++){
+			for(j = 0; j < measurement.angleLabels.length; j++){
 				var label = measurement.angleLabels[j];
-				var wp = label.getWorldPosition().applyMatrix4(this.camera.matrixWorldInverse);
-				var w = Math.abs(wp.z  / 10);
+				wp = label.getWorldPosition().applyMatrix4(this.camera.matrixWorldInverse);
+				w = Math.abs(wp.z  / 10);
 				var l = label.scale.length();
 				label.scale.multiplyScalar(w / l);
 			}
@@ -497,8 +482,7 @@ Potree.AngleTool = function(scene, camera, renderer){
 		}
 	
 		this.light.position.copy(this.camera.position);
-		this.light.lookAt(this.camera.getWorldDirection().add(this.camera.position));
-		
+		this.light.lookAt(this.camera.getWorldDirection().add(this.camera.position));		
 	};
 	
 	this.render = function(){

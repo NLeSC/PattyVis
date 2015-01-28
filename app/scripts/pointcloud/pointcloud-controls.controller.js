@@ -17,7 +17,7 @@
         this.showToolboxTray = !this.showToolboxTray;
         
         this.measure.clear();
-    }
+    };
   }
 
   angular.module('pattyApp.pointcloud')

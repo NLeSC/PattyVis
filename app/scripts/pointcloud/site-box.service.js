@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function SiteBoxService($rootScope, THREE, sitesservice, CameraService, SceneService) {
+    function SiteBoxService($rootScope, THREE, sitesservice, CameraService) {
         var me = this;
 
         var raycaster;
@@ -17,7 +17,7 @@
             me.referenceFrame = referenceFrame;
             raycaster = new THREE.Raycaster();
             raycaster.params = {
-                "PointCloud" : {
+                'PointCloud' : {
                     threshold : 0.1
                 }
             };
@@ -28,7 +28,7 @@
         this.onSitesChanged = function(sites) {
             if(sitesservice.isLoaded){
                 me.siteBoxList = [];
-                for(i=0; i<sites.features.length; i++){
+                for(var i=0; i<sites.features.length; i++){
                     me.siteBoxList.push(me.createSiteBox(sites.features[i]));
                 }
             }
@@ -51,6 +51,10 @@
         };
 
         this.selectSite = function(event) {
+            if(event === undefined) {
+                return;
+            }
+            
             var selectedSiteBox = me.siteBoxSelection(me.mouse.x, me.mouse.y);
             if (selectedSiteBox) {
                 if (selectedSiteBox.hasOwnProperty('textLabel')) {
@@ -68,13 +72,13 @@
 
         this.addTextLabel = function( siteBox ){
             // parameters
-            var canvas_size = 1000; // pt != on-screen pixels
+            var canvasSize = 1000; // pt != on-screen pixels
             var fontsize = 40; // pt (same as canvas size)
             var textBoxPadding = fontsize/2; // pt
             var textBoxBorderWidth = 1; // pt
-            var textBoxBorderColor = "rgba(0,0,0, 0.8)";
-            var textBoxFillColor = "rgba(255,255,255, 0.8)";
-            var fontColor = "rgb(0,0,0)";
+            var textBoxBorderColor = 'rgba(0,0,0, 0.8)';
+            var textBoxFillColor = 'rgba(255,255,255, 0.8)';
+            var fontColor = 'rgb(0,0,0)';
 
             var x = siteBox.position.x;
             var y = siteBox.position.y;
@@ -84,37 +88,37 @@
             var canvas = document.createElement('canvas');
             // keep canvas square to avoid stretching problems (see sprite size
             // below as well):
-            canvas.width = canvas_size;
-            canvas.height = canvas_size;
+            canvas.width = canvasSize;
+            canvas.height = canvasSize;
             var context = canvas.getContext('2d');
 
 
             // background color
-            //context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
-            //+ backgroundColor.b + "," + backgroundColor.a + ")";
+            //context.fillStyle   = 'rgba(' + backgroundColor.r + ',' + backgroundColor.g + ','
+            //+ backgroundColor.b + ',' + backgroundColor.a + ')';
 
-            //context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
-            //+ borderColor.b + "," + borderColor.a + ")";
+            //context.strokeStyle = 'rgba(' + borderColor.r + ',' + borderColor.g + ','
+            //+ borderColor.b + ',' + borderColor.a + ')';
 
             //context.lineWidth = borderThickness;
             //roundRect(context, borderThickness/2, borderThickness/2, messageWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
             // 1.4 is extra height factor for text below baseline: g,j,p,q.
 
             // text color
-            //context.fillStyle = "rgba(0, 0, 0, 1.0)";
+            //context.fillStyle = 'rgba(0, 0, 0, 1.0)';
 
             //context.fillText(message, borderThickness, fontsize + borderThickness);
 
-            context.font = fontsize + "pt Calibri";
-            context.textAlign = "center";
+            context.font = fontsize + 'pt Calibri';
+            context.textAlign = 'center';
 
             // the text we want to write
             var message = siteBox.site.properties.description;
-                          // "SiteBox #" + siteBox.site.id + "\n" +
-                          // "description: " + siteBox.site.properties.description + "\n" +
-                          // "site_context: " + siteBox.site.properties.site_context + "\n" +
-                          // "site_interpretation: " + siteBox.site.properties.site_interpretation + "\n" +
-                          // "condition: " + siteBox.site.properties.condition + "\n";
+                          // 'SiteBox #' + siteBox.site.id + '\n' +
+                          // 'description: ' + siteBox.site.properties.description + '\n' +
+                          // 'site_context: ' + siteBox.site.properties.site_context + '\n' +
+                          // 'site_interpretation: ' + siteBox.site.properties.site_interpretation + '\n' +
+                          // 'condition: ' + siteBox.site.properties.condition + '\n';
             // get size data (height depends only on font size)
             var messageWidth = context.measureText( message ).width;
 
@@ -122,18 +126,18 @@
             var textBoxWidth = messageWidth + 2*textBoxPadding;
             var textBoxHeight = fontsize + 2*textBoxPadding;
             context.fillStyle = textBoxBorderColor;
-            context.fillRect(canvas.width/2 - (textBoxWidth/2 + textBoxBorderWidth), canvas_size - fontsize - textBoxPadding*2 - textBoxBorderWidth*2, textBoxWidth + 2*textBoxBorderWidth, textBoxHeight + 2*textBoxBorderWidth);
+            context.fillRect(canvas.width/2 - (textBoxWidth/2 + textBoxBorderWidth), canvasSize - fontsize - textBoxPadding*2 - textBoxBorderWidth*2, textBoxWidth + 2*textBoxBorderWidth, textBoxHeight + 2*textBoxBorderWidth);
             context.fillStyle = textBoxFillColor;
-            context.fillRect(canvas.width/2 - (textBoxWidth/2), canvas_size - fontsize - textBoxPadding*2 - textBoxBorderWidth, textBoxWidth, textBoxHeight);
+            context.fillRect(canvas.width/2 - (textBoxWidth/2), canvasSize - fontsize - textBoxPadding*2 - textBoxBorderWidth, textBoxWidth, textBoxHeight);
 
             // The two fillText number arguments are canvas-coordinates, so
             // depend on the size of the canvas defined above. The y-coordinate
             // is set to fontsize, otherwise the words fall off the top of the
             // canvas.
             context.fillStyle = fontColor;
-            context.fillText(message, canvas_size/2 , canvas_size - fontsize/2 - textBoxPadding/2 - textBoxBorderWidth/2);
+            context.fillText(message, canvasSize/2 , canvasSize - fontsize/2 - textBoxPadding/2 - textBoxBorderWidth/2);
             // canvas contents will be used for a texture
-            var texture = new THREE.Texture(canvas)
+            var texture = new THREE.Texture(canvas);
             texture.needsUpdate = true;
 
             var spriteMaterial = new THREE.SpriteMaterial({
@@ -155,13 +159,13 @@
             sprite.scale.set(1.5*radius, 1.5*radius, 1.0);
 
             sprite.position.set(x, y, z);
-            sprite.name = "textLabel for SiteBox " + siteBox.site.id;
+            sprite.name = 'textLabel for SiteBox ' + siteBox.site.id;
 
             // var imageObj = new Image();
             // imageObj.onload = function(){
             //     context.drawImage(imageObj, 10, 10);
             // };
-            // imageObj.src = "data/label-small.png";
+            // imageObj.src = 'data/label-small.png';
 
             siteBox.textLabel = sprite;
             me.referenceFrame.add( siteBox.textLabel );
@@ -185,7 +189,7 @@
             bBox.site = site;
 
             return bBox;
-        }
+        };
 
         this.siteBoxSelection = function(mouseX, mouseY) {
             //console.log('mouse x: ' + mouseX);
@@ -208,10 +212,10 @@
             } else {
                 return null;
             }
-        }
+        };
 
     }
 
     angular.module('pattyApp.pointcloud')
-        .service('SiteBoxService', ['$rootScope', 'THREE', 'sitesservice', 'CameraService', 'SceneService', SiteBoxService]);
+        .service('SiteBoxService', ['$rootScope', 'THREE', 'sitesservice', 'CameraService', SiteBoxService]);
 })();

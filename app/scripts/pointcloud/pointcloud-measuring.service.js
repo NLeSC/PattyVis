@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function MeasuringService(Potree, THREE, SceneService, CameraService, $window) {    
+  function MeasuringService(Potree, THREE, SceneService, CameraService, $window) {   
     var tools = {
       distance: null,
       angle: null,
@@ -33,6 +33,14 @@
     }
     
     this.clear = function() {      
+        this.clearDistance();   
+        this.clearArea();   
+        this.clearAngle();   
+        this.clearVolumes();   
+        this.clearProfile();
+    };
+    
+    this.clearDistance = function() {
       tools.distance.measurements = [];
       tools.distance.sceneMeasurement = new THREE.Scene();
       tools.distance.sceneRoot = new THREE.Object3D();
@@ -40,17 +48,10 @@
       tools.distance.light = new THREE.DirectionalLight( 0xffffff, 1 );
       tools.distance.light.position.set( 0, 0, 10 );
       tools.distance.light.lookAt(new THREE.Vector3(0,0,0));
-      tools.distance.sceneMeasurement.add( tools.distance.light );
+      tools.distance.sceneMeasurement.add( tools.distance.light );        
+    };
     
-      tools.angle.measurements = [];
-      tools.angle.sceneMeasurement = new THREE.Scene();
-      tools.angle.sceneRoot = new THREE.Object3D();
-      tools.angle.sceneMeasurement.add(tools.angle.sceneRoot);
-      tools.angle.light = new THREE.DirectionalLight( 0xffffff, 1 );
-      tools.angle.light.position.set( 0, 0, 10 );
-      tools.angle.light.lookAt(new THREE.Vector3(0,0,0));
-      tools.angle.sceneMeasurement.add( tools.angle.light );
-      
+    this.clearArea = function() {
       tools.area.measurements = [];
       tools.area.sceneMeasurement = new THREE.Scene();
       tools.area.sceneRoot = new THREE.Object3D();
@@ -58,16 +59,31 @@
       tools.area.light = new THREE.DirectionalLight( 0xffffff, 1 );
       tools.area.light.position.set( 0, 0, 10 );
       tools.area.light.lookAt(new THREE.Vector3(0,0,0));
-      tools.area.sceneMeasurement.add( tools.area.light );
-      
-      tools.volume.volumes = [];
-      tools.volume.sceneVolume = new THREE.Scene();
+      tools.area.sceneMeasurement.add( tools.area.light );        
+    };
     
+    this.clearAngle = function() {
+      tools.angle.measurements = [];
+      tools.angle.sceneMeasurement = new THREE.Scene();
+      tools.angle.sceneRoot = new THREE.Object3D();
+      tools.angle.sceneMeasurement.add(tools.angle.sceneRoot);
+      tools.angle.light = new THREE.DirectionalLight( 0xffffff, 1 );
+      tools.angle.light.position.set( 0, 0, 10 );
+      tools.angle.light.lookAt(new THREE.Vector3(0,0,0));
+      tools.angle.sceneMeasurement.add( tools.angle.light );        
+    };
+    
+    this.clearVolumes = function() {
+      tools.volume.volumes = [];
+      tools.volume.sceneVolume = new THREE.Scene();        
+    };
+    
+    this.clearProfile = function() {
       tools.heightprofile.profiles = [];
       tools.heightprofile.sceneProfile = new THREE.Scene();
       tools.heightprofile.sceneRoot = new THREE.Object3D();
-      tools.heightprofile.sceneProfile.add(tools.heightprofile.sceneRoot);
-    }
+      tools.heightprofile.sceneProfile.add(tools.heightprofile.sceneRoot);        
+    };
     
     this.init = function(renderer) {
       var scene = SceneService.getScene();
