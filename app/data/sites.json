@@ -1,46 +1,74 @@
 {
-	"type": "FeatureCollection",
-	"features": [{
-	    "type": "Feature",
-	    "geometry": {
-	    	"type": "MultiPolygon",
-	    	"coordinates": [[[[296254.482930933,4633726.19264522, 130],[296247.357277832,4633735.03170707, 130],[296247.748197456,4633735.52663699, 130],[296247.246448121, 4633736.09846306, 130],[296256.481107703,4633743.1682759, 130],[296256.855867252,4633742.67161996, 130],[296257.337490172,4633743.03926026, 130],[296264.383732139,4633734.06625588, 130],[296264.026023897,4633733.73391436, 130],[296264.387774608,4633733.1304567, 130],[296255.366067528,4633726.20345278, 130],[296254.982315092,4633726.58571713, 130],[296254.482930933,4633726.19264522, 130]]]]
-	    },
-	    "id": 162,
-	    "properties": {
-		    "pointcloud": "http://145.100.116.30:8090/POTREE/PC/SITE/162/SITE_162/SITE_162_8_levels_32cm_spacing/cloud.js",
-            "mesh": "data/sites/SITE_162/aligned/SITE_162_FEB+JUL_MAX_cleaned.obj",
-            "meshMtl": "data/sites/SITE_162/aligned/SITE_162_FEB+JUL_MAX_cleaned_tex.mtl",
-            "reconstructionMesh": "data/sites/SITE_162/aligned/RECONSTRUCTION.obj",
-		    "description": "Pyramid",
-		    "thumbnail": "data/sites/162/P1120067.JPG",
-		    "site_context": "Funerary",
-            "site_interpretation": "Funerary tower",
-            "condition": "Damaged",
-            "reconstructionScale": [0.025, 0.025, 0.025]                    
-	    },
-	    "bbox": [296247.246448120509740,4633726.192645221017301, 121.484,296264.387774608097970,4633743.168275895528495, 144.177]
-	}, {
-	    "type": "Feature",
-	    "geometry": {
-	    	"type": "MultiPolygon",
-	    	"coordinates": [[[[296256.069935701,4633691.8094286, 120.21],[296254.971269128,4633693.19429208, 120.21],[296255.380766414,4633693.51825223, 120.21],[296256.456351441,4633692.12764678, 120.21],[296256.069935701,4633691.8094286, 120.21]]]]
-	    },
-	    "id": 13,
-	    "properties": {
-		    "pointcloud": "http://145.100.116.30:8090/POTREE/PC/SITE/13/SITE_13/SITE_13_8_levels_32cm_spacing/cloud_las.js",
-		    "description": "Block",
-		    "thumbnail": "data/sites/13/IMG_0040.JPG",
-		    "site_context": "Unknown",
-                    "site_interpretation": "Unknown",
-                    "condition": "Chipped"
-	    },
-	    "bbox":	[296254.971269128320273,4633691.809428597800434, 120,296256.456351440516300,4633693.518252233974636, 120.42]
-	}],
-	"crs": {
-            "type":"name",
-            "properties": {
-            	"name": "urn:ogc:def:crs:EPSG::32633"
-            }
-	}
+  "type": "FeatureCollection",
+  "features": [{
+    "type": "Feature",
+    "geometry": {
+      "type": "MultiPolygon",
+      "coordinates": [
+        [
+          [
+            [296254.482930933, 4633726.19264522, 130],
+            [296247.357277832, 4633735.03170707, 130],
+            [296247.748197456, 4633735.52663699, 130],
+            [296247.246448121, 4633736.09846306, 130],
+            [296256.481107703, 4633743.1682759, 130],
+            [296256.855867252, 4633742.67161996, 130],
+            [296257.337490172, 4633743.03926026, 130],
+            [296264.383732139, 4633734.06625588, 130],
+            [296264.026023897, 4633733.73391436, 130],
+            [296264.387774608, 4633733.1304567, 130],
+            [296255.366067528, 4633726.20345278, 130],
+            [296254.982315092, 4633726.58571713, 130],
+            [296254.482930933, 4633726.19264522, 130]
+          ]
+        ]
+      ]
+    },
+    "id": 162,
+    "properties": {
+      "pointcloud": "http://148.251.106.132:8090/POTREE/PC/SITE/S162/SITE_162_cleaned_ALIGNED_DRIVE_1_V3/SITE_162_ALIGNED_DRIVE_1_V3_level4/cloud.js",
+      "mesh": "data/sites/SITE_162/aligned/SITE_162_FEB+JUL_MAX_cleaned.obj",
+      "meshMtl": "data/sites/SITE_162/aligned/SITE_162_FEB+JUL_MAX_cleaned_tex.mtl",
+      "reconstructionMesh": "data/sites/SITE_162/aligned/RECONSTRUCTION.obj",
+      "description": "Pyramid",
+      "thumbnail": "data/sites/162/P1120067.JPG",
+      "site_context": "Funerary",
+      "site_interpretation": "Funerary tower",
+      "condition": "Damaged",
+      "reconstructionScale": [0.025, 0.025, 0.025]
+    },
+    "bbox": [296247.246448120509740, 4633726.192645221017301, 121.484, 296264.387774608097970, 4633743.168275895528495, 144.177]
+  }, {
+    "type": "Feature",
+    "geometry": {
+      "type": "MultiPolygon",
+      "coordinates": [
+        [
+          [
+            [296256.069935701, 4633691.8094286, 120.21],
+            [296254.971269128, 4633693.19429208, 120.21],
+            [296255.380766414, 4633693.51825223, 120.21],
+            [296256.456351441, 4633692.12764678, 120.21],
+            [296256.069935701, 4633691.8094286, 120.21]
+          ]
+        ]
+      ]
+    },
+    "id": 13,
+    "properties": {
+      "pointcloud": "http://148.251.106.132:8090/POTREE/PC/SITE/S13/SITE_13_MAX_8BC/SITE_13_MAX_8BC_level4/cloud.js",
+      "description": "Block",
+      "thumbnail": "data/sites/13/IMG_0040.JPG",
+      "site_context": "Unknown",
+      "site_interpretation": "Unknown",
+      "condition": "Chipped"
+    },
+    "bbox": [296254.971269128320273, 4633691.809428597800434, 120, 296256.456351440516300, 4633693.518252233974636, 120.42]
+  }],
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:EPSG::32633"
+    }
+  }
 }
