@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function SearchPanelController($scope, sitesservice, PointcloudService) {
+  function SearchPanelController(sitesservice, PointcloudService) {
     this.query = '';
 
     this.sitesservice = sitesservice;
