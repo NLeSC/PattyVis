@@ -35,6 +35,7 @@ Prerequisites
 1. nodejs, http://nodejs.org/
 2. bower, http://bower.io
 3. compass, http://compass-style.org
+4. Java Development Kit, https://www.java.com/
 
 Installation
 ------------
@@ -95,11 +96,6 @@ Generates test report and coverage inside `test/reports` folder.
 
 ### Run end-to-end tests with local browser (chrome)
 
-Before tests can be run the webdrivers must be updated/installed with
-```
-npm run webdriver-update
-```
-
 Tests in Chrome can be run with
 ```
 grunt e2e-local
@@ -119,17 +115,12 @@ export SAUCE_USER=<your sauce labs username>
 export SAUCE_ACCESS_KEY=<your sauce labs access key>
 ```
 
-Also before tests can be run the webdrivers must be updated/installed with
-```
-npm run webdriver-update
-```
-
 Tests in Chrome, Firefox on Windows, Linux and OSX can be run with
 ```
 grunt e2e-sauce
 ```
 
-The pointcloud and minimap use a canvas and can't be tested automatically so they must be verified manually using the screencast in the report at https://saucelabs.com/u/patty-vis.
+The pointcloud and minimap use a canvas and can't be tested automatically so they must be verified manually using the screencast in the report at `https://saucelabs.com/u/<your sauce labs username>`.
 
 Travis-ci also runs end-to-end tests on sauce labs.
 
