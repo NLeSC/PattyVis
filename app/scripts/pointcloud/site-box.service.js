@@ -28,8 +28,8 @@
         this.onSitesChanged = function(sites) {
             if(sitesservice.isLoaded){
                 me.siteBoxList = [];
-                for(var i=0; i<sites.features.length; i++){
-                    me.siteBoxList.push(me.createSiteBox(sites.features[i]));
+                for(var i=0; i<sites.length; i++){
+                    me.siteBoxList.push(me.createSiteBox(sites[i]));
                 }
             }
         };
@@ -113,7 +113,7 @@
             context.textAlign = 'center';
 
             // the text we want to write
-            var message = siteBox.site.properties.description;
+            var message = siteBox.site.description_site;  // jshint ignore:line
                           // 'SiteBox #' + siteBox.site.id + '\n' +
                           // 'description: ' + siteBox.site.properties.description + '\n' +
                           // 'site_context: ' + siteBox.site.properties.site_context + '\n' +

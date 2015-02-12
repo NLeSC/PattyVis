@@ -4,19 +4,19 @@
         <input type="text" class="form-control" placeholder="Search..." ng-model="sp.query" ng-change="sp.queryChanged()">
     </div>
     <div class="panel" class="search-results" ng-show="sp.query">
-        <div class="search-result" ng-repeat="site in sp.sitesservice.searched.features" ng-cloak>
+        <div class="search-result" ng-repeat="site in sp.sitesservice.searched" ng-cloak>
             <div style="display: inline-block; vertical-align: top;">
-                <img ng-src="{{site.properties.thumbnail }}" width="120">
+                <img ng-src="{{site.thumbnail }}" width="120">
             </div>
             <div style="display:inline-block;">
-                <strong>{{ site.properties.description }}</strong>
-                <p>{{ site.properties.site_interpretation }}</p>
+                <strong>{{ site.description_site }}</strong>
+                <p>{{ site.site_interpretation }}</p>
             </div>
             <div class="btn-group">
                 <button type="button" class="glyphicon glyphicon-eye-open" ng-click="sp.lookAtSite(site)" title="Look at site"></button>
                 <button type="button" class="glyphicon glyphicon-tag" ng-click="sp.showLabel(site)" title="Show label"></button>
             </div>
         </div>
-        <div ng-if="sp.sitesservice.searched.features.length == 0" ng-cloak>No results.</div>
+        <div ng-if="sp.sitesservice.searched.length == 0" ng-cloak>No results.</div>
     </div>
 </div>

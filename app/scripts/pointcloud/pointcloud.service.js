@@ -246,8 +246,6 @@
     this.loadSite = function() {
       // load pointcloud
       var pointcloudPath = SiteLoaderService.getPointcloudUrl(162);
-      
-      me.stats.lasCoordinates.crs = SiteLoaderService.getCrs();
 
       POCLoader.load(pointcloudPath, function(geometry) {
         sitePointcloud = new Potree.PointCloudOctree(geometry);

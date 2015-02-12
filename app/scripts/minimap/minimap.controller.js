@@ -28,8 +28,33 @@
       projection: olProjectionCode
     });
 
+    this.sites2GeoJSON = function(sites) {
+      var features = sites.map(function(site) {
+        return {
+          'type': 'Feature',
+          'id': site.id,
+          'geometry': {
+            'type': 'MultiPolygon',
+            'coordinates': site.footprint
+          }
+        };
+      });
+
+      return {
+        'type': 'FeatureCollection',
+        'features': features,
+        'crs': {
+          'type': 'name',
+          'properties': {
+            'name': siteProjectionCode
+          }
+        }
+      };
+    };
+
     this.onSitesChanged = function(filtered) {
-      var featuresArray = vectorSource.readFeatures(filtered);
+      var geojson = me.sites2GeoJSON(filtered);
+      var featuresArray = vectorSource.readFeatures(geojson);
       vectorSource.clear();
       vectorSource.addFeatures(featuresArray);
       centerOnVisibleSites();
