@@ -29,8 +29,6 @@ module.exports = function(config) {
       'bower_components/proj4/dist/proj4.js',
       'bower_components/threejs/build/three.js',
       'bower_components/OrbitControls/index.js',
-      'bower_components/stats.js/build/stats.min.js',
-      'bower_components/dat-gui/build/dat.gui.min.js',
       'bower_components/potree/build/js/potree.js',
       'bower_components/potree/build/js/laslaz.js',
       'bower_components/openlayers3/build/ol.js',
