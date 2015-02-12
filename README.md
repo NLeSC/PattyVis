@@ -6,6 +6,7 @@ PattyVis
 [![Test Coverage](https://codeclimate.com/github/NLeSC/PattyVis/badges/coverage.svg)](https://codeclimate.com/github/NLeSC/PattyVis)
 [![Sauce Test Status](https://saucelabs.com/buildstatus/patty-vis)](https://saucelabs.com/u/patty-vis)
 [![devDependency Status](https://david-dm.org/NLeSC/PattyVis/dev-status.svg)](https://david-dm.org/NLeSC/PattyVis#info=devDependencies)
+[![Codacy Badge](https://www.codacy.com/project/badge/a2ebd9977fe04aa1af6e5c47dc8d6927)](https://www.codacy.com/public/sverhoeven/PattyVis)
 
 Getting started (windows, from scratch)
 ---------------------------------------
