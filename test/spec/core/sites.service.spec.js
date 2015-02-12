@@ -83,4 +83,29 @@ describe('core.sitesservice', function() {
       expect(result).toEqual(site162json);
     });
   });
+
+  describe('centerOfSite() function', function() {
+    beforeEach(function() {
+      inject(function($injector) {
+        sitesservice = $injector.get('sitesservice');
+      });
+    });
+
+    it('should return center of bounding box', function() {
+      var minlon = 296247.24644;
+      var minlat = 4633726.19264;
+      var minalt = 121.484;
+      var maxlon = 296264.38777;
+      var maxlat = 4633743.16827;
+      var maxalt = 144.177;
+      var bbox = [minlon, minlat, minalt, maxlon, maxlat, maxalt];
+      var site = {
+        pointcloud_bbox: bbox  // jshint ignore:line
+      };
+
+      var result = sitesservice.centerOfSite(site);
+      var expected = [296255.817105, 4633734.680455, 132.8305];
+      expect(result).toEqual(expected);
+    });
+  });
 });
