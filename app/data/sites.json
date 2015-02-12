@@ -1,74 +1,135 @@
-{
-  "type": "FeatureCollection",
-  "features": [{
-    "type": "Feature",
-    "geometry": {
-      "type": "MultiPolygon",
-      "coordinates": [
-        [
-          [
-            [296254.482930933, 4633726.19264522, 130],
-            [296247.357277832, 4633735.03170707, 130],
-            [296247.748197456, 4633735.52663699, 130],
-            [296247.246448121, 4633736.09846306, 130],
-            [296256.481107703, 4633743.1682759, 130],
-            [296256.855867252, 4633742.67161996, 130],
-            [296257.337490172, 4633743.03926026, 130],
-            [296264.383732139, 4633734.06625588, 130],
-            [296264.026023897, 4633733.73391436, 130],
-            [296264.387774608, 4633733.1304567, 130],
-            [296255.366067528, 4633726.20345278, 130],
-            [296254.982315092, 4633726.58571713, 130],
-            [296254.482930933, 4633726.19264522, 130]
-          ]
-        ]
+[{
+  "id": 162,
+  "footprint": [
+    [
+      [
+        [296254.482930933, 4633726.19264522],
+        [296247.357277832, 4633735.03170707],
+        [296247.748197456, 4633735.52663699],
+        [296247.246448121, 4633736.09846306],
+        [296256.481107703, 4633743.1682759],
+        [296256.855867252, 4633742.67161996],
+        [296257.337490172, 4633743.03926026],
+        [296264.383732139, 4633734.06625588],
+        [296264.026023897, 4633733.73391436],
+        [296264.387774608, 4633733.1304567],
+        [296255.366067528, 4633726.20345278],
+        [296254.982315092, 4633726.58571713],
+        [296254.482930933, 4633726.19264522]
       ]
-    },
-    "id": 162,
-    "properties": {
-      "pointcloud": "http://148.251.106.132:8090/POTREE/PC/SITE/S162/SITE_162_cleaned_ALIGNED_DRIVE_1_V3/SITE_162_ALIGNED_DRIVE_1_V3_level4/cloud.js",
-      "mesh": "data/sites/SITE_162/aligned/SITE_162_FEB+JUL_MAX_cleaned.obj",
-      "meshMtl": "data/sites/SITE_162/aligned/SITE_162_FEB+JUL_MAX_cleaned_tex.mtl",
-      "reconstructionMesh": "data/sites/SITE_162/aligned/RECONSTRUCTION.obj",
-      "description": "Pyramid",
-      "thumbnail": "data/sites/162/P1120067.JPG",
-      "site_context": "Funerary",
-      "site_interpretation": "Funerary tower",
-      "condition": "Damaged",
-      "reconstructionScale": [0.025, 0.025, 0.025]
-    },
-    "bbox": [296247.246448120509740, 4633726.192645221017301, 121.484, 296264.387774608097970, 4633743.168275895528495, 144.177]
-  }, {
-    "type": "Feature",
-    "geometry": {
-      "type": "MultiPolygon",
-      "coordinates": [
-        [
-          [
-            [296256.069935701, 4633691.8094286, 120.21],
-            [296254.971269128, 4633693.19429208, 120.21],
-            [296255.380766414, 4633693.51825223, 120.21],
-            [296256.456351441, 4633692.12764678, 120.21],
-            [296256.069935701, 4633691.8094286, 120.21]
-          ]
-        ]
-      ]
-    },
-    "id": 13,
-    "properties": {
-      "pointcloud": "http://148.251.106.132:8090/POTREE/PC/SITE/S13/SITE_13_MAX_8BC/SITE_13_MAX_8BC_level4/cloud.js",
-      "description": "Block",
-      "thumbnail": "data/sites/13/IMG_0040.JPG",
-      "site_context": "Unknown",
-      "site_interpretation": "Unknown",
-      "condition": "Chipped"
-    },
-    "bbox": [296254.971269128320273, 4633691.809428597800434, 120, 296256.456351440516300, 4633693.518252233974636, 120.42]
-  }],
-  "crs": {
-    "type": "name",
-    "properties": {
-      "name": "urn:ogc:def:crs:EPSG::32633"
+    ]
+  ],
+  "thumbnail": "data/sites/162/P1120067.JPG",
+  "description_site": "Pyramid",
+  "site_context": "Funerary",
+  "site_interpretation": "Funerary tower",
+  "pointcloud_bbox": [296247.246448120509740, 4633726.192645221017301, 121.484, 296264.387774608097970, 4633743.168275895528495, 144.177],
+  "pointcloud": "http://148.251.106.132:8090/POTREE/PC/SITE/S162/SITE_162_cleaned_ALIGNED_DRIVE_1_V3/SITE_162_ALIGNED_DRIVE_1_V3_level4/cloud.js",
+  "mesh": {
+    "id": 1,
+    "data_location": "http://148.251.106.132:8090/sites/SITE_162/aligned/SITE_162_FEB+JUL_MAX_cleaned.obj",
+    "mtl_location": "http://148.251.106.132:8090/sites/SITE_162/aligned/SITE_162_FEB+JUL_MAX_cleaned_tex.mtl",
+    "osg_position": {
+      "x": 296254.482930933,
+      "y": 4633726.19264522,
+      "z": 130,
+      "xs": 0.025,
+      "ys": 0.025,
+      "zs": 0.025,
+      "h": 0.025,
+      "p": 0.025,
+      "r": 0.0
     }
-  }
-}
+  },
+  "reconstruction_mesh": [{
+    "id": 1,
+    "data_location": "http://148.251.106.132:8090/sites/SITE_162/aligned/RECONSTRUCTION.obj",
+    "osg_position": {
+      "x": 296254.482930933,
+      "y": 4633726.19264522,
+      "z": 130,
+      "xs": 0.025,
+      "ys": 0.025,
+      "zs": 0.025,
+      "h": 0.025,
+      "p": 0.025,
+      "r": 0.0
+    }
+  }, {
+    "id": 1,
+    "data_location": "http://148.251.106.132:8090/sites/SITE_162/aligned/RECONSTRUCTION.obj",
+    "osg_position": {
+      "x": 296254.482930933,
+      "y": 4633726.19264522,
+      "z": 130,
+      "xs": 0.025,
+      "ys": 0.025,
+      "zs": 0.025,
+      "h": 0.025,
+      "p": 0.025,
+      "r": 0.0
+    }
+  }],
+  "objects": [{
+    "object_id": 172,
+    "in_situ": true,
+    "ancient": true,
+    "condition": "damaged",
+    "description_object": "Piece of concrete",
+    "object_type": "Poured piece of concrete",
+    "object_interpretation": "Filler material",
+    "period": "My guess is late Jurassic, but what do I know?",
+    "date_specific": "01-01-0354",
+    "description_restorations": "light brushing, heavy paintjob",
+    "object_bbox": [296247.246448120509740, 4633726.192645221017301, 121.484, 296264.387774608097970, 4633743.168275895528495, 144.177],
+    "object_material": [{
+      "id": 1,
+      "material_type": "Concrete",
+      "material_subtype": "Variant 5b ... and a half",
+      "material_technique": "Poured"
+    }, {
+      "id": 2,
+      "material_type": "Dog urine",
+      "material_subtype": "The aforementioned paintjob",
+      "material_technique": "You do not want to know"
+    }]
+  }, {
+    "object_id": 173,
+    "in_situ": false,
+    "ancient": true,
+    "condition": "damaged beyond repair",
+    "description_object": "Another damn piece of concrete",
+    "object_type": "Another damn poured piece of concrete",
+    "object_interpretation": "God archeology is boring sometimes",
+    "period": "Waaaay too long ago",
+    "date_specific": "01-01-0355",
+    "description_restorations": "none",
+    "object_material": [{
+      "id": 1,
+      "material_type": "Concrete",
+      "material_subtype": "Variant 5b ... and a half",
+      "material_technique": "Poured"
+    }]
+  }]
+}, {
+  "id": 13,
+  "footprint": [
+    [
+      [
+        [296256.069935701, 4633691.8094286],
+        [296254.971269128, 4633693.19429208],
+        [296255.380766414, 4633693.51825223],
+        [296256.456351441, 4633692.12764678],
+        [296256.069935701, 4633691.8094286]
+      ]
+    ]
+  ],
+  "thumbnail": "data/sites/13/IMG_0040.JPG",
+  "description_site": "Block",
+  "site_context": "Unknown",
+  "site_interpretation": "Unknown",
+  "pointcloud_bbox": [296254.971269128320273, 4633691.809428597800434, 120, 296256.456351440516300, 4633693.518252233974636, 120.42],
+  "pointcloud": "http://148.251.106.132:8090/POTREE/PC/SITE/S13/SITE_13_MAX_8BC/SITE_13_MAX_8BC_level4/cloud.js",
+  "reconstruction_mesh": [],
+  "objects": []
+}]

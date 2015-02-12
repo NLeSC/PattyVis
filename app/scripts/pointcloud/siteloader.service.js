@@ -31,9 +31,9 @@
     };
     
     this.findFeatureByID = function(id) {
-        for (var i = 0; i < this.data.features.length; i++) {
-            if (this.data.features[i].id === id) {
-                return this.data.features[i];
+        for (var i = 0; i < this.data.length; i++) {
+            if (this.data[i].id === id) {
+                return this.data[i];
             }
         }
     };
@@ -55,7 +55,7 @@
     };
 
     this.getPointcloudUrl = function(siteID) {
-        return this.findFeatureByID(siteID).properties.pointcloud;
+        return this.findFeatureByID(siteID).pointcloud;
     };
     
     this.getCoordinates = function(siteID) {        
@@ -64,10 +64,6 @@
     
     this.getBbox = function(siteID) {
         return this.findFeatureByID(siteID).bbox;
-    };
-    
-    this.getCrs = function() {
-      return this.data.crs.properties.name;
     };
   }
 
