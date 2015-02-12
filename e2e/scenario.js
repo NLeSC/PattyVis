@@ -84,6 +84,8 @@ describe('pattyApp', function() {
 
       beforeEach(function() {
         element(by.css('.toolbox .btn')).click();
+        // wait for toolbox to close, otherwise it will still be displayed partle
+        browser.sleep(200);
       });
 
       it('should hide tools', function() {
@@ -96,6 +98,8 @@ describe('pattyApp', function() {
 
       beforeEach(function() {
         element(by.css('.toolbox-tray-top')).click();
+        // wait for toolbox to close, otherwise it will still be displayed partle
+        browser.sleep(200);
       });
 
       it('should hide tools', function() {
