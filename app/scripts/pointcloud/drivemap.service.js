@@ -18,16 +18,17 @@
       console.log('Failed to load drive map!!');
     };
 
-    this.getHomeLocation = function() {
-      var coords = this.getCoordinates()[0];
-
+    this.getCoordinate = function(index) {
+      var coords = this.getCoordinates()[index];
       return new THREE.Vector3(coords[0], coords[1], coords[2]);
     };
 
-    this.getHomeLookAt = function() {
-      var coords = this.getCoordinates()[1];
+    this.getHomeLocation = function() {
+      return this.getCoordinate(0);
+    };
 
-      return new THREE.Vector3(coords[0], coords[1], coords[2]);
+    this.getHomeLookAt = function() {
+      return this.getCoordinate(1);
     };
 
     this.getPointcloudUrl = function() {
