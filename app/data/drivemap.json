@@ -62,7 +62,7 @@
 		]
     },
     "properties": {
-      "pointcloud": "http://148.251.106.132:8090/POTREE/PC/BACK/DRIVE_1_V3/DRIVE_1_V3_level8/cloud.js",
+      "pointcloud": "http://148.251.106.132:8090/POTREE/PC/BACK/DRIVE_1_V3/DRIVE_1_V3_levels_8/cloud.js",
       "pointcloud_site": "http://148.251.106.132:8090/POTREE/PC/SITE/S162/SITE_162_cleaned_ALIGNED_DRIVE_1_V3/SITE_162_ALIGNED_DRIVE_1_V3_level4/cloud.js"
     },
     "id": "DRIVE_1_V3"
