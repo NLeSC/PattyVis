@@ -1,7 +1,10 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, SiteLoaderService, sitesservice, CameraService, SceneService, PathControls, SiteBoxService, MeasuringService) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope,
+    Messagebus, DrivemapService,
+    sitesservice, CameraService, SceneService,
+    PathControls, SiteBoxService, MeasuringService) {
 
     var me = this;
 
@@ -46,7 +49,7 @@
     var scene;
     var pointcloud;
     var sitePointcloud;
-    
+
     var skybox;
 
     me.pathMesh = null;
@@ -191,7 +194,7 @@
       SiteBoxService.listenTo(me.renderer.domElement);
 
       DrivemapService.load().then(this.loadPointcloud);
-      SiteLoaderService.load().then(this.loadSite);
+      sitesservice.onLoaded.then(this.loadSite);
     };
 
     this.loadPointcloud = function() {
@@ -227,8 +230,8 @@
             return toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
           }
         );
-		
-		var lookPath = DrivemapService.getLookPath().map(
+
+        var lookPath = DrivemapService.getLookPath().map(
           function(coord) {
             return toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
           }
@@ -245,7 +248,8 @@
 
     this.loadSite = function() {
       // load pointcloud
-      var pointcloudPath = SiteLoaderService.getPointcloudUrl(162);
+      var site = sitesservice.getById(162);
+      var pointcloudPath = site.pointcloud;
 
       POCLoader.load(pointcloudPath, function(geometry) {
         sitePointcloud = new Potree.PointCloudOctree(geometry);
@@ -257,39 +261,38 @@
         referenceFrame.add(sitePointcloud);
         MeasuringService.setSitePointcloud(sitePointcloud);
       });
-      
+
       /*
-      var meshPath = SiteLoaderService.getMeshUrl();
-      var meshMtlPath = SiteLoaderService.getMeshMtlUrl();
-            
-      var objmtl_loader = new THREE.OBJMTLLoader();  
-                
+      var meshPath = site.mesh.data_location;
+      var meshMtlPath = site.mesh.mtl_location;
+
+      var objmtl_loader = new THREE.OBJMTLLoader();
+
       objmtl_loader.load(meshPath, meshMtlPath, function(object) {
           referenceFrame.add(object);
-      }, function(){ 
+      }, function(){
         return 1;
-      }, function() { 
+      }, function() {
         console.log('Error while loading mesh for site');
-      });      
-      
-      var reconstructionMeshPath = SiteLoaderService.getReconstructionMeshUrl();
-      
-      var obj_loader = new THREE.OBJLoader();  
-                
+      });
+
+      var reconstructionMeshPath = site.reconstruction_mesh[0].data_location;
+      var obj_loader = new THREE.OBJLoader();
+
       obj_loader.load(reconstructionMeshPath, function(object) {
-          var scale = SiteLoaderService.getReconstructionScale();
-          var bbox = SiteLoaderService.getBbox();
-          object.scale.set(scale[0], scale[1], scale[2]);
-          object.position.set(bbox[0]+(bbox[3]-bbox[0]),bbox[1]+(bbox[4]-bbox[1]),bbox[2]+(bbox[5]-bbox[2]));
+          var osg = site.reconstruction_mesh[0].osg_position;
+          // TODO perform projection?
+          object.scale.set(osg.xs, osg.ys, osg.zs);
+          object.position.set(osg.x, osg.y, osg.z);
           referenceFrame.add(object);
-      }, function(){ 
+      }, function(){
         return 1;
-      }, function() { 
+      }, function() {
         console.log('Error while loading reconstruction mesh for site');
-      }); 
-      
+      });
+
       */
-      
+
     };
 
 
@@ -465,7 +468,7 @@
 
         sitePointcloud.update(camera, me.renderer);
       }
-      
+
 
       PathControls.updateInput();
 

@@ -35,77 +35,101 @@ describe('core.sitesservice', function() {
       expect(sitesservice.all).toEqual(sitesjson);
       expect(sitesservice.filtered).toEqual(sitesjson);
     });
+
+    it('should resolve the onLoaded promise', function() {
+      var onLoadedListener = jasmine.createSpy('listener');
+      sitesservice.onLoaded.then(onLoadedListener);
+
+      sitesservice.load();
+      // resolve http request
+      $httpBackend.flush();
+
+      expect(onLoadedListener).toHaveBeenCalledWith(sitesjson);
+    });
   });
 
-  describe('find() function', function() {
+  describe('when sites have been loaded', function() {
     var site162json;
 
     beforeEach(function() {
       inject(function($injector) {
-        site162json = [sitesjson[0]];
+        site162json = sitesjson[0];
         sitesservice = $injector.get('sitesservice');
         sitesservice.onLoad(sitesjson);
       });
     });
 
-    it('should have empty search result when query is empty', function() {
-      sitesservice.find('');
+    describe('find() function', function() {
 
-      var result = sitesservice.searched;
-      expect(result).toEqual([]);
-    });
+      it('should have empty search result when query is empty', function() {
+        sitesservice.find('');
 
-    it('should have full filtered result when query is empty', function() {
-      sitesservice.find('');
+        var result = sitesservice.searched;
+        expect(result).toEqual([]);
+      });
 
-      var result = sitesservice.filtered;
-      expect(result).toEqual(sitesjson);
-    });
+      it('should have full filtered result when query is empty', function() {
+        sitesservice.find('');
 
-    it('should have site1 as search result when query is 162', function() {
-      sitesservice.find('162');
+        var result = sitesservice.filtered;
+        expect(result).toEqual(sitesjson);
+      });
 
-      var result = sitesservice.searched;
-      expect(result).toEqual(site162json);
-    });
+      it('should have site1 as search result when query is 162', function() {
+        sitesservice.find('162');
 
-    it('should have site1 as filtered result when query is 162', function() {
-      sitesservice.find('162');
+        var result = sitesservice.searched;
+        expect(result).toEqual([site162json]);
+      });
 
-      var result = sitesservice.filtered;
-      expect(result).toEqual(site162json);
-    });
+      it('should have site1 as filtered result when query is 162', function() {
+        sitesservice.find('162');
 
-    it('should return site1 when query is pyramid', function() {
-      sitesservice.find('pyramid');
+        var result = sitesservice.filtered;
+        expect(result).toEqual([site162json]);
+      });
 
-      var result = sitesservice.searched;
-      expect(result).toEqual(site162json);
-    });
-  });
+      it('should return site1 when query is pyramid', function() {
+        sitesservice.find('pyramid');
 
-  describe('centerOfSite() function', function() {
-    beforeEach(function() {
-      inject(function($injector) {
-        sitesservice = $injector.get('sitesservice');
+        var result = sitesservice.searched;
+        expect(result).toEqual([site162json]);
       });
     });
 
-    it('should return center of bounding box', function() {
-      var minlon = 296247.24644;
-      var minlat = 4633726.19264;
-      var minalt = 121.484;
-      var maxlon = 296264.38777;
-      var maxlat = 4633743.16827;
-      var maxalt = 144.177;
-      var bbox = [minlon, minlat, minalt, maxlon, maxlat, maxalt];
-      var site = {
-        pointcloud_bbox: bbox  // jshint ignore:line
-      };
+    describe('centerOfSite() function', function() {
 
-      var result = sitesservice.centerOfSite(site);
-      var expected = [296255.817105, 4633734.680455, 132.8305];
-      expect(result).toEqual(expected);
+      it('should return center of bounding box', function() {
+        var minlon = 296247.24644;
+        var minlat = 4633726.19264;
+        var minalt = 121.484;
+        var maxlon = 296264.38777;
+        var maxlat = 4633743.16827;
+        var maxalt = 144.177;
+        var bbox = [minlon, minlat, minalt, maxlon, maxlat, maxalt];
+        var site = {
+          pointcloud_bbox: bbox // jshint ignore:line
+        };
+
+        var result = sitesservice.centerOfSite(site);
+
+        var expected = [296255.817105, 4633734.680455, 132.8305];
+        expect(result).toEqual(expected);
+      });
+    });
+
+    describe('getById() function', function() {
+      it('should return a site when id is present', function() {
+        var result = sitesservice.getById(162);
+
+        expect(result).toEqual(site162json);
+      });
+
+      it('should return undefined when site with id is missing', function() {
+        var result = sitesservice.getById(9999999);
+
+        expect(result).toBeUndefined();
+      });
     });
   });
 });
