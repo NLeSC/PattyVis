@@ -99,7 +99,7 @@ describe('pattyApp', function() {
       beforeEach(function() {
         element(by.css('.toolbox-tray-top')).click();
         // wait for toolbox to close, otherwise it will still be displayed partle
-        browser.sleep(200);
+        browser.sleep(500);
       });
 
       it('should hide tools', function() {
