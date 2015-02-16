@@ -24,7 +24,7 @@
   "site_context": "Funerary",
   "site_interpretation": "Funerary tower",
   "pointcloud_bbox": [296247.246448120509740, 4633726.192645221017301, 121.484, 296264.387774608097970, 4633743.168275895528495, 144.177],
-  "pointcloud": "http://148.251.106.132:8090/POTREE/PC/SITE/S162/SITE_162_cleaned_ALIGNED_DRIVE_1_V3/SITE_162_ALIGNED_DRIVE_1_V3_level4/cloud.js",
+  "pointcloud": "http://148.251.106.132:8090/POTREE/PC/SITE/S162/SITE_162_cleaned_ALIGNED_DRIVE_1_V3/SITE_162_cleaned_ALIGNED_DRIVE_1_V3_levels_4/cloud.js",
   "mesh": {
     "id": 1,
     "data_location": "http://148.251.106.132:8090/sites/SITE_162/aligned/SITE_162_FEB+JUL_MAX_cleaned.obj",
@@ -129,7 +129,7 @@
   "site_context": "Unknown",
   "site_interpretation": "Unknown",
   "pointcloud_bbox": [296254.971269128320273, 4633691.809428597800434, 120, 296256.456351440516300, 4633693.518252233974636, 120.42],
-  "pointcloud": "http://148.251.106.132:8090/POTREE/PC/SITE/S13/SITE_13_MAX_8BC/SITE_13_MAX_8BC_level4/cloud.js",
+  "pointcloud": "http://148.251.106.132:8090/POTREE/PC/SITE/S13/SITE_13_MAX_8bitcolor/SITE_13_MAX_8bitcolor_levels_4/cloud.js",
   "reconstruction_mesh": [],
   "objects": []
 }]
