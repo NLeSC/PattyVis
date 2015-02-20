@@ -1,23 +1,6 @@
 (function() {
   'use strict';
 
-  /**
-   * Drive map + site pointcloud settings
-   * Drive map pointcloud stats
-   * Mouse threejs + las coordinates, used in stats -> where is this? measurement tool
-   * Camera, should fire cameraMoved event
-   * PathControls, moves the camera
-   * Renderer, has dom element so should be tied to directive
-   * Measuring
-   * Scene
-   *   - Skybox
-   *   - Camera Path and Camera Look Path
-   *   - ReferenceFrame, is in las coordinate system, can convert threejs <>las coordinate systems
-   *     - Drive map Pointcloud
-   *     - Site pointcloud(s)
-   *     - Site Box, bounding box around site with doubleclick shows label
-   *     - Site Label, activated from search result
-   */
   function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope,
     DrivemapService,
     sitesservice, CameraService, SceneService,
