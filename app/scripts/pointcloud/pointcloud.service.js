@@ -43,7 +43,6 @@
       }
     };
 
-    var pointcloudPath = 'data/out_8/cloud.js';
     this.renderer = null;
     var camera;
     var scene;
@@ -199,7 +198,7 @@
 
     this.loadPointcloud = function() {
       // load pointcloud
-      pointcloudPath = DrivemapService.getPointcloudUrl();
+      var pointcloudPath = DrivemapService.getPointcloudUrl();
       me.stats.lasCoordinates.crs = DrivemapService.getCrs();
 
       POCLoader.load(pointcloudPath, function(geometry) {
@@ -331,7 +330,7 @@
       return geo;
     }
 
-    function addTextLabel(message, x, y, z) {
+    function addTextLabel(message, position) {
       var canvas = document.createElement('canvas');
       var context = canvas.getContext('2d');
       // context.font = "Bold " + fontsize + "px " + fontface;
@@ -374,7 +373,7 @@
         // sprite.scale.set(100,50,1.0);
         sprite.scale.set(10, 5, 1.0);
 
-        sprite.position.set(x, y, z);
+        sprite.position.copy(position);
         referenceFrame.add(sprite);
       };
       imageObj.src = 'data/label-small.png';
@@ -400,11 +399,13 @@
     };
 
     this.showLabel = function(site) {
-      var message = site.properties.description;
-      var coordGeo = sitesservice.centerOfSite(site);
-      var posGeo = new THREE.Vector3(coordGeo[0], coordGeo[1], coordGeo[2] + 10);
-      var posLocal = toLocal(posGeo);
-      addTextLabel(message, posLocal.x, -posLocal.z, posLocal.y);
+      var message = site.description_site; // jshint ignore:line
+      var center = sitesservice.centerOfSite(site);
+      var bbox = sitesservice.getBoundingBox(site);
+      var maxAltIndex = 5;
+      var top = bbox[maxAltIndex];
+      var labelPosition = new THREE.Vector3(center[0], center[1], top);
+      addTextLabel(message, labelPosition);
     };
 
     this.updateMapFrustum = function() {
