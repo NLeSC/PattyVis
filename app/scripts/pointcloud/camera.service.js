@@ -1,14 +1,14 @@
 (function() {
   'use strict';
 
-  function CameraService($window, THREE) {
+  function CameraService($window, $log, THREE) {
     var fov = 75;
     var width = $window.innerWidth;
     var height = $window.innerHeight;
     var aspect = width / height;
     var near = 0.1;
     var far = 100000;
-    
+
     this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     var me = this;
     this.toGeo = null;
@@ -16,7 +16,7 @@
 
     this.recordLocation = function() {
       me.waypoints.push(me.toGeo(me.camera.position.clone()).toArray());
-      console.log(JSON.stringify(me.waypoints));
+      $log.log(JSON.stringify(me.waypoints));
     };
   }
 
