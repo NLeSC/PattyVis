@@ -80,7 +80,17 @@
     "period": "My guess is late Jurassic, but what do I know?",
     "date_specific": "01-01-0354",
     "description_restorations": "light brushing, heavy paintjob",
-    "object_bbox": [296247.246448120509740, 4633726.192645221017301, 121.484, 296264.387774608097970, 4633743.168275895528495, 144.177],
+    "osg_position": {
+      "x": 296254.482930933,
+      "y": 4633726.19264522,
+      "z": 130,
+      "xs": 0.025,
+      "ys": 0.025,
+      "zs": 0.025,
+      "h": 0.025,
+      "p": 0.025,
+      "r": 0.0
+    },
     "object_material": [{
       "id": 1,
       "material_type": "Concrete",
