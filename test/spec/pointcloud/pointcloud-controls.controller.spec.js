@@ -27,4 +27,14 @@ describe('pointcloud-controls.controller', function() {
       expect(ctrl.settings).toBe(PointcloudService.settings);
     });
   });
+
+  describe('recordCameraLocation() function', function() {
+    it('should call recordLocation() of CameraService', inject(function(CameraService) {
+      spyOn(CameraService, 'recordLocation');
+
+      ctrl.recordCameraLocation();
+
+      expect(CameraService.recordLocation).toHaveBeenCalledWith();
+    }));
+  });
 });
