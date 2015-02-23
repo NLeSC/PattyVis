@@ -1,15 +1,18 @@
 (function() {
   'use strict';
 
-  function MinimapController($scope, ol, proj4, sitesservice, CamFrustrumService, Messagebus) {
+  function MinimapController($scope, ol, proj4, sitesservice, CamFrustrumService, Messagebus, DrivemapService) {
     var me = this;
     this.sitesservice = sitesservice;
 
-    proj4.defs('EPSG:32633', '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
-    proj4.defs('urn:ogc:def:crs:EPSG::32633', proj4.defs('EPSG:32633'));
-
     var olProjectionCode = 'EPSG:3857';
-    var siteProjectionCode = 'EPSG:32633';
+    var siteProjectionCode = null;
+
+    this.syncSiteProjectionCode = function() {
+      siteProjectionCode = DrivemapService.getCrs();
+    };
+    DrivemapService.ready.then(this.syncSiteProjectionCode);
+
     var siteStyle = new ol.style.Style({
       stroke: new ol.style.Stroke({
         color: 'yellow',

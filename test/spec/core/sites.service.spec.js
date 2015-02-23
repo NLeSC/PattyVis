@@ -36,15 +36,15 @@ describe('core.sitesservice', function() {
       expect(sitesservice.filtered).toEqual(sitesjson);
     });
 
-    it('should resolve the onLoaded promise', function() {
-      var onLoadedListener = jasmine.createSpy('listener');
-      sitesservice.onLoaded.then(onLoadedListener);
+    it('should resolve the ready promise', function() {
+      var readyListener = jasmine.createSpy('listener');
+      sitesservice.ready.then(readyListener);
 
       sitesservice.load();
       // resolve http request
       $httpBackend.flush();
 
-      expect(onLoadedListener).toHaveBeenCalledWith(sitesjson);
+      expect(readyListener).toHaveBeenCalledWith(sitesjson);
     });
   });
 

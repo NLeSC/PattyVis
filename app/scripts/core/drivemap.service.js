@@ -1,10 +1,13 @@
 (function() {
   'use strict';
 
-  function DrivemapService($http, THREE) {
+  function DrivemapService($http, $q, proj4) {
     var me = this;
     this.url = 'data/drivemap.json';
     this.data = {};
+    var deferred = $q.defer();
+
+    this.ready = deferred.promise;
 
     this.load = function() {
       return $http.get(this.url).success(this.onLoad).error(this.onLoadFailure);
@@ -12,15 +15,24 @@
 
     this.onLoad = function(response) {
       me.data = response;
+
+      // TODO read from response
+      proj4.defs('EPSG:32633', '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
+      proj4.defs('urn:ogc:def:crs:EPSG::32633', proj4.defs('EPSG:32633'));
+
+      console.log('drivemap service onload');
+
+      deferred.resolve(response);
     };
 
     this.onLoadFailure = function() {
       console.log('Failed to load drive map!!');
+      deferred.reject.apply(this, arguments);
     };
 
     this.getCoordinate = function(index) {
       var coords = this.getCoordinates()[index];
-      return new THREE.Vector3(coords[0], coords[1], coords[2]);
+      return coords;
     };
 
     this.getHomeLocation = function() {
@@ -45,6 +57,6 @@
     };
   }
 
-  angular.module('pattyApp.pointcloud')
+  angular.module('pattyApp.core')
     .service('DrivemapService', DrivemapService);
 })();

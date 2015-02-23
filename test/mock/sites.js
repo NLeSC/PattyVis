@@ -99,7 +99,7 @@ angular.module('mockedSites', [])
     'crs': {
       'type': 'name',
       'properties': {
-        'name': 'EPSG:32633'
+        'name': 'urn:ogc:def:crs:EPSG::32633'
       }
     }
   });

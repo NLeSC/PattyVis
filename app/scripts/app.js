@@ -20,16 +20,19 @@ angular
   ])
   .config(function() {
 
+  }).run(function(sitesservice, DrivemapService) {
+    DrivemapService.load();
+    sitesservice.load();
   });
 
 angular.module('pattyApp.utils', []);
-angular.module('pattyApp.core', ['pattyApp.utils']);
+angular.module('pattyApp.core', ['pattyApp.utils'])
+  .factory('proj4', function($window) {
+    return $window.proj4;
+  });
 angular.module('pattyApp.minimap', ['pattyApp.core'])
   .factory('ol', function($window) {
     return $window.ol;
-  })
-  .factory('proj4', function($window) {
-    return $window.proj4;
   });
 angular.module('pattyApp.pointcloud', ['pattyApp.core'])
   .factory('THREE', function($window) {

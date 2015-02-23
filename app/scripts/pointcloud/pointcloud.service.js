@@ -190,8 +190,8 @@
 
       SiteBoxService.listenTo(me.renderer.domElement);
 
-      DrivemapService.load().then(this.loadPointcloud);
-      sitesservice.onLoaded.then(this.loadSite);
+      DrivemapService.ready.then(this.loadPointcloud);
+      sitesservice.ready.then(this.loadSite);
     };
 
     this.loadPointcloud = function() {

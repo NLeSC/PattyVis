@@ -3,7 +3,7 @@
 describe('pointcloud-controls.controller', function() {
 
   // load the module
-  beforeEach(module('pattyApp'));
+  beforeEach(module('pattyApp.pointcloud'));
 
   var $rootScope;
   var ctrl;
@@ -13,6 +13,7 @@ describe('pointcloud-controls.controller', function() {
       $rootScope = _$rootScope_;
       var $controller = _$controller_;
       PointcloudService = _PointcloudService_;
+
       ctrl = $controller('PointcloudControlsController');
     });
   });
