@@ -2,7 +2,7 @@
   'use strict';
 
   function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope,
-    Messagebus, DrivemapService,
+    DrivemapService,
     sitesservice, CameraService, SceneService,
     PathControls, SiteBoxService, MeasuringService) {
 
@@ -52,7 +52,6 @@
     var skybox;
 
     me.pathMesh = null;
-    var prevCameraOrientation;
 
     var referenceFrame;
     var mouse = {
@@ -148,7 +147,7 @@
           me.stats.sceneCoordinates.x = sceneCoordinates.x.toFixed(2);
           me.stats.sceneCoordinates.y = sceneCoordinates.y.toFixed(2);
           me.stats.sceneCoordinates.z = sceneCoordinates.z.toFixed(2);
-          var geoCoordinates = toGeo(sceneCoordinates);
+          var geoCoordinates = SceneService.toGeo(sceneCoordinates);
           me.stats.lasCoordinates.x = geoCoordinates.x.toFixed(2);
           me.stats.lasCoordinates.y = geoCoordinates.y.toFixed(2);
           me.stats.lasCoordinates.z = geoCoordinates.z.toFixed(2);
@@ -172,7 +171,6 @@
 
       scene = SceneService.getScene();
       camera = CameraService.camera;
-      CameraService.toGeo = toGeo;
 
       me.renderer = new THREE.WebGLRenderer();
       me.renderer.setSize(width, height);
@@ -186,7 +184,7 @@
       // enable frag_depth extension for the interpolation shader, if available
       me.renderer.context.getExtension('EXT_frag_depth');
 
-      referenceFrame = new THREE.Object3D();
+      referenceFrame = SceneService.referenceFrame;
 
       SiteBoxService.init(referenceFrame, mouse);
 
@@ -222,17 +220,16 @@
           0, 0, 0, 1
         ));
         referenceFrame.updateMatrixWorld(true);
-        scene.add(referenceFrame);
 
         var myPath = DrivemapService.getCoordinates().map(
           function(coord) {
-            return toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
+            return SceneService.toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
           }
         );
 
         var lookPath = DrivemapService.getLookPath().map(
           function(coord) {
-            return toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
+            return SceneService.toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
           }
         );
 
@@ -302,34 +299,6 @@
       }
     };
 
-    /**
-     * transform from geo coordinates to local scene coordinates
-     */
-    function toLocal(position) {
-
-      var scenePos = position.clone().applyMatrix4(referenceFrame.matrixWorld);
-
-      return scenePos;
-    }
-
-    /**
-     * transform from local scene coordinates to geo coordinates
-     */
-    function toGeo(object) {
-      var geo;
-      var inverse = new THREE.Matrix4().getInverse(referenceFrame.matrixWorld);
-
-      if (object instanceof THREE.Vector3) {
-        geo = object.clone().applyMatrix4(inverse);
-      } else if (object instanceof THREE.Box3) {
-        var geoMin = object.min.clone().applyMatrix4(inverse);
-        var geoMax = object.max.clone().applyMatrix4(inverse);
-        geo = new THREE.Box3(geoMin, geoMax);
-      }
-
-      return geo;
-    }
-
     function addTextLabel(message, position) {
       var canvas = document.createElement('canvas');
       var context = canvas.getContext('2d');
@@ -388,7 +357,7 @@
     this.lookAtSite = function(site) {
       var coordGeo = sitesservice.centerOfSite(site);
       var posGeo = new THREE.Vector3(coordGeo[0], coordGeo[1], coordGeo[2]);
-      var posLocal = toLocal(posGeo);
+      var posLocal = SceneService.toLocal(posGeo);
       //camera.lookAt(posLocal);
       //var camPos = posLocal.clone().setY(posLocal.y + 20);
       //camera.position.copy(camPos);
@@ -408,30 +377,6 @@
       addTextLabel(message, labelPosition);
     };
 
-    this.updateMapFrustum = function() {
-      var aspect = camera.aspect;
-      var top = Math.tan(THREE.Math.degToRad(camera.fov * 0.5)) * camera.near;
-      var bottom = -top;
-      var left = aspect * bottom;
-      var right = aspect * top;
-
-      var camPos = new THREE.Vector3(0, 0, 0);
-      left = new THREE.Vector3(left, 0, -camera.near).multiplyScalar(3000);
-      right = new THREE.Vector3(right, 0, -camera.near).multiplyScalar(3000);
-      camPos.applyMatrix4(camera.matrixWorld);
-      left.applyMatrix4(camera.matrixWorld);
-      right.applyMatrix4(camera.matrixWorld);
-
-      camPos = toGeo(camPos);
-      left = toGeo(left);
-      right = toGeo(right);
-
-      Messagebus.publish('cameraMoved', {
-        cam: camPos,
-        left: left,
-        right: right
-      });
-    };
 
     this.update = function() {
 
@@ -475,13 +420,8 @@
 
       MeasuringService.update();
 
-      // create hash for camera state
-      var cameraOrientation = new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorld).determinant();
-      if (cameraOrientation !== prevCameraOrientation) {
-        this.updateMapFrustum();
-      }
-      // compare current camera state with state in previous render loop
-      prevCameraOrientation = cameraOrientation;
+      CameraService.update();
+
       updateStats();
     };
 
@@ -501,7 +441,6 @@
         skybox.camera.rotation.copy(camera.rotation);
         me.renderer.render(skybox.scene, skybox.camera);
       }
-      CameraService.camera.position.copy(camera.position);
 
       SiteBoxService.siteBoxSelection(mouse.x, mouse.y);
 
