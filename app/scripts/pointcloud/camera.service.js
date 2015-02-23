@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CameraService($window, THREE, Messagebus, SceneService) {
+  function CameraService($window, $log, THREE, Messagebus, SceneService) {
     var fov = 75;
     var width = $window.innerWidth;
     var height = $window.innerHeight;
@@ -15,7 +15,7 @@
 
     this.recordLocation = function() {
       this.waypoints.push(SceneService.toGeo(this.camera.position.clone()).toArray());
-      console.log(JSON.stringify(this.waypoints));
+      $log.log(JSON.stringify(this.waypoints));
     };
 
     this.getCameraOrientation = function() {
