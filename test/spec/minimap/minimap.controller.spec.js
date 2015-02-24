@@ -21,7 +21,9 @@ describe('minimap.controller', function() {
       });
 
       DrivemapService.onLoad(defaultDrivemapJSON);
-      $rootScope.$apply();
+      // promise.then are called in digest loop
+      // minimap uses promise.then to fetch the crs of the drivemap
+      $rootScope.$digest();
     });
   });
 

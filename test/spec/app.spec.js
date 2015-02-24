@@ -22,14 +22,16 @@ describe('app', function() {
     it('should call sitesservice.load() function', inject(function(sitesservice) {
       var callback = jasmine.createSpy('callback');
       sitesservice.ready.then(callback);
-      $rootScope.$apply();
+      // trigger digest so promise then's are called
+      $rootScope.$digest();
       expect(callback).toHaveBeenCalled();
     }));
 
     it('should call DrivemapService.load() function', inject(function(DrivemapService) {
       var callback = jasmine.createSpy('callback');
       DrivemapService.ready.then(callback);
-      $rootScope.$apply();
+      // trigger digest so promise then's are called
+      $rootScope.$digest();
       expect(callback).toHaveBeenCalled();
     }));
   });
