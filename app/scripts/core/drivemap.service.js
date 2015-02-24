@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function DrivemapService($http, $q, proj4) {
+  function DrivemapService($http, $q, $log, proj4) {
     var me = this;
     this.url = 'data/drivemap.json';
     this.data = {};
@@ -16,41 +16,33 @@
     this.onLoad = function(response) {
       me.data = response;
 
-      // TODO read from response
-      proj4.defs('EPSG:32633', '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
-      proj4.defs('urn:ogc:def:crs:EPSG::32633', proj4.defs('EPSG:32633'));
-
-      console.log('drivemap service onload');
+      me.registerProj4();
 
       deferred.resolve(response);
     };
 
     this.onLoadFailure = function() {
-      console.log('Failed to load drive map!!');
+      $log.log('Failed to load drive map!!');
       deferred.reject.apply(this, arguments);
     };
 
-    this.getCoordinate = function(index) {
-      var coords = this.getCoordinates()[index];
-      return coords;
-    };
-
-    this.getHomeLocation = function() {
-      return this.getCoordinate(0);
-    };
-
-    this.getHomeLookAt = function() {
-      return this.getCoordinate(1);
+    /**
+     * The drivemap is in a coordinate system.
+     * The coordinate system label is the crs.
+     * The proj4 definition is the proj4 property of the first feature.
+     */
+    this.registerProj4 = function() {
+      proj4.defs(this.getCrs(), this.data.features[0].properties.proj4);
     };
 
     this.getPointcloudUrl = function() {
       return this.data.features[0].properties.pointcloud;
     };
-    this.getCoordinates = function() {
+    this.getCameraPath = function() {
       return this.data.features[0].geometry.coordinates;
     };
     this.getLookPath = function() {
-      return this.data.features[0].geometry.lookatpath;
+      return this.data.features[0].properties.lookatpath;
     };
     this.getCrs = function() {
       return this.data.crs.properties.name;

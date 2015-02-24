@@ -109,14 +109,14 @@
       var lat4326 = coord4326[0];
       var lon4326 = coord4326[1];
       // EPSG:32633 laz coordinate system:
-      var coord32633 = proj4('EPSG:3857', siteProjectionCode, [lat, lon]);
-      var lat32633 = coord32633[0];
-      var lon32633 = coord32633[1];
+      var coordlas = proj4('EPSG:3857', siteProjectionCode, [lat, lon]);
+      var latlas = coordlas[0];
+      var lonlas = coordlas[1];
 
       console.log('EPSG:3857 (openlayers)\nx: ' + lat + '\ny: ' + lon +
         '\nESPG:4326 (google)\nx: ' + lat4326 +
-        '\ny: ' + lon4326 + '\nEPSG:32633 (drivemap)\nx: ' + lat32633 +
-        '\ny: ' + lon32633);
+        '\ny: ' + lon4326 + '\n' + siteProjectionCode +' (drivemap)\nx: ' + latlas +
+        '\ny: ' + lonlas);
     });
 
     map.addLayer(CamFrustrumService.layer);
