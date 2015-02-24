@@ -20,11 +20,6 @@ describe('searchbox.controller', function() {
   });
 
   describe('initial state', function() {
-
-    it('should call load() on sitesservice', function() {
-      expect(sitesservice.load).toHaveBeenCalledWith();
-    });
-
     it('should have empty query', function() {
       expect(ctrl.query).toEqual('');
     });

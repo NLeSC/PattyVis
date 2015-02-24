@@ -22,7 +22,7 @@
        * Can be used to perform action when loading sites has been completed.
        * @type {Promise}
        */
-      onLoaded: deferred.promise,
+      ready: deferred.promise,
       find: function(query) {
         if (query) {
           this.searched = angular.copy(this.all);

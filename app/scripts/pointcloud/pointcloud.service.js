@@ -190,8 +190,8 @@
 
       SiteBoxService.listenTo(me.renderer.domElement);
 
-      DrivemapService.load().then(this.loadPointcloud);
-      sitesservice.onLoaded.then(this.loadSite);
+      DrivemapService.ready.then(this.loadPointcloud);
+      sitesservice.ready.then(this.loadSite);
     };
 
     this.loadPointcloud = function() {
@@ -221,7 +221,7 @@
         ));
         referenceFrame.updateMatrixWorld(true);
 
-        var myPath = DrivemapService.getCoordinates().map(
+        var myPath = DrivemapService.getCameraPath().map(
           function(coord) {
             return SceneService.toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
           }

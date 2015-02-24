@@ -6,8 +6,6 @@
 
     this.sitesservice = sitesservice;
 
-    sitesservice.load();
-
     // when query in view is change propagate to sites service
     this.queryChanged = function() {
       sitesservice.find(this.query);
