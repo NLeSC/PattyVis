@@ -32,7 +32,9 @@
     });
 
     this.sites2GeoJSON = function(sites) {
-      var features = sites.map(function(site) {
+      var features = sites.filter(function(site) {
+       return 'footprint' in site;
+      }).map(function(site) {
         return {
           'type': 'Feature',
           'id': site.id,

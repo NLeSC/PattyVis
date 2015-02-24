@@ -29,7 +29,9 @@
             if(sitesservice.isLoaded){
                 me.siteBoxList = [];
                 for(var i=0; i<sites.length; i++){
+                  if ('pointcloud' in sites[i]) {
                     me.siteBoxList.push(me.createSiteBox(sites[i]));
+                  }
                 }
             }
         };
@@ -54,7 +56,7 @@
             if(event === undefined) {
                 return;
             }
-            
+
             var selectedSiteBox = me.siteBoxSelection(me.mouse.x, me.mouse.y);
             if (selectedSiteBox) {
                 if (selectedSiteBox.hasOwnProperty('textLabel')) {
@@ -144,7 +146,7 @@
                 map: texture,
                 useScreenCoordinates: false,
                 // transparent: true,
-                depthTest: false, 
+                depthTest: false,
                 depthWrite: false,
             });
             var sprite = new THREE.Sprite( spriteMaterial );
@@ -197,7 +199,7 @@
             var vector = new THREE.Vector3(mouseX, mouseY, 0.5);
             vector.unproject(CameraService.camera);
             raycaster.ray.set(CameraService.camera.position, vector.sub(CameraService.camera.position).normalize());
-     
+
             // hovering over SiteBoxes
             var intersects = raycaster.intersectObjects(me.siteBoxList, false);
 
