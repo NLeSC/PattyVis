@@ -1,7 +1,7 @@
 'use strict';
 
-describe('core.sitesservice', function() {
-  var sitesservice;
+describe('core.SitesService', function() {
+  var SitesService;
   var sitesjson;
 
   // load the module
@@ -20,27 +20,27 @@ describe('core.sitesservice', function() {
       inject(function($injector) {
         $httpBackend = $injector.get('$httpBackend');
         $httpBackend.when('GET', 'data/sites.json').respond(sitesjson);
-        sitesservice = $injector.get('sitesservice');
+        SitesService = $injector.get('SitesService');
       });
     });
 
     it('should fetch json file', function() {
-      sitesservice.load();
+      SitesService.load();
 
       $httpBackend.expectGET('data/sites.json');
       $httpBackend.flush();
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
 
-      expect(sitesservice.all).toEqual(sitesjson);
-      expect(sitesservice.filtered).toEqual(sitesjson);
+      expect(SitesService.all).toEqual(sitesjson);
+      expect(SitesService.filtered).toEqual(sitesjson);
     });
 
     it('should resolve the ready promise', function() {
       var readyListener = jasmine.createSpy('listener');
-      sitesservice.ready.then(readyListener);
+      SitesService.ready.then(readyListener);
 
-      sitesservice.load();
+      SitesService.load();
       // resolve http request
       $httpBackend.flush();
 
@@ -54,45 +54,45 @@ describe('core.sitesservice', function() {
     beforeEach(function() {
       inject(function($injector) {
         site162json = sitesjson[0];
-        sitesservice = $injector.get('sitesservice');
-        sitesservice.onLoad(sitesjson);
+        SitesService = $injector.get('SitesService');
+        SitesService.onLoad(sitesjson);
       });
     });
 
     describe('find() function', function() {
 
       it('should have empty search result when query is empty', function() {
-        sitesservice.find('');
+        SitesService.find('');
 
-        var result = sitesservice.searched;
+        var result = SitesService.searched;
         expect(result).toEqual([]);
       });
 
       it('should have full filtered result when query is empty', function() {
-        sitesservice.find('');
+        SitesService.find('');
 
-        var result = sitesservice.filtered;
+        var result = SitesService.filtered;
         expect(result).toEqual(sitesjson);
       });
 
       it('should have site1 as search result when query is 162', function() {
-        sitesservice.find('162');
+        SitesService.find('162');
 
-        var result = sitesservice.searched;
+        var result = SitesService.searched;
         expect(result).toEqual([site162json]);
       });
 
       it('should have site1 as filtered result when query is 162', function() {
-        sitesservice.find('162');
+        SitesService.find('162');
 
-        var result = sitesservice.filtered;
+        var result = SitesService.filtered;
         expect(result).toEqual([site162json]);
       });
 
       it('should return site1 when query is pyramid', function() {
-        sitesservice.find('pyramid');
+        SitesService.find('pyramid');
 
-        var result = sitesservice.searched;
+        var result = SitesService.searched;
         expect(result).toEqual([site162json]);
       });
     });
@@ -111,7 +111,7 @@ describe('core.sitesservice', function() {
           pointcloud_bbox: bbox // jshint ignore:line
         };
 
-        var result = sitesservice.centerOfSite(site);
+        var result = SitesService.centerOfSite(site);
 
         var expected = [296255.817105, 4633734.680455, 132.8305];
         expect(result).toEqual(expected);
@@ -120,13 +120,13 @@ describe('core.sitesservice', function() {
 
     describe('getById() function', function() {
       it('should return a site when id is present', function() {
-        var result = sitesservice.getById(162);
+        var result = SitesService.getById(162);
 
         expect(result).toEqual(site162json);
       });
 
       it('should return undefined when site with id is missing', function() {
-        var result = sitesservice.getById(9999999);
+        var result = SitesService.getById(9999999);
 
         expect(result).toBeUndefined();
       });

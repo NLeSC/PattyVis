@@ -7,13 +7,13 @@ describe('searchbox.controller', function() {
 
   var ctrl;
   var PointcloudService;
-  var sitesservice;
+  var SitesService;
   beforeEach(function() {
-    inject(function(_$controller_, _PointcloudService_, _sitesservice_) {
+    inject(function(_$controller_, _PointcloudService_, _SitesService_) {
       PointcloudService = _PointcloudService_;
-      sitesservice = _sitesservice_;
+      SitesService = _SitesService_;
       // stub load, so we dont do any ajax calls
-      spyOn(sitesservice, 'load');
+      spyOn(SitesService, 'load');
       var $controller = _$controller_;
       ctrl = $controller('SearchPanelController');
     });
@@ -26,13 +26,13 @@ describe('searchbox.controller', function() {
   });
 
   describe('queryChanged function', function() {
-    it('should call find() on sitesservice', function() {
-       spyOn(sitesservice, 'find');
+    it('should call find() on SitesService', function() {
+       spyOn(SitesService, 'find');
        ctrl.query = 'somequery';
 
        ctrl.queryChanged();
 
-       expect(sitesservice.find).toHaveBeenCalledWith('somequery');
+       expect(SitesService.find).toHaveBeenCalledWith('somequery');
     });
   });
 

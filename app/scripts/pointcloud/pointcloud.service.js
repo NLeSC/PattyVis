@@ -3,7 +3,7 @@
 
   function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope,
     DrivemapService,
-    sitesservice, CameraService, SceneService,
+    SitesService, CameraService, SceneService,
     PathControls, SiteBoxService, MeasuringService) {
 
     var me = this;
@@ -191,7 +191,7 @@
       SiteBoxService.listenTo(me.renderer.domElement);
 
       DrivemapService.ready.then(this.loadPointcloud);
-      sitesservice.ready.then(this.loadSite);
+      SitesService.ready.then(this.loadSite);
     };
 
     this.loadPointcloud = function() {
@@ -244,7 +244,7 @@
 
     this.loadSite = function() {
       // load pointcloud
-      var site = sitesservice.getById(162);
+      var site = SitesService.getById(162);
       var pointcloudPath = site.pointcloud;
 
       POCLoader.load(pointcloudPath, function(geometry) {
@@ -355,7 +355,7 @@
     };
 
     this.lookAtSite = function(site) {
-      var coordGeo = sitesservice.centerOfSite(site);
+      var coordGeo = SitesService.centerOfSite(site);
       var posGeo = new THREE.Vector3(coordGeo[0], coordGeo[1], coordGeo[2]);
       var posLocal = SceneService.toLocal(posGeo);
       //camera.lookAt(posLocal);
@@ -369,14 +369,13 @@
 
     this.showLabel = function(site) {
       var message = site.description_site; // jshint ignore:line
-      var center = sitesservice.centerOfSite(site);
-      var bbox = sitesservice.getBoundingBox(site);
+      var center = SitesService.centerOfSite(site);
+      var bbox = SitesService.getBoundingBox(site);
       var maxAltIndex = 5;
       var top = bbox[maxAltIndex];
       var labelPosition = new THREE.Vector3(center[0], center[1], top);
       addTextLabel(message, labelPosition);
     };
-
 
     this.update = function() {
 

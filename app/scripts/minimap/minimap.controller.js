@@ -1,9 +1,9 @@
 (function() {
   'use strict';
 
-  function MinimapController($scope, ol, proj4, sitesservice, CamFrustrumService, Messagebus, DrivemapService) {
+  function MinimapController($scope, ol, proj4, SitesService, CamFrustrumService, Messagebus, DrivemapService) {
     var me = this;
-    this.sitesservice = sitesservice;
+    this.SitesService = SitesService;
 
     var olProjectionCode = 'EPSG:3857';
     var siteProjectionCode = null;
@@ -66,7 +66,7 @@
     };
 
     $scope.$watch(function() {
-      return me.sitesservice.filtered;
+      return me.SitesService.filtered;
     }, this.onSitesChanged);
 
 

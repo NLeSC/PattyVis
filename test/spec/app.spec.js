@@ -19,9 +19,9 @@ describe('app', function() {
   });
 
   describe('pattyApp.run() function', function() {
-    it('should call sitesservice.load() function', inject(function(sitesservice) {
+    it('should call SitesService.load() function', inject(function(SitesService) {
       var callback = jasmine.createSpy('callback');
-      sitesservice.ready.then(callback);
+      SitesService.ready.then(callback);
       // trigger digest so promise then's are called
       $rootScope.$digest();
       expect(callback).toHaveBeenCalled();

@@ -1,6 +1,6 @@
 'use strict';
 
-describe('core.sitesservice', function() {
+describe('core.SitesService', function() {
   var service;
   var defaultDrivemapJSON;
   var $rootScope;

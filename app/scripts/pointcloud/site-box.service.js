@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function SiteBoxService($rootScope, THREE, sitesservice, CameraService) {
+    function SiteBoxService($rootScope, THREE, SitesService, CameraService) {
         var me = this;
 
         var raycaster;
@@ -26,7 +26,7 @@
         };
 
         this.onSitesChanged = function(sites) {
-            if(sitesservice.isLoaded){
+            if(SitesService.isLoaded){
                 me.siteBoxList = [];
                 for(var i=0; i<sites.length; i++){
                   if ('pointcloud' in sites[i]) {
@@ -37,7 +37,7 @@
         };
 
         $rootScope.$watch(function() {
-            return sitesservice.all;
+            return SitesService.all;
         }, this.onSitesChanged);
 
         this.hoverOver = function(siteBox) {
@@ -174,8 +174,8 @@
         };
 
         this.createSiteBox = function(site){
-            var siteCenter = sitesservice.centerOfSite(site);
-            var boxSize = sitesservice.getBoundingBoxSize(site);
+            var siteCenter = SitesService.centerOfSite(site);
+            var boxSize = SitesService.getBoundingBoxSize(site);
 
             var boxGeometry = new THREE.BoxGeometry(boxSize[0], boxSize[1], boxSize[2]);
             var boxMaterial = new THREE.MeshBasicMaterial({
@@ -219,5 +219,5 @@
     }
 
     angular.module('pattyApp.pointcloud')
-        .service('SiteBoxService', ['$rootScope', 'THREE', 'sitesservice', 'CameraService', SiteBoxService]);
+        .service('SiteBoxService', ['$rootScope', 'THREE', 'SitesService', 'CameraService', SiteBoxService]);
 })();

@@ -1,8 +1,9 @@
 (function() {
   'use strict';
 
-  function sitesservice($http, $q) {
+  function SitesService($http, $q) {
     var sitesUrl = 'data/sites.json';
+    // sitesUrl = 'http://148.251.106.132:8090/POTREE/CONF.json';
 
     function onLoad(data) {
       me.all = data;
@@ -92,5 +93,5 @@
   }
 
   angular.module('pattyApp.core')
-    .factory('sitesservice', sitesservice);
+    .factory('SitesService', SitesService);
 })();

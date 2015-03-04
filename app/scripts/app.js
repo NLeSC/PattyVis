@@ -20,9 +20,9 @@ angular
   ])
   .config(function() {
 
-  }).run(function(sitesservice, DrivemapService) {
+  }).run(function(SitesService, DrivemapService) {
     DrivemapService.load();
-    sitesservice.load();
+    SitesService.load();
   });
 
 angular.module('pattyApp.utils', []);
