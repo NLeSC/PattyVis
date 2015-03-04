@@ -38,9 +38,9 @@ describe('pattyApp', function() {
     });
   });
 
-  describe('search on "bla"', function() {
+  describe('search on "zzzz"', function() {
     beforeEach(function() {
-      element(by.model('sp.query')).sendKeys('bla');
+      element(by.model('sp.query')).sendKeys('zzzz');
     });
 
     it('should have zero search results', function() {
