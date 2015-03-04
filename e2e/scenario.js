@@ -33,8 +33,8 @@ describe('pattyApp', function() {
       element(by.model('sp.query')).sendKeys('py');
     });
 
-    it('should have one search result', function() {
-      expect(element.all(by.css('.search-result')).count()).toBe(1);
+    it('should have one site details div', function() {
+      expect(element.all(by.css('.site-details')).count()).toBe(1);
     });
   });
 
