@@ -44,7 +44,6 @@
     },
     "data_location": "http://148.251.106.132:8090/RAW/MESH/SITE/CURR/S162/SITE_162_FEB+JUL_MAX_cleaned_ALIGNED_DRIVE_1_V3_SRID_32633/SITE_162_FEB+JUL_MAX_cleaned_ALIGNED_DRIVE_1_V3.obj"
   },
-  "site_interpretation": null,
   "reconstruction_mesh": [{
     "id": 1,
     "osg_position": {
