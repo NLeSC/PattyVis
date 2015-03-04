@@ -367,6 +367,20 @@
 
     };
 
+    this.enterOrbitMode = function(site) {
+      SitesService.selectSite(site);
+
+      // TODO replace PathControls with OrbitControls
+      // TODO replace camera drivemap toggles (rails, free, demo) with orbit exit button
+    };
+
+    this.exitOrbitMode = function() {
+      // TODO replace OrbitControls with PathControls
+      // TODO replace orbit exit button with camera drivemap toggles (rails, free, demo)
+
+      SitesService.clearSiteSelection();
+    };
+
     this.showLabel = function(site) {
       var message = site.description_site; // jshint ignore:line
       var center = SitesService.centerOfSite(site);

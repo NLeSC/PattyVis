@@ -15,7 +15,15 @@
 
     var me = {
       all: [],
+      /**
+       * List of filtered sites. When query is empty then it will contain all sites.
+       * @type {Array}
+       */
       filtered: [],
+      /**
+       * List of searched sites. When query is empty then it will contain no sites.
+       * @type {Array}
+       */
       searched: [],
       isLoaded: false,
       /**
@@ -35,7 +43,7 @@
             var interpretation = site.interpretation_site; // jshint ignore:line
             return (re.test(description) ||
               re.test(interpretation) ||
-              site.id === query * 1);
+              'site:' + site.id === query);
           }, this);
           this.filtered = this.searched;
         } else {
@@ -87,6 +95,12 @@
           return d.id === id;
         });
         return sites[0];
+      },
+      selectSite: function(site) {
+        this.find('site:' + site.id);
+      },
+      clearSiteSelection: function() {
+        this.find('');
       }
     };
     return me;

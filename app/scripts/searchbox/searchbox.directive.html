@@ -4,7 +4,7 @@
         <input type="text" class="form-control" placeholder="Search..." ng-model="sp.query" ng-change="sp.queryChanged()">
     </div>
     <div class="panel" class="search-results" ng-show="sp.query">
-        <div class="search-result" ng-repeat="site in sp.SitesService.searched|limitTo:10" ng-cloak>
+        <div ng-if="sp.SitesService.searched.length > 1" class="search-result" ng-repeat="site in sp.SitesService.searched|limitTo:10" ng-cloak>
             <div style="display: inline-block; vertical-align: top;">
                 <img ng-src="{{site.thumbnail }}" width="120">
             </div>
@@ -18,5 +18,6 @@
             </div>
         </div>
         <div ng-if="sp.SitesService.searched.length == 0" ng-cloak>No results.</div>
+        <div ng-if="sp.SitesService.searched.length == 1" ng-cloak>TODO site details</div>
     </div>
 </div>

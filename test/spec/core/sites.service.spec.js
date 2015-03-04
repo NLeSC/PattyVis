@@ -75,15 +75,15 @@ describe('core.SitesService', function() {
         expect(result).toEqual(sitesjson);
       });
 
-      it('should have site1 as search result when query is 162', function() {
-        SitesService.find('162');
+      it('should have site1 as search result when query is `site:162`', function() {
+        SitesService.find('site:162');
 
         var result = SitesService.searched;
         expect(result).toEqual([site162json]);
       });
 
-      it('should have site1 as filtered result when query is 162', function() {
-        SitesService.find('162');
+      it('should have site1 as filtered result when query is `site:162`', function() {
+        SitesService.find('site:162');
 
         var result = SitesService.filtered;
         expect(result).toEqual([site162json]);
@@ -129,6 +129,15 @@ describe('core.SitesService', function() {
         var result = SitesService.getById(9999999);
 
         expect(result).toBeUndefined();
+      });
+    });
+
+    describe('selectSite() function', function() {
+      it('should find only site 162', function() {
+        SitesService.selectSite(site162json);
+
+        var result = SitesService.searched;
+        expect(result).toEqual([site162json]);
       });
     });
   });
