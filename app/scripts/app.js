@@ -25,7 +25,8 @@ angular
     SitesService.load();
   });
 
-angular.module('pattyApp.utils', []);
+angular.module('pattyApp.templates', []);
+angular.module('pattyApp.utils', ['pattyApp.templates']);
 angular.module('pattyApp.core', ['pattyApp.utils'])
   .factory('proj4', function($window) {
     return $window.proj4;

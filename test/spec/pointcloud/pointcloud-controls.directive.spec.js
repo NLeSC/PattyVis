@@ -3,16 +3,7 @@
 describe('pointcloud-controls.directive', function() {
 
   // load the module
-  // use main module because it contains filled template cache
-  beforeEach(module('pattyApp'));
-
-  beforeEach(module('mockedDrivemap', 'mockedSites'));
-
-  beforeEach(inject(function($httpBackend, defaultDrivemapJSON, defaultSitesJSON) {
-    $httpBackend.expectGET('data/drivemap.json').respond(200, defaultDrivemapJSON);
-    $httpBackend.expectGET('data/sites.json').respond(200, defaultSitesJSON);
-    $httpBackend.flush();
-  }));
+  beforeEach(module('pattyApp.pointcloud'));
 
   var $compile;
   var $rootScope;

@@ -329,7 +329,7 @@ module.exports = function(grunt) {
     },
 
     ngtemplates: {
-      pattyApp: {
+      'pattyApp.templates': {
         cwd: 'app/',
         src: 'scripts/*/*.html',
         dest: '.tmp/template.js',
