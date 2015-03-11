@@ -2,8 +2,9 @@
   'use strict';
 
   function SitesService($http, $q) {
-    var sitesUrl = 'data/sites.json';
-    // sitesUrl = 'http://148.251.106.132:8090/POTREE/CONF.json';
+    var sitesUrl = 'http://148.251.106.132:8090/POTREE/CONF.json';
+    // to work without server uncomment below
+    // sitesUrl = 'data/sites.json';
 
     function onLoad(data) {
       me.all = data;

@@ -19,7 +19,7 @@ describe('core.SitesService', function() {
     beforeEach(function() {
       inject(function($injector) {
         $httpBackend = $injector.get('$httpBackend');
-        $httpBackend.when('GET', 'data/sites.json').respond(sitesjson);
+        $httpBackend.when('GET', 'http://148.251.106.132:8090/POTREE/CONF.json').respond(sitesjson);
         SitesService = $injector.get('SitesService');
       });
     });
@@ -27,7 +27,7 @@ describe('core.SitesService', function() {
     it('should fetch json file', function() {
       SitesService.load();
 
-      $httpBackend.expectGET('data/sites.json');
+      $httpBackend.expectGET('http://148.251.106.132:8090/POTREE/CONF.json');
       $httpBackend.flush();
       $httpBackend.verifyNoOutstandingExpectation();
       $httpBackend.verifyNoOutstandingRequest();
