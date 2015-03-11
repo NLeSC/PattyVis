@@ -28,9 +28,9 @@ describe('pattyApp', function() {
     });
   });
 
-  describe('searched on "py"', function() {
+  describe('searched on "site:162"', function() {
     beforeEach(function() {
-      element(by.model('sp.query')).sendKeys('py');
+      element(by.model('sp.query')).sendKeys('site:162');
     });
 
     it('should have one site details div', function() {
@@ -84,7 +84,7 @@ describe('pattyApp', function() {
 
       beforeEach(function() {
         element(by.css('.icon-big.toolbox-icon')).click();
-        // wait for toolbox to close, otherwise it will still be displayed partle
+        // wait for toolbox to close, otherwise it will still be displayed partly
         browser.sleep(200);
       });
 
@@ -98,7 +98,7 @@ describe('pattyApp', function() {
 
       beforeEach(function() {
         element(by.css('.icon-big.toolbox-tray-top-icon')).click();
-        // wait for toolbox to close, otherwise it will still be displayed partle
+        // wait for toolbox to close, otherwise it will still be displayed partly
         browser.sleep(500);
       });
 
