@@ -29,7 +29,9 @@
             if(SitesService.isLoaded){
                 me.siteBoxList = [];
                 for(var i=0; i<sites.length; i++){
-                  if ('pointcloud' in sites[i]) {
+                  if (
+                    'pointcloud' in sites[i] || 'footprint' in sites[i]
+                  ) {
                     me.siteBoxList.push(me.createSiteBox(sites[i]));
                   }
                 }

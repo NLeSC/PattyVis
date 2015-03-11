@@ -59,31 +59,12 @@
           });
       },
       onLoad: onLoad,
-      centerOfSite: function(site) {
-        var bbox = site.pointcloud_bbox; // jshint ignore:line
-        return [
-          ((bbox[3] - bbox[0]) / 2) + bbox[0], ((bbox[4] - bbox[1]) / 2) + bbox[1], ((bbox[5] - bbox[2]) / 2) + bbox[2],
-          // is same as:
-          // ((site.bbox[3] + site.bbox[0]) / 2),
-          // ((site.bbox[4] + site.bbox[1]) / 2),
-          // ((site.bbox[5] + site.bbox[2]) / 2)
-        ];
-      },
       getAllFeatures: function() {
         if (!this.isLoaded) {
           return [];
         } else {
           return this.all;
         }
-      },
-      getBoundingBox: function(site) {
-        return site.pointcloud_bbox; // jshint ignore:line
-      },
-      getBoundingBoxSize: function(site) {
-        var bbox = site.pointcloud_bbox; // jshint ignore:line
-        return [
-          ((bbox[3] - bbox[0]) / 2), ((bbox[4] - bbox[1]) / 2), ((bbox[5] - bbox[2]) / 2)
-        ];
       },
       /**
        * Get a site by it's identifier.
@@ -101,6 +82,67 @@
       },
       clearSiteSelection: function() {
         this.find('');
+      },
+      // Methods for one site
+      /**
+       * Determines bounding box based on footprint.
+       * @param {Site} site
+       * @return {array} [minlon, minlat, minalt, maxlon, maxlat, maxalt]
+       */
+      getBoundingBoxOfFootprint: function(site) {
+        var minlon = Number.POSITIVE_INFINITY;
+        var minlat = Number.POSITIVE_INFINITY;
+        var minalt = site.footprint_altitude[0]; // jshint ignore:line
+        var maxlon = Number.NEGATIVE_INFINITY;
+        var maxlat = Number.NEGATIVE_INFINITY;
+        var maxalt = site.footprint_altitude[1]; // jshint ignore:line
+
+        site.footprint.forEach(function(polygon) {
+          polygon.forEach(function(ring) {
+            ring.forEach(function(point) {
+              if (point[0] < minlon) {
+                minlon = point[0];
+              }
+              if (point[0] > maxlon) {
+                maxlon = point[0];
+              }
+              if (point[1] < minlat) {
+                minlat = point[1];
+              }
+              if (point[1] > maxlat) {
+                maxlat = point[1];
+              }
+            });
+          });
+        });
+
+        var bbox = [minlon, minlat, minalt, maxlon, maxlat, maxalt];
+        return bbox;
+      },
+      centerOfSite: function(site) {
+        var bbox = this.getBoundingBox(site);
+        return [
+          ((bbox[3] - bbox[0]) / 2) + bbox[0], ((bbox[4] - bbox[1]) / 2) + bbox[1], ((bbox[5] - bbox[2]) / 2) + bbox[2]
+        ];
+      },
+      /**
+       * If site has footprint and pointcloud then returns bbox of pointcloud.
+       * If site has footprint and no pointcloud then returns bbox of footprint.
+       * @param {Site} site [description]
+       * @return {array} [minlon, minlat, minalt, maxlon, maxlat, maxalt]
+       */
+      getBoundingBox: function(site) {
+        if ('pointcloud_bbox' in site) {
+          return site.pointcloud_bbox; // jshint ignore:line
+        } else {
+          return this.getBoundingBoxOfFootprint(site);
+        }
+      },
+      getBoundingBoxSize: function(site) {
+        var bbox = this.getBoundingBox(site);
+        return [
+          ((bbox[3] - bbox[0]) / 2), ((bbox[4] - bbox[1]) / 2), ((bbox[5] - bbox[2]) / 2)
+        ];
       }
     };
     return me;
