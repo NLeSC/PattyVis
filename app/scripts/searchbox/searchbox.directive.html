@@ -18,6 +18,19 @@
             </div>
         </div>
         <div ng-if="sp.SitesService.searched.length == 0" ng-cloak>No results.</div>
-        <div ng-if="sp.SitesService.searched.length == 1" class="site-details" ng-cloak>TODO site details</div>
+        <div ng-if="sp.SitesService.searched.length == 1" class="site-details" ng-cloak>
+          TODO site details
+          <div style="display: inline-block; vertical-align: top;">
+              <img ng-src="{{sp.SitesService.searched[0].thumbnail }}" width="120">
+          </div>
+          <div style="display:inline-block;">
+              <strong>{{ sp.SitesService.searched[0].description_site }}</strong>
+              <p>{{ sp.SitesService.searched[0].site_interpretation }}</p>
+          </div>
+          <div class="btn-group">
+              <button type="button" class="glyphicon glyphicon-eye-open" ng-click="sp.lookAtSite(sp.SitesService.searched[0])" title="Look at site"></button>
+              <button type="button" class="glyphicon glyphicon-tag" ng-click="sp.showLabel(sp.SitesService.searched[0])" title="Show label"></button>
+          </div>
+        </div>
     </div>
 </div>
