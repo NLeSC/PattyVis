@@ -1,10 +1,7 @@
 (function() {
   'use strict';
 
-  function SitesService($http, $q) {
-    var sitesUrl = 'http://148.251.106.132:8090/POTREE/CONF.json';
-    // to work without server uncomment below
-    // sitesUrl = 'data/sites.json';
+  function SitesService($http, $q, pattyConf) {
 
     function onLoad(data) {
       me.all = data;
@@ -53,7 +50,7 @@
         }
       },
       load: function() {
-        $http.get(sitesUrl)
+        $http.get(pattyConf.SITES_JSON_URL)
           .success(onLoad)
           .error(function(data, status, headers, config) {
             deferred.reject(data, status, headers, config);

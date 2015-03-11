@@ -1,6 +1,5 @@
 // The app
 
-/* global proj4:false, ol:false, THREE:false, POCLoader:false, Potree:false */
 (function() {
   'use strict';
 
@@ -22,22 +21,15 @@
       'pattyApp.minimap',
       'pattyApp.pointcloud'
     ])
-    .config(function() {
-
-    }).run(function(SitesService, DrivemapService) {
+    .run(function(SitesService, DrivemapService) {
       DrivemapService.load();
       SitesService.load();
     });
 
   angular.module('pattyApp.templates', []);
   angular.module('pattyApp.utils', ['pattyApp.templates']);
-  angular.module('pattyApp.core', ['pattyApp.utils'])
-    .constant('proj4', proj4);
-  angular.module('pattyApp.minimap', ['pattyApp.core'])
-    .constant('ol', ol);
-  angular.module('pattyApp.pointcloud', ['pattyApp.core'])
-    .constant('THREE', THREE)
-    .constant('POCLoader', POCLoader)
-    .constant('Potree', Potree);
+  angular.module('pattyApp.core', ['pattyApp.utils']);
+  angular.module('pattyApp.minimap', ['pattyApp.core']);
+  angular.module('pattyApp.pointcloud', ['pattyApp.core']);
   angular.module('pattyApp.searchbox', ['pattyApp.core', 'pattyApp.pointcloud']);
 })();

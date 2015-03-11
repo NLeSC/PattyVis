@@ -1,16 +1,15 @@
 (function() {
   'use strict';
 
-  function DrivemapService($http, $q, $log, proj4) {
+  function DrivemapService($http, $q, $log, proj4, pattyConf) {
     var me = this;
-    this.url = 'data/drivemap.json';
     this.data = {};
     var deferred = $q.defer();
 
     this.ready = deferred.promise;
 
     this.load = function() {
-      return $http.get(this.url).success(this.onLoad).error(this.onLoadFailure);
+      return $http.get(pattyConf.DRIVEMAP_JSON_URL).success(this.onLoad).error(this.onLoadFailure);
     };
 
     this.onLoad = function(response) {

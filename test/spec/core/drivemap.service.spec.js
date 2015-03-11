@@ -19,10 +19,6 @@ describe('core.SitesService', function() {
   });
 
   describe('initial state', function() {
-    it('should have an url', function() {
-      expect(service.url).toEqual('data/drivemap.json');
-    });
-
     it('should have empty data object', function() {
       expect(service.data).toEqual({});
     });
