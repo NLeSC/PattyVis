@@ -50,7 +50,7 @@ describe('pattyApp', function() {
 
   describe('click on settings gear', function() {
     beforeEach(function() {
-      element(by.css('.btn.gear')).click();
+      element(by.css('.icon-big.gear-icon')).click();
     });
 
     it('should show settings panel', function() {
@@ -61,7 +61,7 @@ describe('pattyApp', function() {
 
   describe('click on help icon', function() {
     beforeEach(function() {
-      element(by.css('.btn.help')).click();
+      element(by.css('.icon-big.help-icon')).click();
     });
 
     it('should show help panel', function() {
@@ -72,7 +72,7 @@ describe('pattyApp', function() {
 
   describe('clicking on toolbox icon', function() {
     beforeEach(function() {
-      element(by.css('.toolbox .btn')).click();
+      element(by.css('.icon-big.toolbox-icon')).click();
     });
 
     it('should show tools', function() {
@@ -83,7 +83,7 @@ describe('pattyApp', function() {
     describe('and then clicking on bottom toolbox icon', function() {
 
       beforeEach(function() {
-        element(by.css('.toolbox .btn')).click();
+        element(by.css('.icon-big.toolbox-icon')).click();
         // wait for toolbox to close, otherwise it will still be displayed partle
         browser.sleep(200);
       });
@@ -97,7 +97,7 @@ describe('pattyApp', function() {
     describe('and then clicking on top toolbox icon', function() {
 
       beforeEach(function() {
-        element(by.css('.toolbox-tray-top')).click();
+        element(by.css('.icon-big.toolbox-tray-top-icon')).click();
         // wait for toolbox to close, otherwise it will still be displayed partle
         browser.sleep(500);
       });
