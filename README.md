@@ -112,7 +112,7 @@ To connnect to Sauce Labs use sauce connect program. [Here](https://docs.saucela
 Before tests can be run the sauce labs credentials must be setup
 
 ```
-export SAUCE_USER=<your sauce labs username>
+export SAUCE_USERNAME=<your sauce labs username>
 export SAUCE_ACCESS_KEY=<your sauce labs access key>
 ```
 
