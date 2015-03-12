@@ -125,6 +125,8 @@ The pointcloud and minimap use a canvas and can't be tested automatically so the
 
 Travis-ci also runs end-to-end tests on sauce labs.
 
+Note! Running `grunt e2e-sauce` will undo all changes in `app/` folder.
+
 ### Build a distro
 
 ```

@@ -379,6 +379,15 @@ module.exports = function(grunt) {
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
         src: '{,*/}*.css'
+      },
+      // end 2 end tests can't run with actual data as
+      // sauce labs browsers don't have access to the data
+      // so replace remote urls by local urls
+      sauce: {
+        expand: true,
+        cwd: 'e2e/overwrites/',
+        src: '**',
+        dest: '<%= yeoman.app %>/'
       }
     },
 
@@ -414,6 +423,14 @@ module.exports = function(grunt) {
       sauce: {
         options: {
           configFile: 'e2e/e2e-sauce.conf.js'
+        }
+      }
+    },
+
+    gitcheckout: {
+      sauce: {
+        options: {
+          branch: '<%= yeoman.app %>/'
         }
       }
     }
@@ -481,6 +498,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask('e2e-sauce', [
     'connect:test',
-    'protractor:sauce'
+    'copy:sauce', // copy overwrites
+    'protractor:sauce',
+    'gitcheckout:sauce' // undo overwrites
   ]);
 };
