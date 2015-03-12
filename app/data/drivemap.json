@@ -10,7 +10,7 @@
       ]
     },
     "properties": {
-      "pointcloud": "data/out_8/cloud.js"
+      "pointcloud": "http://148.251.106.132:8090/BACKGROUNDS/DRIVE_1_V3/DRIVE_1_V3_8_levels_32cm_spacing/cloud.js"
     },
     "id": "DRIVE_1_V3"
   }],
