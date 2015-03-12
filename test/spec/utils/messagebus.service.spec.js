@@ -7,8 +7,8 @@ describe('utils.messagebus', function() {
 
   var messagebus;
   beforeEach(function() {
-    inject(function($injector) {
-      messagebus = $injector.get('Messagebus');
+    inject(function(_Messagebus_) {
+      messagebus = _Messagebus_;
     });
   });
 
@@ -17,11 +17,13 @@ describe('utils.messagebus', function() {
     var subscriber = function(event, _data_) {
       data = _data_;
     };
-    messagebus.subscribe('someevent', subscriber);
+    var unsubscriber = messagebus.subscribe('someevent', subscriber);
 
     messagebus.publish('someevent', 'someargs');
 
     expect(data).toBe('someargs');
+
+    unsubscriber();
   });
 
 });

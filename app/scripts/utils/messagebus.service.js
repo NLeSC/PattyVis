@@ -12,7 +12,7 @@
      * @see $rootScope.$emit
      */
     this.publish = function() {
-      $rootScope.$emit.apply($rootScope, arguments);
+      return $rootScope.$emit.apply($rootScope, arguments);
     };
     /**
      * @param  {String} name     Event name to listen on.
@@ -22,7 +22,7 @@
      * @see $rootScope.$on for how listener is called
      */
     this.subscribe = function() {
-      $rootScope.$on.apply($rootScope, arguments);
+      return $rootScope.$on.apply($rootScope, arguments);
     };
   }
 

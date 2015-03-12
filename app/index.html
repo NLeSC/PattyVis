@@ -29,7 +29,7 @@
         <patty-search-panel class="clickable"></patty-search-panel>
       </div>
       <div class="col-xs-5">
-        <patty-pointcloud-controls class="clickable" ></patty-pointcloud-controls>
+
       </div>
       <div class="col-xs-3">
         <span class="pull-right">
@@ -40,6 +40,7 @@
   </div>
   <patty-pointcloud-canvas></patty-pointcloud-canvas>
   <patty-pointcloud-stats></patty-pointcloud-stats>
+  <patty-pointcloud-controls class="clickable" ></patty-pointcloud-controls>
 
   <!-- build:js(.) scripts/oldieshim.js -->
   <!--[if lt IE 9]>
@@ -63,35 +64,48 @@
   <script src="bower_components/proj4/dist/proj4.js"></script>
   <script src="bower_components/threejs/build/three.js"></script>
   <script src="bower_components/OrbitControls/index.js"></script>
+  <script src="bower_components/OBJLoader/index.js"></script>
+  <script src="bower_components/DDSLoader/index.js"></script>
+  <script src="bower_components/MTLLoader/index.js"></script>
+  <script src="bower_components/OBJMTLLoader/index.js"></script>
   <script src="bower_components/oculus-bridge/web/build/OculusBridge.min.js"></script>
   <script src="bower_components/OculusRiftEffect/index.js"></script>
   <script src="bower_components/potree/build/js/potree.js"></script>
   <script src="bower_components/potree/libs/plasio/js/laslaz.js"></script>
   <script src="bower_components/potree/build/workers/laslaz-worker.js"></script>
   <script src="bower_components/potree/build/workers/lasdecoder-worker.js"></script>
-  <script src="bower_components/dat-gui/build/dat.gui.js"></script>
   <script src="bower_components/bluebird/js/browser/bluebird.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <!-- endbower -->
   <!-- endbuild -->
 
   <!-- build:js({.tmp,app}) scripts/scripts.js -->
   <script src="scripts/app.js"></script>
   <script src="scripts/utils/messagebus.service.js"></script>
+  <script src="scripts/core/constants.js"></script>
   <script src="scripts/core/sites.service.js"></script>
+  <script src="scripts/core/drivemap.service.js"></script>
   <script src="scripts/searchbox/searchbox.directive.js"></script>
   <script src="scripts/searchbox/searchbox.controller.js"></script>
+  <script src="scripts/minimap/constants.js"></script>
   <script src="scripts/minimap/cam-frustrum.service.js"></script>
   <script src="scripts/minimap/minimap.directive.js"></script>
   <script src="scripts/minimap/minimap.controller.js"></script>
-  <script src="scripts/pointcloud/drivemap.service.js"></script>
+  <script src="scripts/pointcloud/constants.js"></script>
   <script src="scripts/pointcloud/pointcloud.service.js"></script>
+  <script src="scripts/pointcloud/scene.service.js"></script>
   <script src="scripts/pointcloud/camera.service.js"></script>
+  <script src="scripts/pointcloud/path.controls.js"></script>
   <script src="scripts/pointcloud/pointcloud-canvas.directive.js"></script>
   <script src="scripts/pointcloud/pointcloud-canvas.controller.js"></script>
   <script src="scripts/pointcloud/pointcloud-controls.directive.js"></script>
   <script src="scripts/pointcloud/pointcloud-controls.controller.js"></script>
   <script src="scripts/pointcloud/pointcloud-stats.directive.js"></script>
   <script src="scripts/pointcloud/pointcloud-stats.controller.js"></script>
+  <script src="scripts/pointcloud/site-box.service.js"></script>
+  <script src="scripts/pointcloud/AngleTool.js"></script>
+  <script src="scripts/pointcloud/pointcloud-measuring.service.js"></script>
+
   <!-- endbuild -->
 </body>
 

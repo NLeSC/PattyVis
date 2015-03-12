@@ -1,16 +1,14 @@
 (function() {
   'use strict';
 
-  function SearchPanelController($scope, sitesservice, PointcloudService) {
+  function SearchPanelController(SitesService, PointcloudService) {
     this.query = '';
 
-    this.sitesservice = sitesservice;
-
-    sitesservice.load();
+    this.SitesService = SitesService;
 
     // when query in view is change propagate to sites service
     this.queryChanged = function() {
-      sitesservice.find(this.query);
+      SitesService.find(this.query);
     };
 
     this.lookAtSite = function(site) {

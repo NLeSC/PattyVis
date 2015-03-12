@@ -29,15 +29,14 @@ module.exports = function(config) {
       'bower_components/proj4/dist/proj4.js',
       'bower_components/threejs/build/three.js',
       'bower_components/OrbitControls/index.js',
-      'bower_components/stats.js/build/stats.min.js',
-      'bower_components/dat-gui/build/dat.gui.min.js',
       'bower_components/potree/build/js/potree.js',
       'bower_components/potree/build/js/laslaz.js',
       'bower_components/openlayers3/build/ol.js',
       'bower_components/oculus-bridge/web/build/OculusBridge.min.js',
       'bower_components/OculusRiftEffect/index.js',
+      'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'app/scripts/**/*.js',
-      // test for directives need the templates, inside test load pattyApp module to get templates
+      // test for directives need the templates, inside test load pattyApp.templates module to get templates
       '.tmp/template.js',
       'test/mock/**/*.js',
       'test/spec/**/*.js'

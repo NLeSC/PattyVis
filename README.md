@@ -1,6 +1,13 @@
 PattyVis
 ========
 
+[![Build Status](https://travis-ci.org/NLeSC/PattyVis.svg?branch=master)](https://travis-ci.org/NLeSC/PattyVis)
+[![Code Climate](https://codeclimate.com/github/NLeSC/PattyVis/badges/gpa.svg)](https://codeclimate.com/github/NLeSC/PattyVis)
+[![Test Coverage](https://codeclimate.com/github/NLeSC/PattyVis/badges/coverage.svg)](https://codeclimate.com/github/NLeSC/PattyVis)
+[![Sauce Test Status](https://saucelabs.com/buildstatus/patty-vis)](https://saucelabs.com/u/patty-vis)
+[![devDependency Status](https://david-dm.org/NLeSC/PattyVis/dev-status.svg)](https://david-dm.org/NLeSC/PattyVis#info=devDependencies)
+[![Codacy Badge](https://www.codacy.com/project/badge/a2ebd9977fe04aa1af6e5c47dc8d6927)](https://www.codacy.com/public/sverhoeven/PattyVis)
+
 Getting started (windows, from scratch)
 ---------------------------------------
 
@@ -29,6 +36,7 @@ Prerequisites
 1. nodejs, http://nodejs.org/
 2. bower, http://bower.io
 3. compass, http://compass-style.org
+4. Java Development Kit, https://www.java.com/
 
 Installation
 ------------
@@ -87,20 +95,37 @@ grunt test
 ```
 Generates test report and coverage inside `test/reports` folder.
 
-### Run end-to-end tests
+### Run end-to-end tests with local browser (chrome)
 
-Before tests can be run the webdrivers must be updated/installed with
+Tests in Chrome can be run with
 ```
-npm run webdriver-update
-```
-
-Tests in Firefox and Chrome can be run with
-```
-grunt e2e
+grunt e2e-local
 ```
 
 The pointcloud and minimap use a canvas and can't be tested automatically so they must be verified manually using the screenshots in the report.
 Open `e2e/reports/report.html` in a web-browser.
+
+### Run end-to-end tests on [sauce labs](https://saucelabs.com/)
+
+To connnect to Sauce Labs use sauce connect program. [Here](https://docs.saucelabs.com/reference/sauce-connect/) you can find the details on how to install and run it.
+
+Before tests can be run the sauce labs credentials must be setup
+
+```
+export SAUCE_USER=<your sauce labs username>
+export SAUCE_ACCESS_KEY=<your sauce labs access key>
+```
+
+Tests in Chrome, Firefox on Windows, Linux and OSX can be run with
+```
+grunt e2e-sauce
+```
+
+The pointcloud and minimap use a canvas and can't be tested automatically so they must be verified manually using the screencast in the report at `https://saucelabs.com/u/<your sauce labs username>`.
+
+Travis-ci also runs end-to-end tests on sauce labs.
+
+Note! Running `grunt e2e-sauce` will undo all changes in `app/` folder.
 
 ### Build a distro
 
@@ -128,7 +153,6 @@ In db run:
 To get geometry, bbox and crs.
 
 Height and properties need to be filled manually.
-
 
 Frame rate report
 ----------------

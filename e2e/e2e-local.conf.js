@@ -8,9 +8,7 @@ exports.config = {
   ],
 
   multiCapabilities: [{
-      'browserName': 'chrome'
-  // }, {
-  //     'browserName': 'firefox'
+    'browserName': 'chrome',
   }],
 
   baseUrl: 'http://localhost:9001/',

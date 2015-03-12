@@ -1,25 +1,32 @@
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, sitesservice, CameraService) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope,
+    DrivemapService,
+    SitesService, CameraService, SceneService,
+    PathControls, SiteBoxService, MeasuringService) {
+
     var me = this;
 
     this.elRenderArea = null;
 
     me.settings = {
-      pointCountTarget: 0.4,
-      pointSize: 0.7,
+      pointCountTarget: 1.0,
+      pointSize: 0.2,
       opacity: 1,
       showSkybox: true,
       interpolate: false,
       showStats: false,
-      pointSizeType: Potree.PointSizeType.ADAPTIVE,
+      pointSizeType: Potree.PointSizeType.ATTENUATED,
       pointSizeTypes: Potree.PointSizeType,
       pointColorType: Potree.PointColorType.RGB,
       pointColorTypes: Potree.PointColorType,
       pointShapes: Potree.PointShape,
-      pointShape: Potree.PointShape.SQUARE
+      pointShape: Potree.PointShape.CIRCLE,
+      clipMode: Potree.ClipMode.HIGHLIGHT_INSIDE,
+      clipModes: Potree.ClipMode
     };
+
     me.stats = {
       nrPoints: 0,
       nrNodes: 0,
@@ -36,14 +43,16 @@
       }
     };
 
-    var pointcloudPath = 'data/out_8/cloud.js';
     this.renderer = null;
     var camera;
     var scene;
     var pointcloud;
+    var sitePointcloud;
+
     var skybox;
-    var clock = new THREE.Clock();
-    var controls;
+
+    me.pathMesh = null;
+
     var referenceFrame;
     var mouse = {
       x: 0,
@@ -138,7 +147,7 @@
           me.stats.sceneCoordinates.x = sceneCoordinates.x.toFixed(2);
           me.stats.sceneCoordinates.y = sceneCoordinates.y.toFixed(2);
           me.stats.sceneCoordinates.z = sceneCoordinates.z.toFixed(2);
-          var geoCoordinates = toGeo(sceneCoordinates);
+          var geoCoordinates = SceneService.toGeo(sceneCoordinates);
           me.stats.lasCoordinates.x = geoCoordinates.x.toFixed(2);
           me.stats.lasCoordinates.y = geoCoordinates.y.toFixed(2);
           me.stats.lasCoordinates.z = geoCoordinates.z.toFixed(2);
@@ -157,38 +166,37 @@
     }
 
     this.initThree = function() {
-      var fov = 75;
-      var width = $window.innterWidth;
+      var width = $window.innerWidth;
       var height = $window.innerHeight;
-      var aspect = width / height;
-      var near = 0.1;
-      var far = 100000;
 
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-      CameraService.camera = camera.clone();
+      scene = SceneService.getScene();
+      camera = CameraService.camera;
+
       me.renderer = new THREE.WebGLRenderer();
       me.renderer.setSize(width, height);
       me.renderer.autoClear = false;
       me.renderer.domElement.addEventListener('mousemove', onMouseMove, false);
 
+      MeasuringService.init(me.renderer);
+
       skybox = loadSkybox('bower_components/potree/resources/textures/skybox/');
-      // camera and controls
-      controls = new THREE.FirstPersonControls(camera, me.renderer.domElement);
-      camera.rotation.order = 'ZYX';
-      controls.moveSpeed *= 10;
 
       // enable frag_depth extension for the interpolation shader, if available
       me.renderer.context.getExtension('EXT_frag_depth');
 
-      referenceFrame = new THREE.Object3D();
+      referenceFrame = SceneService.referenceFrame;
 
-      DrivemapService.load().then(this.loadPointcloud);
+      SiteBoxService.init(referenceFrame, mouse);
+
+      SiteBoxService.listenTo(me.renderer.domElement);
+
+      DrivemapService.ready.then(this.loadPointcloud);
+      SitesService.ready.then(this.loadSite);
     };
 
     this.loadPointcloud = function() {
       // load pointcloud
-      pointcloudPath = DrivemapService.getPointcloudUrl();
+      var pointcloudPath = DrivemapService.getPointcloudUrl();
       me.stats.lasCoordinates.crs = DrivemapService.getCrs();
 
       POCLoader.load(pointcloudPath, function(geometry) {
@@ -199,49 +207,99 @@
         pointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
 
         referenceFrame.add(pointcloud);
-        referenceFrame.updateMatrixWorld(true);
-
+        referenceFrame.updateMatrixWorld(true); // doesn't seem to do anything
+        // reference frame position to pointcloud position:
         referenceFrame.position.set(-pointcloud.position.x, -pointcloud.position.y, 0);
-
+        // rotates to some unknown orientation:
         referenceFrame.updateMatrixWorld(true);
+        // rotates point cloud to align with horizon
         referenceFrame.applyMatrix(new THREE.Matrix4().set(
           1, 0, 0, 0,
           0, 0, 1, 0,
           0, -1, 0, 0,
           0, 0, 0, 1
         ));
-        scene.add(referenceFrame);
-        me.goHome();
+        referenceFrame.updateMatrixWorld(true);
+
+        var myPath = DrivemapService.getCameraPath().map(
+          function(coord) {
+            return SceneService.toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
+          }
+        );
+
+        var lookPath = DrivemapService.getLookPath().map(
+          function(coord) {
+            return SceneService.toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
+          }
+        );
+
+        PathControls.init(camera, myPath, lookPath, me.renderer.domElement);
+
+        me.pathMesh = PathControls.createPath();
+        scene.add(me.pathMesh);
+        me.pathMesh.visible = false; // disabled by default
+        MeasuringService.setPointcloud(pointcloud);
       });
     };
 
-    /**
-     * transform from geo coordinates to local scene coordinates
-     */
-    function toLocal(position) {
-      var scenePos = position.clone().applyMatrix4(referenceFrame.matrixWorld);
-      return new THREE.Vector3(scenePos.x, scenePos.z, -scenePos.y);
-    }
+    this.loadSite = function() {
+      // load pointcloud
+      var site = SitesService.getById(162);
+      var pointcloudPath = site.pointcloud;
 
-    /**
-     * transform from local scene coordinates to geo coordinates
-     */
-    function toGeo(object) {
-      var geo;
-      var inverse = new THREE.Matrix4().getInverse(referenceFrame.matrixWorld);
+      POCLoader.load(pointcloudPath, function(geometry) {
+        sitePointcloud = new Potree.PointCloudOctree(geometry);
 
-      if (object instanceof THREE.Vector3) {
-        geo = object.clone().applyMatrix4(inverse);
-      } else if (object instanceof THREE.Box3) {
-        var geoMin = object.min.clone().applyMatrix4(inverse);
-        var geoMax = object.max.clone().applyMatrix4(inverse);
-        geo = new THREE.Box3(geoMin, geoMax);
+        sitePointcloud.material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
+        sitePointcloud.material.size = me.settings.pointSize;
+        sitePointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
+
+        referenceFrame.add(sitePointcloud);
+        MeasuringService.setSitePointcloud(sitePointcloud);
+      });
+
+      /*
+      var meshPath = site.mesh.data_location;
+      var meshMtlPath = site.mesh.mtl_location;
+
+      var objmtl_loader = new THREE.OBJMTLLoader();
+
+      objmtl_loader.load(meshPath, meshMtlPath, function(object) {
+          referenceFrame.add(object);
+      }, function(){
+        return 1;
+      }, function() {
+        console.log('Error while loading mesh for site');
+      });
+
+      var reconstructionMeshPath = site.reconstruction_mesh[0].data_location;
+      var obj_loader = new THREE.OBJLoader();
+
+      obj_loader.load(reconstructionMeshPath, function(object) {
+          var osg = site.reconstruction_mesh[0].osg_position;
+          // TODO perform projection?
+          object.scale.set(osg.xs, osg.ys, osg.zs);
+          object.position.set(osg.x, osg.y, osg.z);
+          referenceFrame.add(object);
+      }, function(){
+        return 1;
+      }, function() {
+        console.log('Error while loading reconstruction mesh for site');
+      });
+
+      */
+
+    };
+
+
+    this.loadSiteBoxes = function() {
+
+      for (var ix = 0; ix < SiteBoxService.siteBoxList.length; ix++) {
+        referenceFrame.add(SiteBoxService.siteBoxList[ix]);
       }
+    };
 
-      return geo;
-    }
-
-    function addTextLabel(message, x, y, z) {
+    function addTextLabel(message, position) {
       var canvas = document.createElement('canvas');
       var context = canvas.getContext('2d');
       // context.font = "Bold " + fontsize + "px " + fontface;
@@ -284,69 +342,59 @@
         // sprite.scale.set(100,50,1.0);
         sprite.scale.set(10, 5, 1.0);
 
-        sprite.position.set(x, y, z);
+        sprite.position.copy(position);
         referenceFrame.add(sprite);
       };
       imageObj.src = 'data/label-small.png';
     }
 
     this.goHome = function() {
-      var locationGeo = DrivemapService.getHomeLocation();
-      var lookAtGeo = DrivemapService.getHomeLookAt();
-      var locationLocal = toLocal(locationGeo);
-      var lookAtLocal = toLocal(lookAtGeo);
 
-      camera.position.set(locationLocal.x, locationLocal.y, locationLocal.z);
-      camera.lookAt(lookAtLocal);
+      PathControls.goHome();
+
     };
 
     this.lookAtSite = function(site) {
-      var coordGeo = sitesservice.centerOfSite(site);
+      var coordGeo = SitesService.centerOfSite(site);
       var posGeo = new THREE.Vector3(coordGeo[0], coordGeo[1], coordGeo[2]);
-      var posLocal = toLocal(posGeo);
-      camera.lookAt(posLocal);
-      var camPos = posLocal.clone().setZ(posLocal.z - 20);
-      camera.position.set(camPos.x, -camPos.z, camPos.y);
+      var posLocal = SceneService.toLocal(posGeo);
+      //camera.lookAt(posLocal);
+      //var camPos = posLocal.clone().setY(posLocal.y + 20);
+      //camera.position.copy(camPos);
+
+      PathControls.goToPointOnRoad(posLocal);
+      PathControls.lookat(posLocal);
+
+    };
+
+    this.enterOrbitMode = function(site) {
+      SitesService.selectSite(site);
+
+      // TODO replace PathControls with OrbitControls
+      // TODO replace camera drivemap toggles (rails, free, demo) with orbit exit button
+    };
+
+    this.exitOrbitMode = function() {
+      // TODO replace OrbitControls with PathControls
+      // TODO replace orbit exit button with camera drivemap toggles (rails, free, demo)
+
+      SitesService.clearSiteSelection();
     };
 
     this.showLabel = function(site) {
-      var message = site.properties.description;
-      var coordGeo = sitesservice.centerOfSite(site);
-      var posGeo = new THREE.Vector3(coordGeo[0], coordGeo[1], coordGeo[2] + 10);
-      var posLocal = toLocal(posGeo);
-      addTextLabel(message, posLocal.x, -posLocal.z, posLocal.y);
-    };
-
-    this.updateMapFrustum = function() {
-      var aspect = camera.aspect;
-      var top = Math.tan(THREE.Math.degToRad(camera.fov * 0.5)) * camera.near;
-      var bottom = -top;
-      var left = aspect * bottom;
-      var right = aspect * top;
-
-      var camPos = new THREE.Vector3(0, 0, 0);
-      left = new THREE.Vector3(left, 0, -camera.near).multiplyScalar(3000);
-      right = new THREE.Vector3(right, 0, -camera.near).multiplyScalar(3000);
-      camPos.applyMatrix4(camera.matrixWorld);
-      left.applyMatrix4(camera.matrixWorld);
-      right.applyMatrix4(camera.matrixWorld);
-
-      camPos = toGeo(camPos);
-      left = toGeo(left);
-      right = toGeo(right);
-
-      Messagebus.publish('cameraMoved', {
-        cam: camPos,
-        left: left,
-        right: right
-      });
+      var message = site.description_site; // jshint ignore:line
+      var center = SitesService.centerOfSite(site);
+      var bbox = SitesService.getBoundingBox(site);
+      var maxAltIndex = 5;
+      var top = bbox[maxAltIndex];
+      var labelPosition = new THREE.Vector3(center[0], center[1], top);
+      addTextLabel(message, labelPosition);
     };
 
     this.update = function() {
-      var oldPos = camera.position.clone();
-      var oldRot = camera.rotation.clone();
 
       if (pointcloud) {
+        pointcloud.material.clipMode = me.settings.clipMode;
         pointcloud.material.size = me.settings.pointSize;
         pointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
         pointcloud.material.opacity = me.settings.opacity;
@@ -363,13 +411,30 @@
 
       }
 
-      controls.update(clock.getDelta());
+      if (sitePointcloud) {
+        sitePointcloud.material.clipMode = me.settings.clipMode;
+        sitePointcloud.material.size = me.settings.pointSize;
+        sitePointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
+        sitePointcloud.material.opacity = me.settings.opacity;
+        sitePointcloud.material.pointSizeType = me.settings.pointSizeType;
+        sitePointcloud.material.pointColorType = me.settings.pointColorType;
+        sitePointcloud.material.pointShape = me.settings.pointShape;
+        sitePointcloud.material.interpolate = me.settings.interpolate;
+        sitePointcloud.material.heightMin = 0;
+        sitePointcloud.material.heightMax = 8;
+        sitePointcloud.material.intensityMin = 0;
+        sitePointcloud.material.intensityMax = 65000;
 
-      // TODO also update when rotate and scale changes
-      var cameraMoved = !(camera.position.equals(oldPos)) || !(camera.rotation.equals(oldRot));
-      if (cameraMoved) {
-        this.updateMapFrustum();
+        sitePointcloud.update(camera, me.renderer);
       }
+
+
+      PathControls.updateInput();
+
+      MeasuringService.update();
+
+      CameraService.update();
+
       updateStats();
     };
 
@@ -384,16 +449,18 @@
 
       me.renderer.setSize(width, height);
 
-
       // render skybox
       if (me.settings.showSkybox) {
         skybox.camera.rotation.copy(camera.rotation);
         me.renderer.render(skybox.scene, skybox.camera);
       }
-      CameraService.camera.position.copy(camera.position);
+
+      SiteBoxService.siteBoxSelection(mouse.x, mouse.y);
 
       // render scene
       me.renderer.render(scene, camera);
+
+      MeasuringService.render();
     };
 
     this.loop = function() {
@@ -410,6 +477,11 @@
       el.appendChild(canvas);
       me.loop();
     };
+
+    $rootScope.$watch(function() {
+      return SiteBoxService.siteBoxList;
+    }, this.loadSiteBoxes);
+
   }
 
   angular.module('pattyApp.pointcloud')

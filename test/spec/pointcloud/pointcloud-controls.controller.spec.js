@@ -3,7 +3,7 @@
 describe('pointcloud-controls.controller', function() {
 
   // load the module
-  beforeEach(module('pattyApp'));
+  beforeEach(module('pattyApp.pointcloud'));
 
   var $rootScope;
   var ctrl;
@@ -13,6 +13,7 @@ describe('pointcloud-controls.controller', function() {
       $rootScope = _$rootScope_;
       var $controller = _$controller_;
       PointcloudService = _PointcloudService_;
+
       ctrl = $controller('PointcloudControlsController');
     });
   });
@@ -26,5 +27,15 @@ describe('pointcloud-controls.controller', function() {
     it('should have settings same as Pointcloud Service', function() {
       expect(ctrl.settings).toBe(PointcloudService.settings);
     });
+  });
+
+  describe('recordCameraLocation() function', function() {
+    it('should call recordLocation() of CameraService', inject(function(CameraService) {
+      spyOn(CameraService, 'recordLocation');
+
+      ctrl.recordCameraLocation();
+
+      expect(CameraService.recordLocation).toHaveBeenCalledWith();
+    }));
   });
 });

@@ -1,4 +1,4 @@
-$icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
+$icon-font-path: '../bower_components/bootstrap-sass-official/assets/fonts/bootstrap/';
 // bower:scss
 @import "bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 // endbower
@@ -24,7 +24,7 @@ body {
   margin-top: 10px;
   background-color: #fff;
   opacity: 0.9;
-  filter: alpha(opacity=90);
+  filter:alpha(opacity=90);
   /* For IE8 and earlier */
 }
 .search-result {
@@ -45,25 +45,146 @@ patty-pointcloud-canvas {
   width: 100%;
   height: 100%;
 }
-
-patty-pointcloud-controls {
-}
-
-patty-pointcloud-stats {
+.controls-settings,
+.help-panel {
   position: absolute;
   left: 5px;
-  bottom: 50px;
+  bottom: 70px;
+}
+patty-pointcloud-stats {
+  position: absolute;
+  left: 0;
+  bottom: 80px;
   color: white;
   font-weight: bold;
   text-shadow: 1px 1px 1px black, 1px -1px 1px black, -1px 1px 1px black, -1px -1px 1px black;
 }
-
 .btn-trans {
   border-color: transparent;
   background-color: transparent;
   box-shadow: none;
 }
+.camera-modes {
+  position: absolute;
+  left: 50%;
+  bottom: 5px;
+  transform: translate(-50%, 0);
+}
+.controls {
+  position: absolute;
+  left: 5px;
+  bottom: 5px;
+}
+.toolbox {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+}
+.toolbox-tray {
+  position: absolute;
+  right: 5px;
+  bottom: 44px;
+  width: 80px;
+}
+.settings-panel .panel-body {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.help-panel .panel-body {
+  width: 700px;
+  height: 500px;
+  overflow-y: auto;
+}
+.icon-inline {
+  width: 28px;
+  height: 28px;
+  background-size: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: inline-block;
+}
+.icon-big {
+  width: 80px;
+  height: 80px;
+  border-color: transparent;
+  background-color: transparent;
+  box-shadow: none;
+}
+.icon-big:focus {
+  outline: 0;
+}
+.fly-icon {
+  background-image: url("../images/icons/heli_icon_80px.png");
+}
+.fly-icon.active {
+  background-image: url("../images/icons/heli_icon_green_80px.png");
+}
+.onrails-icon {
+  background-image: url("../images/icons/indy_icon_80px.png");
+}
+.onrails-icon.active {
+  background-image: url("../images/icons/indy_icon_green_80px.png");
+}
+.demo-icon {
+  background-image: url("../images/icons/play_icon_80px.png");
+}
+.demo-icon.active {
+  background-image: url("../images/icons/play_icon_green_80px.png");
+}
+.gear-icon {
+  background-image: url("../images/icons/gear_icon_80px.png");
+}
+.gear-icon.active {
+  background-image: url("../images/icons/gear_icon_green_80px.png");
+}
+.help-icon {
+  background-image: url("../images/icons/help_icon_80px.png");
+}
+.help-icon.active {
+  background-image: url("../images/icons/help_icon_green_80px.png");
+}
+.toolbox-icon {
+  background-image: url("../images/icons/toolbox_icon_80px.png");
+}
+.toolbox-icon.active {
+  background-image: url("../images/icons/toolbox_bottom_icon_green_80px.png");
+  height: 60px;
+}
+.icon-small {
+  width: 50px;
+  height: 50px;
+  border-color: transparent;
+  background-color: transparent;
+  box-shadow: none;
+}
+.icon-small:hover {
+  outline:0;
+}
 
-.settings-panel {
-  width: 400px;
+.distance-icon {
+  background-image: url("../images/icons/toolbox_distance_icon_50px.png");
+}
+.distance-icon.active {
+  background-image: url("../images/icons/toolbox_distance_icon_green_50px.png");
+}
+.angle-icon {
+  background-image: url("../images/icons/toolbox_angle_icon_50px.png");
+}
+.area-icon {
+  background-image: url("../images/icons/toolbox_area_icon_50px.png");
+}
+.volume-icon {
+  background-image: url("../images/icons/toolbox_volume_icon_50px.png");
+}
+.heightprofile-icon {
+  background-image: url("../images/icons/toolbox_heightprofile_icon_50px.png");
+}
+.clipvolume-icon {
+  background-image: url("../images/icons/toolbox_clipvolume_icon_50px.png");
+}
+.toolbox-tray-top-icon {
+  background-image: url("../images/icons/toolbox_top_icon_green_80px.png");
+  height: 50px;
+}
+.toolbox-tools {
+  padding-left: 13px;
 }
