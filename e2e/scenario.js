@@ -30,7 +30,7 @@ describe('pattyApp', function() {
 
   describe('searched on "site:162"', function() {
     beforeEach(function() {
-      element(by.model('sp.query')).sendKeys('site:162');
+      element(by.model('sp.SitesService.query')).sendKeys('site:162');
     });
 
     it('should have one site details div', function() {
@@ -40,7 +40,7 @@ describe('pattyApp', function() {
 
   describe('search on "zzzz"', function() {
     beforeEach(function() {
-      element(by.model('sp.query')).sendKeys('zzzz');
+      element(by.model('sp.SitesService.query')).sendKeys('zzzz');
     });
 
     it('should have zero search results', function() {
@@ -97,9 +97,11 @@ describe('pattyApp', function() {
     describe('and then clicking on top toolbox icon', function() {
 
       beforeEach(function() {
+        // wait for toolbox to open, otherwise icon is moving when click is attempted
+        browser.sleep(500);
         element(by.css('.icon-big.toolbox-tray-top-icon')).click();
         // wait for toolbox to close, otherwise it will still be displayed partly
-        browser.sleep(500);
+        browser.sleep(200);
       });
 
       it('should hide tools', function() {
