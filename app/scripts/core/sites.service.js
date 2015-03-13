@@ -1,17 +1,19 @@
 (function() {
   'use strict';
 
-  function SitesService($http, $q, pattyConf) {
+  function SitesService($http, $q, $rootScope, pattyConf, Messagebus) {
 
     function onLoad(data) {
-      me.all = data;
-      me.filtered = data;
-      me.isLoaded = true;
-      deferred.resolve(me.all);
+      service.all = data;
+      service.filtered = data;
+      service.searched = [];
+      deferred.resolve(service.all);
+      service.onSitesChanged();
     }
     var deferred = $q.defer();
 
-    var me = {
+    var service = {
+      _query: '',
       all: [],
       /**
        * List of filtered sites. When query is empty then it will contain all sites.
@@ -23,32 +25,13 @@
        * @type {Array}
        */
       searched: [],
-      isLoaded: false,
       /**
        * Promise for loading the sites remotely.
        * Can be used to perform action when loading sites has been completed.
        * @type {Promise}
        */
       ready: deferred.promise,
-      find: function(query) {
-        if (query) {
-          this.searched = angular.copy(this.all);
 
-          var re = new RegExp(query, 'i');
-
-          this.searched = this.all.filter(function(site) {
-            var description = site.description_site; // jshint ignore:line
-            var interpretation = site.interpretation_site; // jshint ignore:line
-            return (re.test(description) ||
-              re.test(interpretation) ||
-              'site:' + site.id === query);
-          }, this);
-          this.filtered = this.searched;
-        } else {
-          this.searched = [];
-          this.filtered = this.all;
-        }
-      },
       load: function() {
         $http.get(pattyConf.SITES_JSON_URL)
           .success(onLoad)
@@ -57,13 +40,6 @@
           });
       },
       onLoad: onLoad,
-      getAllFeatures: function() {
-        if (!this.isLoaded) {
-          return [];
-        } else {
-          return this.all;
-        }
-      },
       /**
        * Get a site by it's identifier.
        * @param {Number} id Site identifier
@@ -76,10 +52,18 @@
         return sites[0];
       },
       selectSite: function(site) {
-        this.find('site:' + site.id);
+        this.query = 'site:' + site.id;
       },
       clearSiteSelection: function() {
-        this.find('');
+        this.query = '';
+      },
+      onSitesChanged: function() {
+        Messagebus.publish('sitesChanged');
+        // angular does not know that SitesService.searched and SitesService.filtered when query has been changed
+        // trigger a $digest to let angular detect changes
+        if (!$rootScope.$$phase) {
+          $rootScope.$digest();
+        }
       },
       // Methods for one site
       /**
@@ -143,7 +127,36 @@
         ];
       }
     };
-    return me;
+    Object.defineProperty(service, 'query', {
+      get: function() {
+        return this._query;
+      },
+      set: function(query) {
+        if (this._query === query) {
+          return;
+        }
+        this._query = query;
+        if (query) {
+          var re = new RegExp(query, 'i');
+
+          this.filtered = this.searched = this.all.filter(function(site) {
+            var description = site.description_site; // jshint ignore:line
+            var interpretation = site.interpretation_site; // jshint ignore:line
+            return (re.test(description) ||
+              re.test(interpretation) ||
+              'site:' + site.id === query);
+          }, this);
+        } else {
+          this.searched = [];
+          this.filtered = this.all;
+        }
+        this.onSitesChanged();
+      },
+      enumerable: true,
+      configurable: true
+    });
+
+    return service;
   }
 
   angular.module('pattyApp.core')

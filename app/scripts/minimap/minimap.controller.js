@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function MinimapController($scope, ol, proj4, SitesService, CamFrustrumService, Messagebus, DrivemapService) {
+  function MinimapController(ol, proj4, SitesService, CamFrustrumService, Messagebus, DrivemapService) {
     var me = this;
     this.SitesService = SitesService;
 
@@ -33,7 +33,7 @@
 
     this.sites2GeoJSON = function(sites) {
       var features = sites.filter(function(site) {
-       return 'footprint' in site;
+        return 'footprint' in site;
       }).map(function(site) {
         return {
           'type': 'Feature',
@@ -65,10 +65,10 @@
       centerOnVisibleSites();
     };
 
-    $scope.$watch(function() {
-      return me.SitesService.filtered;
-    }, this.onSitesChanged);
-
+    Messagebus.subscribe('sitesChanged', function() {
+      var sites = SitesService.filtered;
+      me.onSitesChanged(sites);
+    });
 
     var vectorLayer = new ol.layer.Vector({
       source: vectorSource,
@@ -127,7 +127,6 @@
       CamFrustrumService.onCameraMove(frustrum);
       map.getView().fitExtent(CamFrustrumService.featureVector.getExtent(), map.getSize());
     });
-
 
   }
 

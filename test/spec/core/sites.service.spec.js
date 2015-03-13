@@ -46,6 +46,19 @@ describe('core.SitesService', function() {
 
       expect(readyListener).toHaveBeenCalledWith(sitesjson);
     });
+
+    it('should have published a "sitesChanged" event', inject(function(Messagebus) {
+      var listener = jasmine.createSpy('listener');
+      var unsubscriber = Messagebus.subscribe('sitesChanged', listener);
+
+      SitesService.load();
+      // resolve http request
+      $httpBackend.flush();
+
+      expect(listener).toHaveBeenCalled();
+
+      unsubscriber();
+    }));
   });
 
   describe('when sites have been loaded', function() {
@@ -59,42 +72,53 @@ describe('core.SitesService', function() {
       });
     });
 
-    describe('find() function', function() {
+    describe('set query property', function() {
 
       it('should have empty search result when query is empty', function() {
-        SitesService.find('');
+        SitesService.query = '';
 
         var result = SitesService.searched;
         expect(result).toEqual([]);
       });
 
       it('should have full filtered result when query is empty', function() {
-        SitesService.find('');
+        SitesService.query = '';
 
         var result = SitesService.filtered;
         expect(result).toEqual(sitesjson);
       });
 
       it('should have site1 as search result when query is `site:162`', function() {
-        SitesService.find('site:162');
+        SitesService.query = 'site:162';
 
         var result = SitesService.searched;
         expect(result).toEqual([site162json]);
       });
 
       it('should have site1 as filtered result when query is `site:162`', function() {
-        SitesService.find('site:162');
+        SitesService.query = 'site:162';
 
         var result = SitesService.filtered;
         expect(result).toEqual([site162json]);
       });
 
       it('should return site1 when query is pyramid', function() {
-        SitesService.find('pyramid');
+        SitesService.query = 'pyramid';
 
         var result = SitesService.searched;
         expect(result).toEqual([site162json]);
       });
+
+      it('should have published a "sitesChanged" event', inject(function(Messagebus) {
+        var listener = jasmine.createSpy('listener');
+        var unsubscriber = Messagebus.subscribe('sitesChanged', listener);
+
+        SitesService.query = 'pyramid';
+
+        expect(listener).toHaveBeenCalled();
+
+        unsubscriber();
+      }));
     });
 
     describe('a site with a pointcloud', function() {
@@ -231,7 +255,7 @@ describe('core.SitesService', function() {
         it('should return size of bounding box of footprint', function() {
           var result = SitesService.getBoundingBoxSize(site);
 
-          var expected = [ 8.570726934995037, 8.48786965990439, 7.713000000000008];
+          var expected = [8.570726934995037, 8.48786965990439, 7.713000000000008];
           expect(result).toEqual(expected);
         });
       });

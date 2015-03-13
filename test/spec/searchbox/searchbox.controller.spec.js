@@ -12,8 +12,6 @@ describe('searchbox.controller', function() {
     inject(function(_$controller_, _PointcloudService_, _SitesService_) {
       PointcloudService = _PointcloudService_;
       SitesService = _SitesService_;
-      // stub load, so we dont do any ajax calls
-      spyOn(SitesService, 'load');
       var $controller = _$controller_;
       ctrl = $controller('SearchPanelController');
     });
@@ -21,18 +19,7 @@ describe('searchbox.controller', function() {
 
   describe('initial state', function() {
     it('should have empty query', function() {
-      expect(ctrl.query).toEqual('');
-    });
-  });
-
-  describe('queryChanged function', function() {
-    it('should call find() on SitesService', function() {
-       spyOn(SitesService, 'find');
-       ctrl.query = 'somequery';
-
-       ctrl.queryChanged();
-
-       expect(SitesService.find).toHaveBeenCalledWith('somequery');
+      expect(ctrl.SitesService.query).toEqual('');
     });
   });
 
