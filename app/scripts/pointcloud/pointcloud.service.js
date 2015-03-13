@@ -54,7 +54,7 @@
 
     me.pathMesh = null;
 
-    var referenceFrame;
+    var referenceFrame = SceneService.referenceFrame;
     var mouse = {
       x: 0,
       y: 0
@@ -185,9 +185,7 @@
       // enable frag_depth extension for the interpolation shader, if available
       me.renderer.context.getExtension('EXT_frag_depth');
 
-      referenceFrame = SceneService.referenceFrame;
-
-      SiteBoxService.init(referenceFrame, mouse);
+      SiteBoxService.init(mouse);
 
       SiteBoxService.listenTo(me.renderer.domElement);
 
@@ -290,14 +288,6 @@
 
       */
 
-    };
-
-
-    this.loadSiteBoxes = function() {
-
-      for (var ix = 0; ix < SiteBoxService.siteBoxList.length; ix++) {
-        referenceFrame.add(SiteBoxService.siteBoxList[ix]);
-      }
     };
 
     function addTextLabel(message, position) {
@@ -480,11 +470,6 @@
       el.appendChild(canvas);
       me.loop();
     };
-
-    $rootScope.$watch(function() {
-      return SiteBoxService.siteBoxList;
-    }, this.loadSiteBoxes);
-
   }
 
   angular.module('pattyApp.pointcloud')
