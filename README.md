@@ -134,6 +134,14 @@ grunt dist
 ```
 The `dist` folder has production ready distribution.
 
+### Generate API documentation
+
+```
+grunt jsdoc
+```
+
+API documentation is generated in `doc/` directory.
+
 Mockup
 ------
 

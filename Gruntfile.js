@@ -433,6 +433,17 @@ module.exports = function(grunt) {
           branch: '<%= yeoman.app %>/'
         }
       }
+    },
+
+    jsdoc: {
+      dist: {
+        src: ['<%= yeoman.app %>/scripts/**/*.js', 'README.md'],
+        options: {
+          destination: 'doc',
+          template : 'node_modules/grunt-jsdoc/node_modules/ink-docstrap/template',
+          configure : 'node_modules/grunt-jsdoc/node_modules/ink-docstrap/template/jsdoc.conf.json'
+        }
+      }
     }
   });
 

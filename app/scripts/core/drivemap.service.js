@@ -1,13 +1,31 @@
+/**
+ * @namespace core
+ */
 (function() {
   'use strict';
 
+  /**
+   * @class
+   * @memberOf core
+   */
   function DrivemapService($http, $q, $log, proj4, pattyConf) {
     var me = this;
     this.data = {};
     var deferred = $q.defer();
 
+    /**
+     * Promise for loading the sites remotely.
+     * Can be used to perform action when loading sites has been completed.
+     *
+     * @type {Promise}
+     */
     this.ready = deferred.promise;
 
+    /**
+     * Load drivemap data from server
+     *
+     * @returns {Promise}
+     */
     this.load = function() {
       return $http.get(pattyConf.DRIVEMAP_JSON_URL).success(this.onLoad).error(this.onLoadFailure);
     };
