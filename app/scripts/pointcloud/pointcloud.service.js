@@ -372,9 +372,11 @@
 
       // TODO replace PathControls with OrbitControls
       // TODO replace camera drivemap toggles (rails, free, demo) with orbit exit button
+      // TODO Show pointcloud of site if available
     };
 
     this.exitOrbitMode = function() {
+      // TODO Hide pointcloud of site if shown
       // TODO replace OrbitControls with PathControls
       // TODO replace orbit exit button with camera drivemap toggles (rails, free, demo)
 
