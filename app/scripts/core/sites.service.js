@@ -1,6 +1,17 @@
+/**
+ * @namespace core
+ */
 (function() {
   'use strict';
 
+  /**
+   * Sites data model service.
+   * Fetches and stores a collection of sites.
+   * The collection of sites can be filtered.
+   *
+   * @constructs core.SitesService
+   * @memberOf core
+   */
   function SitesService($http, $q, $rootScope, pattyConf, Messagebus) {
 
     function onLoad(data) {
@@ -12,26 +23,38 @@
     }
     var deferred = $q.defer();
 
-    var service = {
+    var service = /** @lends core.SitesService */ {
       _query: '',
+      /**
+       * List of all sites.
+       *
+       * @type {Array}
+       */
       all: [],
       /**
        * List of filtered sites. When query is empty then it will contain all sites.
+       *
        * @type {Array}
        */
       filtered: [],
       /**
        * List of searched sites. When query is empty then it will contain no sites.
+       *
        * @type {Array}
        */
       searched: [],
       /**
        * Promise for loading the sites remotely.
        * Can be used to perform action when loading sites has been completed.
+       *
        * @type {Promise}
        */
       ready: deferred.promise,
-
+      /**
+       * Fetches sites from server
+       *
+       * @returns {Promise}
+       */
       load: function() {
         $http.get(pattyConf.SITES_JSON_URL)
           .success(onLoad)
@@ -42,6 +65,7 @@
       onLoad: onLoad,
       /**
        * Get a site by it's identifier.
+       *
        * @param {Number} id Site identifier
        * @returns {Object|undefined} Site object or undefined when site was not found.
        */
@@ -51,13 +75,29 @@
         });
         return sites[0];
       },
+      /**
+       * Select a site.
+       *
+       * @param {Site} site
+       */
       selectSite: function(site) {
         this.query = 'site:' + site.id;
       },
+      /**
+       * Clears the site selection
+       *
+       */
       clearSiteSelection: function() {
         this.query = '';
       },
+      /**
+       * @fires sitesChanged
+       */
       onSitesChanged: function() {
+        /**
+         * Sites changed event
+         * @event sitesChanged
+         */
         Messagebus.publish('sitesChanged');
         // angular does not know that SitesService.searched and SitesService.filtered when query has been changed
         // trigger a $digest to let angular detect changes
@@ -68,6 +108,7 @@
       // Methods for one site
       /**
        * Determines bounding box based on footprint.
+       *
        * @param {Site} site
        * @return {array} [minlon, minlat, minalt, maxlon, maxlat, maxalt]
        */
@@ -101,6 +142,12 @@
         var bbox = [minlon, minlat, minalt, maxlon, maxlat, maxalt];
         return bbox;
       },
+      /**
+       * Center position of site based on it's bounding box.
+       *
+       * @param {Site} site
+       * @returns {Array} [lon, lat, alt]
+       */
       centerOfSite: function(site) {
         var bbox = this.getBoundingBox(site);
         return [
@@ -110,6 +157,7 @@
       /**
        * If site has footprint and pointcloud then returns bbox of pointcloud.
        * If site has footprint and no pointcloud then returns bbox of footprint.
+       *
        * @param {Site} site [description]
        * @return {array} [minlon, minlat, minalt, maxlon, maxlat, maxalt]
        */
@@ -120,6 +168,12 @@
           return this.getBoundingBoxOfFootprint(site);
         }
       },
+      /**
+       * Size of bounding box
+       *
+       * @param {Site} site
+       * @returns {array} [sizelon, sizelat, sizealt]
+       */
       getBoundingBoxSize: function(site) {
         var bbox = this.getBoundingBox(site);
         return [
@@ -127,6 +181,13 @@
         ];
       }
     };
+    /**
+     * Query string, to search/filter the collection of sites.
+     *
+     * @name query
+     * @type {string}
+     * @memberOf core.SitesService#
+     */
     Object.defineProperty(service, 'query', {
       get: function() {
         return this._query;
