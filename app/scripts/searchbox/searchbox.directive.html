@@ -1,12 +1,13 @@
 <div class="form-group clickable">
     <div class="input-group">
         <div class="glyphicon glyphicon-search input-group-addon"></div>
-        <input type="text" class="form-control" placeholder="Search..." ng-model="sp.SitesService.query" ng-model-options="{ updateOn: 'default', debounce: { default: 500 } }">
+        <input type="text" class="form-control" placeholder="Search..." ng-model="sp.SitesService.query" ng-model-options="{ updateOn: 'default', debounce: { default: 500 } }" ng-change="sp.onQueryChange()">
     </div>
-    <div class="panel" class="search-results" ng-show="sp.SitesService.query">
-        <div ng-if="sp.SitesService.searched.length > 1" class="search-result" ng-repeat="site in sp.SitesService.searched|limitTo:10" ng-cloak>
+    <div class="panel search-results" ng-show="sp.SitesService.query">
+        <div ng-if="sp.SitesService.searched.length > 1" ng-cloak>
+          <div class="search-result" ng-repeat="site in sp.SitesService.searched|startFrom:(sp.currentPage-1)*sp.pageSize|limitTo:sp.pageSize">
             <div style="display: inline-block; vertical-align: top;">
-                <img ng-src="{{site.thumbnail }}" width="120">
+                <img ng-src="{{site.thumbnail ? site.thumbnail : 'http://placehold.it/120x80'}}" width="120">
             </div>
             <div style="display:inline-block;">
                 <strong>{{ site.description_site }}</strong>
@@ -16,6 +17,8 @@
                 <button type="button" class="glyphicon glyphicon-eye-open" ng-click="sp.lookAtSite(site)" title="Look at site"></button>
                 <button type="button" class="glyphicon glyphicon-tag" ng-click="sp.showLabel(site)" title="Show label"></button>
             </div>
+          </div>
+          <pager total-items="sp.SitesService.searched.length" items-per-page="sp.pageSize" ng-model="sp.currentPage" align="false"></pager>
         </div>
         <div ng-if="sp.SitesService.searched.length == 0" ng-cloak>No results.</div>
         <div ng-if="sp.SitesService.searched.length == 1" class="site-details" ng-cloak>
