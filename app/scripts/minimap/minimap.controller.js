@@ -125,7 +125,7 @@
 
     Messagebus.subscribe('cameraMoved', function(event, frustum) {
       CamFrustumService.onCameraMove(frustum);
-      map.getView().fitExtent(CamFrustumService.featureVector.getExtent(), map.getSize());
+      map.getView().fitExtent(CamFrustumService.getExtent(), map.getSize());
     });
 
   }
