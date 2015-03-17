@@ -3,7 +3,6 @@
 
   function MinimapController(ol, proj4, SitesService, CamFrustumService, Messagebus, DrivemapService) {
     var me = this;
-    this.SitesService = SitesService;
 
     var olProjectionCode = 'EPSG:3857';
     var siteProjectionCode = null;
