@@ -13,27 +13,26 @@
       [0, 0],
       [0, 0]
     ]);
-    this.featureVector = new ol.source.Vector({
+    var featureVector = new ol.source.Vector({
       features: [new ol.Feature(this.camFrustum)]
     });
     this.layer = new ol.layer.Vector({
-      source: this.featureVector,
+      source: featureVector,
       style: new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: 'rgba(255, 255, 255, 0.2)'
-        }),
         stroke: new ol.style.Stroke({
           color: '#000000',
           width: 2
-        }),
-        image: new ol.style.Circle({
-          radius: 3,
-          fill: new ol.style.Fill({
-            color: '#000000'
-          })
         })
       })
     });
+
+    /**
+     * [getExtent description]
+     * @return {array} min_lon, min_lat, max_lon, max_lat
+     */
+    this.getExtent = function() {
+      return featureVector.getExtent();
+    };
 
     this.onCameraMove = function(frustum) {
       var camPos = proj4(siteProjectionCode, olProjectionCode, [

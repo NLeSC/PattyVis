@@ -3,15 +3,14 @@
 
   function MinimapController(ol, proj4, SitesService, CamFrustumService, Messagebus, DrivemapService) {
     var me = this;
-    this.SitesService = SitesService;
 
     var olProjectionCode = 'EPSG:3857';
     var siteProjectionCode = null;
 
-    this.syncSiteProjectionCode = function() {
+    var syncSiteProjectionCode = function() {
       siteProjectionCode = DrivemapService.getCrs();
     };
-    DrivemapService.ready.then(this.syncSiteProjectionCode);
+    DrivemapService.ready.then(syncSiteProjectionCode);
 
     var siteStyle = new ol.style.Style({
       stroke: new ol.style.Stroke({
@@ -91,18 +90,21 @@
       })
     });
     this.map = map;
-    map.on('rightclick', function(event) {
+
+    this.onMapRightclick = function(event) {
+      console.log('right clicked on the map!');
       event.preventDefault();
 
       return false;
-    });
+    };
+
+    map.on('rightclick', this.onMapRightclick);
 
     // TODO set initial location for the map
     // TODO toggle map on/of
 
     // listen on map click
-    map.on('click', function(event) {
-
+    this.onMapClick = function(event) {
       // EPSG:3857 (strange internal OpenLayers lat/lon units)
       var lat = event.coordinate[0];
       var lon = event.coordinate[1];
@@ -119,15 +121,18 @@
         '\nESPG:4326 (google)\nx: ' + lat4326 +
         '\ny: ' + lon4326 + '\n' + siteProjectionCode +' (drivemap)\nx: ' + latlas +
         '\ny: ' + lonlas);
-    });
+    };
+
+    map.on('click', this.onMapClick);
 
     map.addLayer(CamFrustumService.layer);
 
-    Messagebus.subscribe('cameraMoved', function(event, frustum) {
+    this.cameraMovedMessage = function(event, frustum) {
       CamFrustumService.onCameraMove(frustum);
-      map.getView().fitExtent(CamFrustumService.featureVector.getExtent(), map.getSize());
-    });
+      map.getView().fitExtent(CamFrustumService.getExtent(), map.getSize());
+    };
 
+    Messagebus.subscribe('cameraMoved', this.cameraMovedMessage);
   }
 
   angular.module('pattyApp.minimap')
