@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CamFrustrumService(ol, proj4, DrivemapService) {
+  function CamFrustumService(ol, proj4, DrivemapService) {
     var olProjectionCode = 'EPSG:3857';
     var siteProjectionCode = null;
 
@@ -35,20 +35,20 @@
       })
     });
 
-    this.onCameraMove = function(frustrum) {
+    this.onCameraMove = function(frustum) {
       var camPos = proj4(siteProjectionCode, olProjectionCode, [
-        frustrum.cam.x, frustrum.cam.y
+        frustum.cam.x, frustum.cam.y
       ]);
       var left = proj4(siteProjectionCode, olProjectionCode, [
-        frustrum.left.x, frustrum.left.y
+        frustum.left.x, frustum.left.y
       ]);
       var right = proj4(siteProjectionCode, olProjectionCode, [
-        frustrum.right.x, frustrum.right.y
+        frustum.right.x, frustum.right.y
       ]);
       this.camFrustum.setCoordinates([camPos, left, right, camPos]);
     };
   }
 
   angular.module('pattyApp.minimap')
-    .service('CamFrustrumService', CamFrustrumService);
+    .service('CamFrustumService', CamFrustumService);
 })();
