@@ -54,7 +54,7 @@ describe('pointcloud.CameraService', function() {
       unsubscriber();
     });
 
-    it('should publish "cameraMoved" message with camera 2d frustrum when camera has rotated', function() {
+    it('should publish "cameraMoved" message with camera 2d frustum when camera has rotated', function() {
       service.camera.lookAt(new THREE.Vector3(1, 1, 1));
       service.camera.updateMatrixWorld();
 
@@ -67,7 +67,7 @@ describe('pointcloud.CameraService', function() {
       expect(result).toEqual(expected);
     });
 
-    it('should publish "cameraMoved" message with camera 2d frustrum when camera has zoomed in', function() {
+    it('should publish "cameraMoved" message with camera 2d frustum when camera has zoomed in', function() {
       service.camera.fov = 50;
       service.camera.updateProjectionMatrix();
 

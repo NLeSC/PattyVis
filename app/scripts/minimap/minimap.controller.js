@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function MinimapController(ol, proj4, SitesService, CamFrustrumService, Messagebus, DrivemapService) {
+  function MinimapController(ol, proj4, SitesService, CamFrustumService, Messagebus, DrivemapService) {
     var me = this;
     this.SitesService = SitesService;
 
@@ -121,11 +121,11 @@
         '\ny: ' + lonlas);
     });
 
-    map.addLayer(CamFrustrumService.layer);
+    map.addLayer(CamFrustumService.layer);
 
-    Messagebus.subscribe('cameraMoved', function(event, frustrum) {
-      CamFrustrumService.onCameraMove(frustrum);
-      map.getView().fitExtent(CamFrustrumService.featureVector.getExtent(), map.getSize());
+    Messagebus.subscribe('cameraMoved', function(event, frustum) {
+      CamFrustumService.onCameraMove(frustum);
+      map.getView().fitExtent(CamFrustumService.featureVector.getExtent(), map.getSize());
     });
 
   }
