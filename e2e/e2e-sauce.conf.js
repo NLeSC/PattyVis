@@ -8,6 +8,7 @@ exports.config = {
 
   sauceUser: process.env.SAUCE_USERNAME,
   sauceKey: process.env.SAUCE_ACCESS_KEY,
+  sauceSeleniumAddress: 'localhost:4445/wd/hub',
 
   multiCapabilities: [{
     'browserName': 'chrome',
