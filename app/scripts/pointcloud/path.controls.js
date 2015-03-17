@@ -15,6 +15,7 @@
 	var path;
 	var lookatPath;
 	var drag = false;
+	var lookatPathFactor = 1.08;
 
 	var bodyPosition;
 	var xAngle = 0;
@@ -165,23 +166,23 @@
 			index = index-1;
 			secondIndex = index+1;
 		}
-		         
+
 		//interpolate using dot product of vector A and B
-		
+
 		//vector A is the vector from index to point
 		var A = point.clone();
 		A.sub(cpath.points[index]);
-		
+
 		//vector B is the vector from index to secondIndex
 		var B = cpath.points[secondIndex].clone();
 		B.sub(cpath.points[index].clone());
 		B.normalize();
-		
+
 		//project vector A onto vector B
 		var delta = A.dot(B) / A.length();
-		
+
 		//delta = delta / B.length();
-		
+
 		//compute new position on road
 		return ((index + delta) / cpath.points.length) * looptime;
 	}
@@ -266,77 +267,17 @@
 		return Math.min(Math.max(value, 0), 1);
 	}
 	
-	function getInterpOnPath() {
-		var position = path.getPointAt(positionOnRoad / looptime);
-		var index = findNearestPointOnPath(path, position);
-		
-		return (positionOnRoad / looptime) - (index / path.points.length);
-		
+	function moveStep(step) {
+		var vec = new THREE.Vector3( Math.sin(xAngle), Math.sin(-yAngle), Math.cos(xAngle) );
+		return vec.multiplyScalar(-step);
 	}
 	
-	function findPerpendicularPointOnLookPath(){
-		var position = path.getPointAt(positionOnRoad / looptime);
-		var positionAhead = path.getPointAt(cap(positionOnRoad + 0.01 / looptime));
-		var walkDirection = new THREE.Vector3().subVectors(positionAhead, position).normalize();
-		
-		for (var i=0; i<lookatPath.points.length; i++) {
-			var point = lookatPath.points[i];
-			var vectorToPosition = new THREE.Vector3().subVectors(position, point).normalize();
-			var dotproduct = vectorToPosition.dot(walkDirection);
-			var angle = Math.acos(dotproduct);
-			
-			//if angle is less than half PI we have passed our position on the path, for now look at this point
-			if (angle > Math.PI/2) {
-				if (i === 0) {
-					return lookatPath.getPointAt(0.1);
-				}
-				
-				var found = lookatPath.points[i];
-				//console.log('position=' + position.x + ',' + position.y + ',' + position.z + ' found perpendicular point=' + found.x + ',' + found.y + ',' + found.z);
-				
-				var start = ((i-1)/lookatPath.points.length);
-				var end = (i/lookatPath.points.length);
-				for (var j = start; j < end; j += 0.000001) {
-					point = lookatPath.getPointAt(j);
-					vectorToPosition = new THREE.Vector3().subVectors(position, point).normalize();
-					dotproduct = vectorToPosition.dot(walkDirection);
-					angle = Math.acos(dotproduct);
-					
-					if (angle > Math.PI/2) {
-						console.log('start=' + start + ' end=' + end + ' precise location=' + j);
-						return lookatPath.getPointAt(cap(j + 0.005));
-					}
-				}
-				
-				return lookatPath.getPointAt(cap((i/lookatPath.points.length)));
-			}
-		}
-		
+	function strafeStep(step) {
+		var vec = new THREE.Vector3( Math.cos(-xAngle), 0.0, Math.sin(-xAngle) );
+		return vec.multiplyScalar(-step);
 	}
 	
-	PathControls.prototype.moveForward = function(step) {
-		bodyPosition.x -= Math.cos(-xAngle + Math.PI / 2) * step;
-		bodyPosition.y -= Math.cos(yAngle + Math.PI / 2) * step;
-		bodyPosition.z -= Math.sin(-xAngle + Math.PI / 2) * step;
-	};
-	
-	PathControls.prototype.moveBackward = function(step) {
-		bodyPosition.x += Math.cos(-xAngle + Math.PI / 2) * step;
-		bodyPosition.y += Math.cos(yAngle + Math.PI / 2) * step;
-		bodyPosition.z += Math.sin(-xAngle + Math.PI / 2) * step;
-	};
-	
-	PathControls.prototype.strafeLeft = function(step) {
-		bodyPosition.x -= Math.cos(-xAngle) * step;
-		bodyPosition.z -= Math.sin(-xAngle) * step;
-	};
-	
-	PathControls.prototype.strafeRight = function(step) {
-		bodyPosition.x += Math.cos(-xAngle) * step;
-		bodyPosition.z += Math.sin(-xAngle) * step;
-	};
-	
-	PathControls.prototype.updateCameraRotation = function() {
+	function updateCameraRotation() {
 		if (yAngle < -0.95 * Math.PI / 2) {
 			yAngle = -0.95 * Math.PI / 2;
 		}
@@ -346,6 +287,87 @@
 		camera.rotation.y = xAngle;
  		camera.rotation.x = yAngle;
  		camera.rotation.set(yAngle, xAngle, 0, 'YXZ');
+	}
+	
+	function updateOnRailsMode(delta) {				
+		// Forward/backward on the rails
+		if (keys[87] || keys[38]) { // W or UP
+			positionOnRoad += delta;
+		}
+		if (keys[83] || keys[40]) { // S or DOWN
+			positionOnRoad -= delta;
+		}
+
+		positionOnRoad = positionOnRoad % looptime;
+		//javascript modulus operator allows negative numbers, correct for that
+		if (positionOnRoad < 0) {
+			positionOnRoad = looptime + positionOnRoad;
+		}
+
+		camera.position.copy(path.getPointAt(positionOnRoad / looptime));
+	}
+	
+	function updateFlyMode(step) {
+		// Forward/backward
+		if (keys[87] || keys[119] || keys[38]) { // W or UP
+			bodyPosition.add(moveStep(step));
+		}
+		if (keys[83] || keys[115] || keys[40]) { // S or DOWN
+			bodyPosition.sub(moveStep(step));
+		}
+
+		// Fly up or down
+		if (keys[90] || keys[122]) { // Z
+			bodyPosition.y -= step;
+		}
+		if (keys[81] || keys[113]) { // Q
+			bodyPosition.y += step;
+		}
+
+		// Strafe
+		if (keys[65] || keys[97] || keys[37]) { // A or left
+			bodyPosition.add(strafeStep(step));
+		}
+		if (keys[68] || keys[100] || keys[39]) { // D or right
+			bodyPosition.sub(strafeStep(step));
+		}
+	}
+	
+	function getLocalFactor() {
+		var factor = 1;
+		
+		//compute the factor that will be used to scale the arclength used to index the lookatpath
+		var estArcLookPath = findPrecisePositionOnPath(lookatPath, bodyPosition) / lookatPath.points.length;
+		var estArcPath = findPrecisePositionOnPath(path, bodyPosition) / path.points.length;
+		
+		//prevent div by zero
+		if (estArcPath !== 0 && estArcLookPath !== 0) {
+			//divide the larger by the smaller value
+			factor = Math.max(estArcPath,estArcLookPath) / Math.min(estArcPath,estArcLookPath);
+		}
+		
+		return factor;
+	}
+	
+	PathControls.prototype.updateDemoMode = function(delta) {
+		positionOnRoad += delta;
+		positionOnRoad = positionOnRoad % looptime;
+		//javascript modulus operator allows negative numbers, correct for that
+		if (positionOnRoad < 0) {
+			positionOnRoad = looptime + positionOnRoad;
+		}
+		var pos = path.getPointAt(positionOnRoad / looptime);
+		
+		camera.position.copy(pos);
+		
+		//slowly adjust the factor over time to the local factor
+		lookatPathFactor = (1.0 - delta/3.0) * lookatPathFactor + (delta/3.0) * getLocalFactor();
+		//console.log('f=' + lookatPathFactor);
+		
+		var positionOnLookPath = (positionOnRoad / looptime) * (  lookatPath.getLength() / path.getLength() ) * lookatPathFactor;
+		var lookPoint = lookatPath.getPointAt(cap(positionOnLookPath));
+		
+		this.lookat(lookPoint);
 	};
 	
 	PathControls.prototype.updateInput = function() {
@@ -354,90 +376,18 @@
 		}
 
 		var delta = clock.getDelta();
-				
 		if (keys[32]) {
 			delta *= 6;
 		}
 
-		var step = 10 * delta;
-		var pos;
-
-		this.updateCameraRotation();
+		updateCameraRotation();
 		
 		if (this.mode === this.modes.DEMO) {
-
-			positionOnRoad += delta;
-			positionOnRoad = positionOnRoad % looptime;
-			//javascript modulus operator allows negative numbers, correct for that
-			if (positionOnRoad < 0) {
-				positionOnRoad = looptime + positionOnRoad;
-			}
-			pos = path.getPointAt(positionOnRoad / looptime);
-
-			camera.position.set(pos.x, pos.y, pos.z);
-
-			//scaling with 1.08 works perfectly for now, but it's not a very desirable solution to the problem that the relative length
-			//of the path on which you walk and the path over which the lookat point walks can be different
-			//
-			//Ideally you would want to compute this factor on the fly. which you could realize by calculating the closest point on the
-			//lookpath perpendicular to the direction on the walk path.
-
-	
-			//var positionOnLookPath = (positionOnRoad / looptime) * (  path.getLength() / lookatPath.getLength() ) * 1.08;
-			//var lookPoint = lookatPath.getPointAt(cap(positionOnLookPath);
-			var lookPoint = findPerpendicularPointOnLookPath();
-			
-			this.lookat(lookPoint);			
-			
+			this.updateDemoMode(delta);
 		} else if (this.mode === this.modes.FLY) {
-
-			// Forward/backward
-			if (keys[87] || keys[119] || keys[38]) { // W or UP
-				this.moveForward(step);
-			}
-
-			if (keys[83] || keys[115] || keys[40]) { // S or DOWN
-				this.moveBackward(step);
-			}
-
-			// Fly up or down
-			if (keys[90] || keys[122]) { // Z
-				bodyPosition.y -= step;
-			}
-
-			if (keys[81] || keys[113]) { // Q
-				bodyPosition.y += step;
-			}
-
-			// Strafe
-			if (keys[65] || keys[97] || keys[37]) { // A or left
-				this.strafeLeft(step);
-			}
-
-			if (keys[68] || keys[100] || keys[39]) { // D or right
-				this.strafeRight(step);
-			}
-
-			camera.position.set(bodyPosition.x, bodyPosition.y, bodyPosition.z);
-
+			updateFlyMode(10 * delta);
 		} else if (this.mode === this.modes.ONRAILS) {
-			// Forward/backward on the rails
-			if (keys[87] || keys[38]) { // W or UP
-				positionOnRoad += delta;
-			}
-			if (keys[83] || keys[40]) { // S or DOWN
-				positionOnRoad -= delta;
-			}
-
-			positionOnRoad = positionOnRoad % looptime;
-			//javascript modulus operator allows negative numbers, correct for that
-			if (positionOnRoad < 0) {
-				positionOnRoad = looptime + positionOnRoad;
-			}
-
-			pos = path.getPointAt(positionOnRoad / looptime);
-
-			camera.position.copy(pos);
+			updateOnRailsMode(delta);
 		} else {
 			console.log('error: unknown control mode in path.controls');
 		}
@@ -484,11 +434,6 @@
 		}
 		//console.log(event.keyCode);
 	}
-	
-
-	
-	
-	
 
 	function onKeyUp(event) {
 		keys[event.keyCode] = false;
