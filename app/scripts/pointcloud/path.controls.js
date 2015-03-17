@@ -307,27 +307,42 @@
 		camera.position.copy(path.getPointAt(positionOnRoad / looptime));
 	}
 	
-	function updateFlyMode(step) {
+	function updateForwardBackward() {
 		// Forward/backward
 		if (keys[87] || keys[119] || keys[38]) { // W or UP
 			bodyPosition.add(moveStep(step));
-		} else if (keys[83] || keys[115] || keys[40]) { // S or DOWN
+		} 
+		if (keys[83] || keys[115] || keys[40]) { // S or DOWN
 			bodyPosition.sub(moveStep(step));
 		}
-
+	}
+	
+	function updateUpDown() {
 		// Fly up or down
 		if (keys[90] || keys[122]) { // Z
 			bodyPosition.y -= step;
-		} else if (keys[81] || keys[113]) { // Q
+		} 
+		if (keys[81] || keys[113]) { // Q
 			bodyPosition.y += step;
 		}
-
+	}
+	
+	function updateStrafe() {
 		// Strafe
 		if (keys[65] || keys[97] || keys[37]) { // A or left
 			bodyPosition.add(strafeStep(step));
-		} else if (keys[68] || keys[100] || keys[39]) { // D or right
+		} 
+		if (keys[68] || keys[100] || keys[39]) { // D or right
 			bodyPosition.sub(strafeStep(step));
 		}
+	}
+	
+	function updateFlyMode(step) {
+		updateForwardBackward();
+
+		updateUpDown();
+
+		updateStrafe();
 	}
 	
 	function getLocalFactor() {
