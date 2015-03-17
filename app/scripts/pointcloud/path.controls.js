@@ -311,24 +311,21 @@
 		// Forward/backward
 		if (keys[87] || keys[119] || keys[38]) { // W or UP
 			bodyPosition.add(moveStep(step));
-		}
-		if (keys[83] || keys[115] || keys[40]) { // S or DOWN
+		} else if (keys[83] || keys[115] || keys[40]) { // S or DOWN
 			bodyPosition.sub(moveStep(step));
 		}
 
 		// Fly up or down
 		if (keys[90] || keys[122]) { // Z
 			bodyPosition.y -= step;
-		}
-		if (keys[81] || keys[113]) { // Q
+		} else if (keys[81] || keys[113]) { // Q
 			bodyPosition.y += step;
 		}
 
 		// Strafe
 		if (keys[65] || keys[97] || keys[37]) { // A or left
 			bodyPosition.add(strafeStep(step));
-		}
-		if (keys[68] || keys[100] || keys[39]) { // D or right
+		} else if (keys[68] || keys[100] || keys[39]) { // D or right
 			bodyPosition.sub(strafeStep(step));
 		}
 	}
