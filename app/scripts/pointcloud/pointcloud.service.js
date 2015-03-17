@@ -178,7 +178,7 @@
       me.renderer.autoClear = false;
       me.renderer.domElement.addEventListener('mousemove', onMouseMove, false);
 
-      MeasuringService.init(me.renderer);
+      MeasuringService.init(me.renderer, scene, camera);
 
       skybox = loadSkybox('bower_components/potree/resources/textures/skybox/');
 
@@ -232,7 +232,11 @@
           }
         );
 
-        PathControls.init(camera, myPath, lookPath, me.renderer.domElement);
+
+        //PathControls.init(camera, myPath, lookPath, me.renderer.domElement);
+		PathControls.init(camera, myPath, lookPath, me.elRenderArea);
+
+
 
         me.pathMesh = PathControls.createPath();
         scene.add(me.pathMesh);
