@@ -21,6 +21,18 @@ describe('searchbox.controller', function() {
     it('should have empty query', function() {
       expect(ctrl.SitesService.query).toEqual('');
     });
+
+    it('should have currentPage equal to 1', function() {
+      expect(ctrl.currentPage).toEqual(1);
+    });
+  });
+
+  describe('onQueryChange function', function() {
+    it('should set currentPage equal to 1', function() {
+      ctrl.currentPage = 234;
+      ctrl.onQueryChange();
+      expect(ctrl.currentPage).toEqual(1);
+    });
   });
 
   describe('lookAtSite function', function() {
