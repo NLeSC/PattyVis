@@ -1,28 +1,28 @@
 'use strict';
 
-fdescribe('measuring', function() {
+describe('measuring', function() {
 
   // load the module
   beforeEach(module('pattyApp.measuring'));
 
-  fit('should create an application controller', inject(function($rootScope, $controller, SceneService, CameraService, MeasuringService) {
+  it('should create an application controller', inject(function($rootScope, $controller, MeasuringService) {
       var scope = $rootScope.$new();
-      var ctrl = $controller('MeasuringController', { $scope: scope, SceneService:SceneService, CameraService:CameraService, MeasuringService:MeasuringService });
+      var ctrl = $controller('MeasuringController', { $scope: scope, MeasuringService:MeasuringService });
       expect(ctrl).toBeDefined();
   }));
 
-  fdescribe('when the controller is loaded', function() {
+  describe('when the controller is loaded', function() {
     var scope;
     var ctrl;
     beforeEach(function() {
-      inject(function($rootScope, $controller, SceneService, CameraService, MeasuringService) {
+      inject(function($rootScope, $controller, MeasuringService) {
         scope = $rootScope.$new();
-        ctrl = $controller('MeasuringController', { $scope: scope, SceneService: SceneService, CameraService: CameraService });
+        ctrl = $controller('MeasuringController', { $scope: scope, MeasuringService: MeasuringService });
       });
     });
 
-    fdescribe('initial state', function() {
-      fit('should set default variables', function() {
+    describe('initial state', function() {
+      it('should set default variables', function() {
         expect(ctrl.showToolboxTray).toBeFalsy();
         expect(ctrl.measuringService).toBeDefined();
 
@@ -32,7 +32,8 @@ fdescribe('measuring', function() {
           area: null,
           volume: null,
           heightprofile: null,
-          clipvolume: null
+          clipvolume: null,
+          transformation: null
         };
         expect(ctrl.measuringService.tools).toEqual(tools);
 
@@ -40,10 +41,9 @@ fdescribe('measuring', function() {
         expect(ctrl.measuringService.sitePointcloud).toEqual(null);
         expect(ctrl.measuringService.profileWidth).toEqual(0.1);
         expect(ctrl.measuringService.initialized).toBeFalsy();
+
+        expect(ctrl.measuringService.activeTransformationTool).toBe(ctrl.measuringService.transformationTools.ROTATE);
       });
     });
   });
-
-
-
 });

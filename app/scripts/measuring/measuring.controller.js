@@ -12,10 +12,6 @@
     this.heightProfileActive = false;
     this.clipVolumeActive = false;
 
-    this.transformationRotateActive = false;
-    this.transformationTranslateActive = false;
-    this.transformationScaleActive = false;
-
     this.measuringService = MeasuringService;
 
     this.toggleToolbox = function() {
@@ -34,11 +30,31 @@
       this.heightProfileActive = false;
       this.clipVolumeActive = false;
 
-      this.transformationRotateActive = false;
-      this.transformationTranslateActive = false;
-      this.transformationScaleActive = false;
-
       this.showTransformationToolboxTray = false;
+    };
+
+    this.isTransformationRotate = function() {
+      var result = false;
+      if (this.measuringService.activeTransformationTool === this.measuringService.transformationTools.ROTATE) {
+        result = true;
+      }
+      return result;
+    };
+
+    this.isTransformationTranslate = function() {
+      var result = false;
+      if (this.measuringService.activeTransformationTool === this.measuringService.transformationTools.TRANSLATE) {
+        result = true;
+      }
+      return result;
+    };
+
+    this.isTransformationScale = function() {
+      var result = false;
+      if (this.measuringService.activeTransformationTool === this.measuringService.transformationTools.SCALE) {
+        result = true;
+      }
+      return result;
     };
 
     this.startDistance = function() {
@@ -68,9 +84,9 @@
     this.startVolume = function() {
       this.resetState();
       this.volumeActive = true;
+      this.showTransformationToolboxTray = true;
       this.measuringService.startVolume();
 
-      this.showTransformationToolboxTray = true;
     };
 
     this.startHeightProfile = function() {
@@ -82,33 +98,29 @@
     this.startClipVolume = function() {
       this.resetState();
       this.clipVolumeActive = true;
-      this.measuringService.startClipVolume();
-
       this.showTransformationToolboxTray = true;
+      this.measuringService.startClipVolume();
     };
 
     this.toggleRotate = function() {
+      this.measuringService.activeTransformationTool = this.measuringService.transformationTools.ROTATE;
       this.resetState();
-      this.transformationRotateActive = true;
-      this.measuringService.tools.transformation.rotate();
-
       this.showTransformationToolboxTray = true;
+      this.measuringService.tools.transformation.rotate();
     };
 
     this.toggleTranslate = function() {
+      this.measuringService.activeTransformationTool = this.measuringService.transformationTools.TRANSLATE;
       this.resetState();
-      this.transformationTranslateActive = true;
-      this.measuringService.tools.transformation.translate();
-
       this.showTransformationToolboxTray = true;
+      this.measuringService.tools.transformation.translate();
     };
 
     this.toggleScale = function() {
+      this.measuringService.activeTransformationTool = this.measuringService.transformationTools.SCALE;
       this.resetState();
-      this.transformationScaleActive = true;
-      this.measuringService.tools.transformation.scale();
-
       this.showTransformationToolboxTray = true;
+      this.measuringService.tools.transformation.scale();
     };
   }
 

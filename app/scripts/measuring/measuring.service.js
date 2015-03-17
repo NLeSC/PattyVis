@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function MeasuringService(Potree, THREE, SceneService, CameraService, $window) {
+  function MeasuringService($rootScope, Potree, THREE, $window) {
     this.tools = {
       distance: null,
       angle: null,
@@ -11,6 +11,14 @@
       clipvolume: null,
       transformation: null
     };
+
+    this.transformationTools = {
+      TRANSLATE: 0,
+      ROTATE: 1,
+      SCALE: 2
+    };
+
+    this.activeTransformationTool = this.transformationTools.ROTATE;
 
     this.pointcloud = null;
     this.sitePointcloud = null;
@@ -23,14 +31,20 @@
 
       if (event.keyCode === 69) {
         // e pressed
+        this.activeTransformationTool = this.transformationTools.SCALE;
+        $rootScope.$digest();
 
         this.tools.transformation.scale();
       } else if (event.keyCode === 82) {
         // r pressed
+        this.activeTransformationTool = this.transformationTools.ROTATE;
+        $rootScope.$digest();
 
         this.tools.transformation.rotate();
       } else if (event.keyCode === 84) {
         // t pressed
+        this.activeTransformationTool = this.transformationTools.TRANSLATE;
+        $rootScope.$digest();
 
         this.tools.transformation.translate();
       }
@@ -67,10 +81,7 @@
       this.tools.heightprofile.sceneProfile.add(this.tools.heightprofile.sceneRoot);
     };
 
-    this.init = function(renderer) {
-      var scene = SceneService.getScene();
-      var camera = CameraService.camera;
-
+    this.init = function(renderer, scene, camera) {
       this.tools.distance = new Potree.MeasuringTool(scene, camera, renderer);
       this.tools.angle = new Potree.AngleTool(scene, camera, renderer);
       this.tools.area = new Potree.AreaTool(scene, camera, renderer);
