@@ -8,7 +8,6 @@
 (function() {
 	'use strict';
 
-
 	var me;
 
 	var camera;
@@ -21,39 +20,34 @@
 	var xAngle = 0;
 	var yAngle = 0;
 	
-
+	var initialized = false;
+	
 	var mouseX = window.innerWidth / 2;
 	var mouseY = window.innerHeight / 2;
 
-//	this factor controls mouse sensitivity
-//	should be more than 2*Math.PI to get full rotation
+	//	this factor controls mouse sensitivity
+	//	should be more than 2*Math.PI to get full rotation
 	var factor = 8;
 
-//	Map for key states
+	//	Map for key states
 	var keys = [];
-	for (var i = 0; i < 130; i++) {
-		keys.push(false);
-	}
-
 	var zoom = 45;
 	var maxZoom = 45;
-
 	var positionOnRoad = 0.0;
-	
 	var looptime = 240;
-
 	var THREE;
-
-
 
 	var PathControls = function($window) {
 		THREE = $window.THREE;
 
 		me = this;
 
+		for (var i = 0; i < 130; i++) {
+			keys.push(false);
+		}
+		
 		this.camera = null;
 		this.path = null;
-		this.useOculus = false;
 
 		clock = new THREE.Clock();
 
@@ -66,35 +60,25 @@
 		this.mode = this.modes.ONRAILS;
 	};
 
-
-	PathControls.prototype.init = function(cam, cameraPath, lookPath, element) {
+	PathControls.prototype.initCamera = function(cam, startPos) {
 		this.camera = cam;
 		camera = cam;
 		
-		var defLookPath = new THREE.SplineCurve3(lookPath);
-		lookatPath = new THREE.SplineCurve3(defLookPath.getSpacedPoints(100));
-
-		var definedPath = new THREE.SplineCurve3(cameraPath);
-		path = new THREE.SplineCurve3(definedPath.getSpacedPoints(100));
-		var pos = path.getPointAt(0);
-
-		camera.position.copy(pos);
+		camera.position.copy(startPos);
 		camera.up.set(0, 1, 0);
 		camera.rotation.order = 'YXZ';
-
-		this.lookat(lookatPath.getPointAt(0.05));
-
-		camera.updateProjectionMatrix();
-
+		
 		bodyPosition = camera.position;
-
 		zoom = camera.fov;
 		maxZoom = camera.fov;
-
+	};
+	
+	PathControls.prototype.initListeners = function(element) {	
+	
 		document.addEventListener('keydown', onKeyDown, false);
 		document.addEventListener('keyup', onKeyUp, false);
 
-		element.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
+		//element.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
 
 		element.addEventListener('mouseleave', onBlur, false);
 		element.addEventListener('mouseout', onBlur, false);
@@ -105,6 +89,23 @@
 
 		element.addEventListener('mousewheel', mousewheel, false);
 		element.addEventListener('DOMMouseScroll', mousewheel, false); // firefox
+	};
+
+	PathControls.prototype.init = function(cam, cameraPath, lookPath, element) {
+		var defLookPath = new THREE.SplineCurve3(lookPath);
+		lookatPath = new THREE.SplineCurve3(defLookPath.getSpacedPoints(100));
+
+		var definedPath = new THREE.SplineCurve3(cameraPath);
+		path = new THREE.SplineCurve3(definedPath.getSpacedPoints(100));
+
+        this.initCamera(cam, path.getPointAt(0));
+
+		this.lookat(lookatPath.getPointAt(0.05));
+		camera.updateProjectionMatrix();
+
+		this.initListeners(element);
+		
+		this.initialized = true;
 	};
 	
 	
@@ -151,7 +152,7 @@
 		//first find second nearest point on the road
 		var distOne = Number.MAX_VALUE;
 		var distTwo = Number.MAX_VALUE;
-		var secondIndex = i;
+		var secondIndex = 1;
 		if (index !== 0) {
 			distOne = point.distanceTo(cpath.points[index-1]);
 		}
@@ -188,6 +189,11 @@
 	
 	//go to a point on the road near the specified point
 	PathControls.prototype.goToPointOnRoad = function(point) {	
+		if (!initialized) {
+			console.error('error: goToPointOnRoad called before path.controls is initialized');
+			return;
+		}
+	
 		//find position on road
 		positionOnRoad = findPrecisePositionOnPath(path, point);
 		
@@ -281,7 +287,7 @@
 			
 			//if angle is less than half PI we have passed our position on the path, for now look at this point
 			if (angle > Math.PI/2) {
-				if (i == 0) {
+				if (i === 0) {
 					return lookatPath.getPointAt(0.1);
 				}
 				
@@ -308,6 +314,39 @@
 		
 	}
 	
+	PathControls.prototype.moveForward = function(step) {
+		bodyPosition.x -= Math.cos(-xAngle + Math.PI / 2) * step;
+		bodyPosition.y -= Math.cos(yAngle + Math.PI / 2) * step;
+		bodyPosition.z -= Math.sin(-xAngle + Math.PI / 2) * step;
+	};
+	
+	PathControls.prototype.moveBackward = function(step) {
+		bodyPosition.x += Math.cos(-xAngle + Math.PI / 2) * step;
+		bodyPosition.y += Math.cos(yAngle + Math.PI / 2) * step;
+		bodyPosition.z += Math.sin(-xAngle + Math.PI / 2) * step;
+	};
+	
+	PathControls.prototype.strafeLeft = function(step) {
+		bodyPosition.x -= Math.cos(-xAngle) * step;
+		bodyPosition.z -= Math.sin(-xAngle) * step;
+	};
+	
+	PathControls.prototype.strafeRight = function(step) {
+		bodyPosition.x += Math.cos(-xAngle) * step;
+		bodyPosition.z += Math.sin(-xAngle) * step;
+	};
+	
+	PathControls.prototype.updateCameraRotation = function() {
+		if (yAngle < -0.95 * Math.PI / 2) {
+			yAngle = -0.95 * Math.PI / 2;
+		}
+		if (yAngle > 0.95 * Math.PI / 2) {
+			yAngle = 0.95 * Math.PI / 2;
+		}
+		camera.rotation.y = xAngle;
+ 		camera.rotation.x = yAngle;
+ 		camera.rotation.set(yAngle, xAngle, 0, 'YXZ');
+	};
 	
 	PathControls.prototype.updateInput = function() {
 		if (!path) {
@@ -323,20 +362,8 @@
 		var step = 10 * delta;
 		var pos;
 
-		if (yAngle < -0.95 * Math.PI / 2) {
-			yAngle = -0.95 * Math.PI / 2;
-		}
-		if (yAngle > 0.95 * Math.PI / 2) {
-			yAngle = 0.95 * Math.PI / 2;
-		}
-
-		if (!this.useOculus) {
-			camera.rotation.y = xAngle;
-			camera.rotation.x = yAngle;
-			
-			camera.rotation.set(yAngle, xAngle, 0, 'YXZ');
-		}
-			
+		this.updateCameraRotation();
+		
 		if (this.mode === this.modes.DEMO) {
 
 			positionOnRoad += delta;
@@ -355,29 +382,22 @@
 			//Ideally you would want to compute this factor on the fly. which you could realize by calculating the closest point on the
 			//lookpath perpendicular to the direction on the walk path.
 
-			
 	
 			//var positionOnLookPath = (positionOnRoad / looptime) * (  path.getLength() / lookatPath.getLength() ) * 1.08;
 			//var lookPoint = lookatPath.getPointAt(cap(positionOnLookPath);
 			var lookPoint = findPerpendicularPointOnLookPath();
 			
-			this.lookat(lookPoint);
-			
-			
+			this.lookat(lookPoint);			
 			
 		} else if (this.mode === this.modes.FLY) {
 
 			// Forward/backward
 			if (keys[87] || keys[119] || keys[38]) { // W or UP
-				bodyPosition.x -= Math.cos(-xAngle + Math.PI / 2) * step;
-				bodyPosition.y -= Math.cos(yAngle + Math.PI / 2) * step;
-				bodyPosition.z -= Math.sin(-xAngle + Math.PI / 2) * step;
+				this.moveForward(step);
 			}
 
 			if (keys[83] || keys[115] || keys[40]) { // S or DOWN
-				bodyPosition.x += Math.cos(-xAngle + Math.PI / 2) * step;
-				bodyPosition.y += Math.cos(yAngle + Math.PI / 2) * step;
-				bodyPosition.z += Math.sin(-xAngle + Math.PI / 2) * step;
+				this.moveBackward(step);
 			}
 
 			// Fly up or down
@@ -391,13 +411,11 @@
 
 			// Strafe
 			if (keys[65] || keys[97] || keys[37]) { // A or left
-				bodyPosition.x -= Math.cos(-xAngle) * step;
-				bodyPosition.z -= Math.sin(-xAngle) * step;
+				this.strafeLeft(step);
 			}
 
 			if (keys[68] || keys[100] || keys[39]) { // D or right
-				bodyPosition.x += Math.cos(-xAngle) * step;
-				bodyPosition.z += Math.sin(-xAngle) * step;
+				this.strafeRight(step);
 			}
 
 			camera.position.set(bodyPosition.x, bodyPosition.y, bodyPosition.z);
@@ -424,26 +442,26 @@
 			console.log('error: unknown control mode in path.controls');
 		}
 
+	};
+			
+	PathControls.prototype.enableFlightMode = function() {
+		this.mode = this.modes.FLY;
+	};
 		
-		PathControls.prototype.enableFlightMode = function() {
-			this.mode = this.modes.FLY;
-		};
-		
-		PathControls.prototype.enableRailsMode = function() {
-			if (this.mode === this.modes.FLY) {
-				this.goToPointOnRoad(bodyPosition);
-			}
-			this.mode = this.modes.ONRAILS;
-		};
-		
-		PathControls.prototype.enableDemoMode = function() {
-			if (this.mode === this.modes.FLY) {
-				this.goToPointOnRoad(bodyPosition);
-			}
-			this.mode = this.modes.DEMO;
-		};
-		
-		
+	PathControls.prototype.transitionFromFlightMode = function() {
+		if (this.mode === this.modes.FLY) {
+			this.goToPointOnRoad(bodyPosition);
+		}
+	};
+	
+	PathControls.prototype.enableRailsMode = function() {
+		this.transitionFromFlightMode();
+		this.mode = this.modes.ONRAILS;
+	};
+	
+	PathControls.prototype.enableDemoMode = function() {
+		this.transitionFromFlightMode();
+		this.mode = this.modes.DEMO;
 	};
 
 	function onKeyDown(event) {
@@ -491,7 +509,6 @@
 	
 	
 	function mousedown(event) {
-
 		//right mouse button going down!!
 		if (event.button === 2) {
 
@@ -505,7 +522,6 @@
 	}
 
 	function mouseup(event) {
-
 		//right mouse button going up!!
 		if (event.button === 2) {
 			event.preventDefault();
@@ -516,7 +532,7 @@
 	function mousemove(event) {
 		if (!drag) {
 			return;
-		}
+		}		
 
 		xAngle -= factor * (event.pageX - mouseX) / (window.innerWidth);
 		yAngle -= factor * (event.pageY - mouseY) / (window.innerHeight);

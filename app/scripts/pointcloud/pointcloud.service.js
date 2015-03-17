@@ -232,8 +232,12 @@
           }
         );
 
-        PathControls.init(camera, myPath, lookPath, me.renderer.domElement);
+		
+        //PathControls.init(camera, myPath, lookPath, me.renderer.domElement);
+		PathControls.init(camera, myPath, lookPath, me.elRenderArea);
 
+		
+		
         me.pathMesh = PathControls.createPath();
         scene.add(me.pathMesh);
         me.pathMesh.visible = false; // disabled by default
