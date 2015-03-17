@@ -307,7 +307,7 @@
 		camera.position.copy(path.getPointAt(positionOnRoad / looptime));
 	}
 	
-	function updateForwardBackward() {
+	function updateForwardBackward(step) {
 		// Forward/backward
 		if (keys[87] || keys[119] || keys[38]) { // W or UP
 			bodyPosition.add(moveStep(step));
@@ -317,7 +317,7 @@
 		}
 	}
 	
-	function updateUpDown() {
+	function updateUpDown(step) {
 		// Fly up or down
 		if (keys[90] || keys[122]) { // Z
 			bodyPosition.y -= step;
@@ -327,22 +327,22 @@
 		}
 	}
 	
-	function updateStrafe() {
+	function updateStrafe(vec) {
 		// Strafe
 		if (keys[65] || keys[97] || keys[37]) { // A or left
-			bodyPosition.add(strafeStep(step));
+			bodyPosition.add(vec);
 		} 
 		if (keys[68] || keys[100] || keys[39]) { // D or right
-			bodyPosition.sub(strafeStep(step));
+			bodyPosition.sub(vec);
 		}
 	}
 	
 	function updateFlyMode(step) {
-		updateForwardBackward();
+		updateForwardBackward(step);
 
-		updateUpDown();
+		updateUpDown(step);
 
-		updateStrafe();
+		updateStrafe(strafeStep(step));
 	}
 	
 	function getLocalFactor() {
