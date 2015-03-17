@@ -14,29 +14,8 @@ exports.config = {
     'browserName': 'chrome',
     'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
     'build': process.env.TRAVIS_BUILD_NUMBER,
-    'name': 'Chrome WIN8.1 v39',
-    'version': '39.0',
-    'platform': 'WIN8_1'
-  }, {
-    'browserName': 'chrome',
-    'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-    'build': process.env.TRAVIS_BUILD_NUMBER,
     'name': 'Chrome Linux v39',
     'version': '39.0',
-    'platform': 'Linux'
-  }, {
-    'browserName': 'chrome',
-    'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-    'build': process.env.TRAVIS_BUILD_NUMBER,
-    'name': 'Chrome OSX v39',
-    'version': '39.0',
-    'platform': 'OS X 10.10'
-  }, {
-    'browserName': 'Firefox',
-    'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
-    'build': process.env.TRAVIS_BUILD_NUMBER,
-    'name': 'Firefox Linux v34',
-    'version': '34.0',
     'platform': 'Linux'
   }],
 
