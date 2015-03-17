@@ -23,7 +23,7 @@
     });
 
     function centerOnVisibleSites() {
-      map.getView().fitExtent(vectorSource.getExtent(), map.getSize());
+      me.map.getView().fitExtent(vectorSource.getExtent(), me.map.getSize());
     }
 
     var vectorSource = new ol.source.GeoJSON({
@@ -84,14 +84,13 @@
       source: mapType
     });
 
-    var map = new ol.Map({
+    this.map = new ol.Map({
       layers: [rasterLayer, vectorLayer],
       view: new ol.View({
         center: ol.proj.transform([12.5469185, 41.8286509], 'EPSG:4326', 'EPSG:3857'),
         zoom: 17
       })
     });
-    this.map = map;
 
     this.onMapRightclick = function(event) {
       console.log('right clicked on the map!');
@@ -100,7 +99,7 @@
       return false;
     };
 
-    map.on('rightclick', this.onMapRightclick);
+    this.map.on('rightclick', this.onMapRightclick);
 
     // TODO set initial location for the map
     // TODO toggle map on/of
@@ -125,13 +124,13 @@
         '\ny: ' + lonlas);
     };
 
-    map.on('click', this.onMapClick);
+    this.map.on('click', this.onMapClick);
 
-    map.addLayer(CamFrustumService.layer);
+    this.map.addLayer(CamFrustumService.layer);
 
     this.cameraMovedMessage = function(event, frustum) {
       CamFrustumService.onCameraMove(frustum);
-      map.getView().fitExtent(CamFrustumService.getExtent(), map.getSize());
+      me.map.getView().fitExtent(CamFrustumService.getExtent(), me.map.getSize());
     };
 
     Messagebus.subscribe('cameraMoved', this.cameraMovedMessage);
