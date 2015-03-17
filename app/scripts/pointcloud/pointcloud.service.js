@@ -343,12 +343,6 @@
       imageObj.src = 'data/label-small.png';
     }
 
-    this.goHome = function() {
-
-      PathControls.goHome();
-
-    };
-
     this.lookAtSite = function(site) {
       var coordGeo = SitesService.centerOfSite(site);
       var posGeo = new THREE.Vector3(coordGeo[0], coordGeo[1], coordGeo[2]);

@@ -21,6 +21,9 @@
 	var xAngle = 0;
 	var yAngle = 0;
 	
+	var MAX_YANGLE = 0.95 * Math.PI / 2;
+	var MIN_YANGLE = -0.95 * Math.PI / 2;
+	
 	var initialized = false;
 	
 	var mouseX = window.innerWidth / 2;
@@ -75,11 +78,8 @@
 	};
 	
 	PathControls.prototype.initListeners = function(element) {	
-	
 		document.addEventListener('keydown', onKeyDown, false);
 		document.addEventListener('keyup', onKeyUp, false);
-
-		//element.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
 
 		element.addEventListener('mouseleave', onBlur, false);
 		element.addEventListener('mouseout', onBlur, false);
@@ -109,24 +109,6 @@
 		this.initialized = true;
 	};
 	
-	
-	/*
-	 * TODO: I have a weird bug that pressing the goHome button and executing the goHome function here does not always perform a lookat correctly
-	 * in particular for the firstperson (fly) mode. pressing the gohome button again fixes the lookat somehow, not sure why it does work the second time.
-	 */
-	PathControls.prototype.goHome = function() {
-		positionOnRoad = 0.0;
-		bodyPosition = path.getPointAt(0);
-		
-		this.lookat(path.getPointAt(0.1));
-	};
-	
-
-	PathControls.prototype.goTo = function(point) {
-		bodyPosition.copy(point);
-	};
-	
-	
 	function findNearestPointOnPath(path, point) {
 		//first find nearest point on road
 		var minDist = Number.MAX_VALUE;
@@ -145,7 +127,6 @@
 	}
 	
 	function findPrecisePositionOnPath(cpath, point) {
-		
 		//first find nearest point on road
 		var index = findNearestPointOnPath(cpath, point);
 		
@@ -166,7 +147,6 @@
 			index = index-1;
 			secondIndex = index+1;
 		}
-
 		//interpolate using dot product of vector A and B
 
 		//vector A is the vector from index to point
@@ -187,7 +167,6 @@
 		return ((index + delta) / cpath.points.length) * looptime;
 	}
 	
-	
 	//go to a point on the road near the specified point
 	PathControls.prototype.goToPointOnRoad = function(point) {	
 		if (!initialized) {
@@ -202,15 +181,12 @@
 		bodyPosition.copy(path.getPointAt(positionOnRoad / looptime));
 	};
 
-
 	PathControls.prototype.lookat = function(center) {
-		
 		camera.up = new THREE.Vector3(0,1,0);
 		camera.lookAt(center);
 		
 		xAngle = camera.rotation.y;
 		yAngle = camera.rotation.x;
-
 	};
 	
 	function addBalls(scene, pointsArray, colorHex) {
@@ -227,9 +203,7 @@
 		}
 	}
 	
-	
 	PathControls.prototype.createPath = function() {
-
 		var tube = new THREE.TubeGeometry(path, 1024, 0.25, 8, false);
 		var lookTube = new THREE.TubeGeometry(lookatPath, 1024, 0.25, 8, false);
 		
@@ -268,24 +242,17 @@
 	}
 	
 	function moveStep(step) {
-		var vec = new THREE.Vector3( Math.sin(xAngle), Math.sin(-yAngle), Math.cos(xAngle) );
+		var vec = new THREE.Vector3(Math.sin(xAngle), Math.sin(-yAngle), Math.cos(xAngle));
 		return vec.multiplyScalar(-step);
 	}
 	
 	function strafeStep(step) {
-		var vec = new THREE.Vector3( Math.cos(-xAngle), 0.0, Math.sin(-xAngle) );
+		var vec = new THREE.Vector3(Math.cos(-xAngle), 0.0, Math.sin(-xAngle));
 		return vec.multiplyScalar(-step);
 	}
 	
 	function updateCameraRotation() {
-		if (yAngle < -0.95 * Math.PI / 2) {
-			yAngle = -0.95 * Math.PI / 2;
-		}
-		if (yAngle > 0.95 * Math.PI / 2) {
-			yAngle = 0.95 * Math.PI / 2;
-		}
-		camera.rotation.y = xAngle;
- 		camera.rotation.x = yAngle;
+		yAngle = Math.max(Math.min(yAngle,MAX_YANGLE),MIN_YANGLE);
  		camera.rotation.set(yAngle, xAngle, 0, 'YXZ');
 	}
 	
@@ -307,30 +274,42 @@
 		camera.position.copy(path.getPointAt(positionOnRoad / looptime));
 	}
 	
-	function updateFlyMode(step) {
+	function updateForwardBackward(step) {
 		// Forward/backward
 		if (keys[87] || keys[119] || keys[38]) { // W or UP
 			bodyPosition.add(moveStep(step));
-		}
+		} 
 		if (keys[83] || keys[115] || keys[40]) { // S or DOWN
 			bodyPosition.sub(moveStep(step));
 		}
-
+	}
+	
+	function updateUpDown(step) {
 		// Fly up or down
 		if (keys[90] || keys[122]) { // Z
 			bodyPosition.y -= step;
-		}
+		} 
 		if (keys[81] || keys[113]) { // Q
 			bodyPosition.y += step;
 		}
-
+	}
+	
+	function updateStrafe(vec) {
 		// Strafe
 		if (keys[65] || keys[97] || keys[37]) { // A or left
-			bodyPosition.add(strafeStep(step));
-		}
+			bodyPosition.add(vec);
+		} 
 		if (keys[68] || keys[100] || keys[39]) { // D or right
-			bodyPosition.sub(strafeStep(step));
+			bodyPosition.sub(vec);
 		}
+	}
+	
+	function updateFlyMode(step) {
+		updateForwardBackward(step);
+
+		updateUpDown(step);
+
+		updateStrafe(strafeStep(step));
 	}
 	
 	function getLocalFactor() {
@@ -343,7 +322,7 @@
 		//prevent div by zero
 		if (estArcPath !== 0 && estArcLookPath !== 0) {
 			//divide the larger by the smaller value
-			factor = Math.max(estArcPath,estArcLookPath) / Math.min(estArcPath,estArcLookPath);
+			factor = Math.max(estArcPath,estArcLookPath) / Math.min(estArcPath, estArcLookPath);
 		}
 		
 		return factor;
@@ -356,9 +335,7 @@
 		if (positionOnRoad < 0) {
 			positionOnRoad = looptime + positionOnRoad;
 		}
-		var pos = path.getPointAt(positionOnRoad / looptime);
-		
-		camera.position.copy(pos);
+		camera.position.copy(path.getPointAt(positionOnRoad / looptime));
 		
 		//slowly adjust the factor over time to the local factor
 		lookatPathFactor = (1.0 - delta/3.0) * lookatPathFactor + (delta/3.0) * getLocalFactor();
@@ -393,22 +370,22 @@
 		}
 
 	};
-			
+
 	PathControls.prototype.enableFlightMode = function() {
 		this.mode = this.modes.FLY;
 	};
-		
+
 	PathControls.prototype.transitionFromFlightMode = function() {
 		if (this.mode === this.modes.FLY) {
 			this.goToPointOnRoad(bodyPosition);
 		}
 	};
-	
+
 	PathControls.prototype.enableRailsMode = function() {
 		this.transitionFromFlightMode();
 		this.mode = this.modes.ONRAILS;
 	};
-	
+
 	PathControls.prototype.enableDemoMode = function() {
 		this.transitionFromFlightMode();
 		this.mode = this.modes.DEMO;
@@ -420,19 +397,6 @@
 		if (event.keyCode === 32) {
 			event.preventDefault();
 		}
-
-		if (event.keyCode === 50) { // the 2 key
-			me.enableFlightMode();
-		}	
-		
-		if (event.keyCode === 49) { //the 1 key
-			me.enableRailsMode();
-		}
-
-		if (event.keyCode === 51) { //the 3 key
-			me.enableDemoMode();
-		}
-		//console.log(event.keyCode);
 	}
 
 	function onKeyUp(event) {
@@ -442,16 +406,13 @@
 	//a blur event is fired when we lose focus
 	//in such an event we want to turn off all keys
 	function onBlur() {
-		
 		drag = false;
 		
 		var i;
 		for (i=0; i < keys.length; i++) {
 			keys[i] = false;
 		}
-				
 	}
-	
 	
 	function mousedown(event) {
 		//right mouse button going down!!
@@ -484,7 +445,6 @@
 
 		mouseX = event.pageX;
 		mouseY = event.pageY;
-
 	}
 
 	function mousewheel(event) {
@@ -514,7 +474,6 @@
 
 		camera.fov = zoom;
 		camera.updateProjectionMatrix();
-
 	}
 
 	  angular.module('pattyApp.pointcloud')
