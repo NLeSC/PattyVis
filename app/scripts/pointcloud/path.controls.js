@@ -206,6 +206,21 @@
 
 	};
 	
+	function addBalls(scene, pointsArray, colorHex) {
+		var sphereGeo;
+		var meshMat;
+		var sphere;
+		
+		sphereGeo = new THREE.SphereGeometry(0.5,32,32);
+		meshMat = new THREE.MeshBasicMaterial({color: colorHex});
+		for (var i=0; i<pointsArray.length; i++) {
+			sphere = new THREE.Mesh(sphereGeo, meshMat);
+			sphere.position.copy(pointsArray[i]);
+			scene.add(sphere);
+		}
+	}
+	
+	
 	PathControls.prototype.createPath = function() {
 
 		var tube = new THREE.TubeGeometry(path, 1024, 0.25, 8, false);
@@ -232,33 +247,68 @@
 					transparent: false
 			})]);
 
-		var i;
-		
 		tubeMesh.add(lookTubeMesh);
 		
-		var sphereGeo;
-		var meshMat;
-		var sphere;
+		addBalls(tubeMesh, path.points, 0xff0000);
 		
-		for (i=0; i<path.points.length; i++) {
-			sphereGeo = new THREE.SphereGeometry(0.5,32,32);
-			meshMat = new THREE.MeshBasicMaterial({color: 0xff0000});
-			sphere = new THREE.Mesh(sphereGeo, meshMat);
-			sphere.position.copy(path.points[i]);
-			tubeMesh.add(sphere);
-		}
+		addBalls(tubeMesh, lookatPath.points, 0x00ff00);
 		
-		for (i=0; i<lookatPath.points.length; i++) {
-			sphereGeo = new THREE.SphereGeometry(0.5,32,32);
-			meshMat = new THREE.MeshBasicMaterial({color: 0x00ff00});
-			sphere = new THREE.Mesh(sphereGeo, meshMat);
-			sphere.position.copy(lookatPath.points[i]);
-			tubeMesh.add(sphere);
-		}
-
 		return tubeMesh;
 	};
-
+	
+	function cap(value) {
+		return Math.min(Math.max(value, 0), 1);
+	}
+	
+	function getInterpOnPath() {
+		var position = path.getPointAt(positionOnRoad / looptime);
+		var index = findNearestPointOnPath(path, position);
+		
+		return (positionOnRoad / looptime) - (index / path.points.length);
+		
+	}
+	
+	function findPerpendicularPointOnLookPath(){
+		var position = path.getPointAt(positionOnRoad / looptime);
+		var positionAhead = path.getPointAt(cap(positionOnRoad + 0.01 / looptime));
+		var walkDirection = new THREE.Vector3().subVectors(positionAhead, position).normalize();
+		
+		for (var i=0; i<lookatPath.points.length; i++) {
+			var point = lookatPath.points[i];
+			var vectorToPosition = new THREE.Vector3().subVectors(position, point).normalize();
+			var dotproduct = vectorToPosition.dot(walkDirection);
+			var angle = Math.acos(dotproduct);
+			
+			//if angle is less than half PI we have passed our position on the path, for now look at this point
+			if (angle > Math.PI/2) {
+				if (i == 0) {
+					return lookatPath.getPointAt(0.1);
+				}
+				
+				var found = lookatPath.points[i];
+				//console.log('position=' + position.x + ',' + position.y + ',' + position.z + ' found perpendicular point=' + found.x + ',' + found.y + ',' + found.z);
+				
+				var start = ((i-1)/lookatPath.points.length);
+				var end = (i/lookatPath.points.length);
+				for (var j = start; j < end; j += 0.000001) {
+					point = lookatPath.getPointAt(j);
+					vectorToPosition = new THREE.Vector3().subVectors(position, point).normalize();
+					dotproduct = vectorToPosition.dot(walkDirection);
+					angle = Math.acos(dotproduct);
+					
+					if (angle > Math.PI/2) {
+						console.log('start=' + start + ' end=' + end + ' precise location=' + j);
+						return lookatPath.getPointAt(cap(j + 0.005));
+					}
+				}
+				
+				return lookatPath.getPointAt(cap((i/lookatPath.points.length)));
+			}
+		}
+		
+	}
+	
+	
 	PathControls.prototype.updateInput = function() {
 		if (!path) {
 			return;
@@ -299,11 +349,17 @@
 
 			camera.position.set(pos.x, pos.y, pos.z);
 
-			//this.lookat(path.getPointAt((positionOnRoad / looptime) + 0.0001));
+			//scaling with 1.08 works perfectly for now, but it's not a very desirable solution to the problem that the relative length
+			//of the path on which you walk and the path over which the lookat point walks can be different
+			//
+			//Ideally you would want to compute this factor on the fly. which you could realize by calculating the closest point on the
+			//lookpath perpendicular to the direction on the walk path.
+
 			
-			var positionOnLookPath = (positionOnRoad / looptime) * (  path.getLength() / lookatPath.getLength() ) * 1.08 ;
-			
-			var lookPoint = lookatPath.getPointAt(positionOnLookPath);
+	
+			//var positionOnLookPath = (positionOnRoad / looptime) * (  path.getLength() / lookatPath.getLength() ) * 1.08;
+			//var lookPoint = lookatPath.getPointAt(cap(positionOnLookPath);
+			var lookPoint = findPerpendicularPointOnLookPath();
 			
 			this.lookat(lookPoint);
 			
