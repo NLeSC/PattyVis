@@ -64,10 +64,12 @@
       centerOnVisibleSites();
     };
 
-    Messagebus.subscribe('sitesChanged', function() {
+    this.sitesChangedMessage = function() {
       var sites = SitesService.filtered;
       me.onSitesChanged(sites);
-    });
+    };
+
+    Messagebus.subscribe('sitesChanged', this.sitesChangedMessage);
 
     var vectorLayer = new ol.layer.Vector({
       source: vectorSource,
