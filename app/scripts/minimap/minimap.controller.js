@@ -92,12 +92,13 @@
     this.map = map;
 
     this.onMapRightclick = function(event) {
+      console.log('right clicked on the map!');
       event.preventDefault();
 
       return false;
     };
 
-    map.on('mousedown', this.onMapRightclick);
+    map.on('rightclick', this.onMapRightclick);
 
     // TODO set initial location for the map
     // TODO toggle map on/of
@@ -132,7 +133,6 @@
     };
 
     Messagebus.subscribe('cameraMoved', this.cameraMovedMessage);
-
   }
 
   angular.module('pattyApp.minimap')
