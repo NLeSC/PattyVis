@@ -87,11 +87,6 @@
   </div>
 </div>
 
-<div class="toolbox">
-  <button ng-click="pc.toggleToolbox()" class="icon-big toolbox-icon" ng-class="{active: pc.showToolboxTray}"></button>
-</div>
-
-
 <div class="controls">
   <button ng-click="pc.showSettings=!pc.showSettings" class="icon-big gear-icon" ng-class="{active: pc.showSettings}" title="Settings"></button>
   <button ng-click="pc.showHelp=!pc.showHelp" class="icon-big help-icon" ng-class="{active: pc.showHelp}" title="Help"></button>
@@ -102,16 +97,4 @@
   <button class="icon-big onrails-icon" ng-click="pc.PathControls.enableRailsMode()" ng-model="pc.cameraMode" btn-radio="'onrails'" title="On rails"></button>
   <button class="icon-big fly-icon" ng-click="pc.PathControls.enableFlightMode()" ng-model="pc.cameraMode" btn-radio="'fly'" title="Free fly"></button>
   <button class="icon-big demo-icon" ng-click="pc.PathControls.enableDemoMode()" ng-model="pc.cameraMode" btn-radio="'demo'" title="Demo mode"></buttons>
-</div>
-
-<div class="toolbox-tray tool-icon" collapse='!pc.showToolboxTray'>
-  <button ng-click="pc.toggleToolbox()" class="icon-big toolbox-tray-top-icon"></button>
-  <div class="toolbox-tools">
-    <button ng-click="pc.measure.startDistance()" class="icon-small distance-icon" title="Start distance measurement"></button>
-    <button ng-click="pc.measure.startAngle()" class="icon-small angle-icon" title="Start angle measurement"></button>
-    <button ng-click="pc.measure.startArea()" class="icon-small area-icon" title="Start area measurement"></button>
-    <button ng-click="pc.measure.startVolume()" class="icon-small volume-icon" title="Start volume measurement"></button>
-    <button ng-click="pc.measure.startHeighProfile()" class="icon-small heightprofile-icon" title="Start heightprofile measurement"></button>
-    <button ng-click="pc.measure.startClipVolume()" class="icon-small clipvolume-icon" title="Start clip volume measurement"></button>
-  </div>
 </div>
