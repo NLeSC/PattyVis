@@ -1,5 +1,6 @@
 exports.config = {
-  allScriptsTimeout: 11000,
+  allScriptsTimeout: 21000,
+  getPageTimeout: 20000,
 
   specs: [
     '*.js'
@@ -7,6 +8,7 @@ exports.config = {
 
   sauceUser: process.env.SAUCE_USERNAME,
   sauceKey: process.env.SAUCE_ACCESS_KEY,
+  sauceSeleniumAddress: 'localhost:4445/wd/hub',
 
   multiCapabilities: [{
     'browserName': 'chrome',
@@ -43,7 +45,7 @@ exports.config = {
   framework: 'jasmine',
 
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 30000
+    defaultTimeoutInterval: 60000
   }
 
 };

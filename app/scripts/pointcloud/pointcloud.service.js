@@ -1,7 +1,11 @@
+/* global requestAnimationFrame:false */
 (function() {
   'use strict';
 
-  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope, Messagebus, DrivemapService, SiteLoaderService, sitesservice, CameraService, SceneService, PathControls, SiteBoxService, MeasuringService) {
+  function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope,
+    DrivemapService,
+    SitesService, CameraService, SceneService,
+    PathControls, SiteBoxService, MeasuringService) {
 
     var me = this;
 
@@ -40,19 +44,17 @@
       }
     };
 
-    var pointcloudPath = 'data/out_8/cloud.js';
     this.renderer = null;
     var camera;
     var scene;
     var pointcloud;
     var sitePointcloud;
-    
+
     var skybox;
 
     me.pathMesh = null;
-    var prevCameraOrientation;
 
-    var referenceFrame;
+    var referenceFrame = SceneService.referenceFrame;
     var mouse = {
       x: 0,
       y: 0
@@ -146,7 +148,7 @@
           me.stats.sceneCoordinates.x = sceneCoordinates.x.toFixed(2);
           me.stats.sceneCoordinates.y = sceneCoordinates.y.toFixed(2);
           me.stats.sceneCoordinates.z = sceneCoordinates.z.toFixed(2);
-          var geoCoordinates = toGeo(sceneCoordinates);
+          var geoCoordinates = SceneService.toGeo(sceneCoordinates);
           me.stats.lasCoordinates.x = geoCoordinates.x.toFixed(2);
           me.stats.lasCoordinates.y = geoCoordinates.y.toFixed(2);
           me.stats.lasCoordinates.z = geoCoordinates.z.toFixed(2);
@@ -170,7 +172,6 @@
 
       scene = SceneService.getScene();
       camera = CameraService.camera;
-      CameraService.toGeo = toGeo;
 
       me.renderer = new THREE.WebGLRenderer();
       me.renderer.setSize(width, height);
@@ -184,19 +185,17 @@
       // enable frag_depth extension for the interpolation shader, if available
       me.renderer.context.getExtension('EXT_frag_depth');
 
-      referenceFrame = new THREE.Object3D();
-
-      SiteBoxService.init(referenceFrame, mouse);
+      SiteBoxService.init(mouse);
 
       SiteBoxService.listenTo(me.renderer.domElement);
 
-      DrivemapService.load().then(this.loadPointcloud);
-      SiteLoaderService.load().then(this.loadSite);
+      DrivemapService.ready.then(this.loadPointcloud);
+      SitesService.ready.then(this.loadSite);
     };
 
     this.loadPointcloud = function() {
       // load pointcloud
-      pointcloudPath = DrivemapService.getPointcloudUrl();
+      var pointcloudPath = DrivemapService.getPointcloudUrl();
       me.stats.lasCoordinates.crs = DrivemapService.getCrs();
 
       POCLoader.load(pointcloudPath, function(geometry) {
@@ -220,17 +219,16 @@
           0, 0, 0, 1
         ));
         referenceFrame.updateMatrixWorld(true);
-        scene.add(referenceFrame);
 
-        var myPath = DrivemapService.getCoordinates().map(
+        var myPath = DrivemapService.getCameraPath().map(
           function(coord) {
-            return toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
+            return SceneService.toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
           }
         );
-		
-		var lookPath = DrivemapService.getLookPath().map(
+
+        var lookPath = DrivemapService.getLookPath().map(
           function(coord) {
-            return toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
+            return SceneService.toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
           }
         );
 
@@ -245,9 +243,8 @@
 
     this.loadSite = function() {
       // load pointcloud
-      var pointcloudPath = SiteLoaderService.getPointcloudUrl(162);
-      
-      me.stats.lasCoordinates.crs = SiteLoaderService.getCrs();
+      var site = SitesService.getById(162);
+      var pointcloudPath = site.pointcloud;
 
       POCLoader.load(pointcloudPath, function(geometry) {
         sitePointcloud = new Potree.PointCloudOctree(geometry);
@@ -259,78 +256,41 @@
         referenceFrame.add(sitePointcloud);
         MeasuringService.setSitePointcloud(sitePointcloud);
       });
-      
+
       /*
-      var meshPath = SiteLoaderService.getMeshUrl();
-      var meshMtlPath = SiteLoaderService.getMeshMtlUrl();
-            
-      var objmtl_loader = new THREE.OBJMTLLoader();  
-                
+      var meshPath = site.mesh.data_location;
+      var meshMtlPath = site.mesh.mtl_location;
+
+      var objmtl_loader = new THREE.OBJMTLLoader();
+
       objmtl_loader.load(meshPath, meshMtlPath, function(object) {
           referenceFrame.add(object);
-      }, function(){ 
+      }, function(){
         return 1;
-      }, function() { 
+      }, function() {
         console.log('Error while loading mesh for site');
-      });      
-      
-      var reconstructionMeshPath = SiteLoaderService.getReconstructionMeshUrl();
-      
-      var obj_loader = new THREE.OBJLoader();  
-                
+      });
+
+      var reconstructionMeshPath = site.reconstruction_mesh[0].data_location;
+      var obj_loader = new THREE.OBJLoader();
+
       obj_loader.load(reconstructionMeshPath, function(object) {
-          var scale = SiteLoaderService.getReconstructionScale();
-          var bbox = SiteLoaderService.getBbox();
-          object.scale.set(scale[0], scale[1], scale[2]);
-          object.position.set(bbox[0]+(bbox[3]-bbox[0]),bbox[1]+(bbox[4]-bbox[1]),bbox[2]+(bbox[5]-bbox[2]));
+          var osg = site.reconstruction_mesh[0].osg_position;
+          // TODO perform projection?
+          object.scale.set(osg.xs, osg.ys, osg.zs);
+          object.position.set(osg.x, osg.y, osg.z);
           referenceFrame.add(object);
-      }, function(){ 
+      }, function(){
         return 1;
-      }, function() { 
+      }, function() {
         console.log('Error while loading reconstruction mesh for site');
-      }); 
-      
+      });
+
       */
-      
+
     };
 
-
-    this.loadSiteBoxes = function() {
-
-      for (var ix = 0; ix < SiteBoxService.siteBoxList.length; ix++) {
-        referenceFrame.add(SiteBoxService.siteBoxList[ix]);
-      }
-    };
-
-    /**
-     * transform from geo coordinates to local scene coordinates
-     */
-    function toLocal(position) {
-
-      var scenePos = position.clone().applyMatrix4(referenceFrame.matrixWorld);
-
-      return scenePos;
-    }
-
-    /**
-     * transform from local scene coordinates to geo coordinates
-     */
-    function toGeo(object) {
-      var geo;
-      var inverse = new THREE.Matrix4().getInverse(referenceFrame.matrixWorld);
-
-      if (object instanceof THREE.Vector3) {
-        geo = object.clone().applyMatrix4(inverse);
-      } else if (object instanceof THREE.Box3) {
-        var geoMin = object.min.clone().applyMatrix4(inverse);
-        var geoMax = object.max.clone().applyMatrix4(inverse);
-        geo = new THREE.Box3(geoMin, geoMax);
-      }
-
-      return geo;
-    }
-
-    function addTextLabel(message, x, y, z) {
+    function addTextLabel(message, position) {
       var canvas = document.createElement('canvas');
       var context = canvas.getContext('2d');
       // context.font = "Bold " + fontsize + "px " + fontface;
@@ -373,7 +333,7 @@
         // sprite.scale.set(100,50,1.0);
         sprite.scale.set(10, 5, 1.0);
 
-        sprite.position.set(x, y, z);
+        sprite.position.copy(position);
         referenceFrame.add(sprite);
       };
       imageObj.src = 'data/label-small.png';
@@ -386,9 +346,9 @@
     };
 
     this.lookAtSite = function(site) {
-      var coordGeo = sitesservice.centerOfSite(site);
+      var coordGeo = SitesService.centerOfSite(site);
       var posGeo = new THREE.Vector3(coordGeo[0], coordGeo[1], coordGeo[2]);
-      var posLocal = toLocal(posGeo);
+      var posLocal = SceneService.toLocal(posGeo);
       //camera.lookAt(posLocal);
       //var camPos = posLocal.clone().setY(posLocal.y + 20);
       //camera.position.copy(camPos);
@@ -398,37 +358,30 @@
 
     };
 
-    this.showLabel = function(site) {
-      var message = site.properties.description;
-      var coordGeo = sitesservice.centerOfSite(site);
-      var posGeo = new THREE.Vector3(coordGeo[0], coordGeo[1], coordGeo[2] + 10);
-      var posLocal = toLocal(posGeo);
-      addTextLabel(message, posLocal.x, -posLocal.z, posLocal.y);
+    this.enterOrbitMode = function(site) {
+      SitesService.selectSite(site);
+
+      // TODO replace PathControls with OrbitControls
+      // TODO replace camera drivemap toggles (rails, free, demo) with orbit exit button
+      // TODO Show pointcloud of site if available
     };
 
-    this.updateMapFrustum = function() {
-      var aspect = camera.aspect;
-      var top = Math.tan(THREE.Math.degToRad(camera.fov * 0.5)) * camera.near;
-      var bottom = -top;
-      var left = aspect * bottom;
-      var right = aspect * top;
+    this.exitOrbitMode = function() {
+      // TODO Hide pointcloud of site if shown
+      // TODO replace OrbitControls with PathControls
+      // TODO replace orbit exit button with camera drivemap toggles (rails, free, demo)
 
-      var camPos = new THREE.Vector3(0, 0, 0);
-      left = new THREE.Vector3(left, 0, -camera.near).multiplyScalar(3000);
-      right = new THREE.Vector3(right, 0, -camera.near).multiplyScalar(3000);
-      camPos.applyMatrix4(camera.matrixWorld);
-      left.applyMatrix4(camera.matrixWorld);
-      right.applyMatrix4(camera.matrixWorld);
+      SitesService.clearSiteSelection();
+    };
 
-      camPos = toGeo(camPos);
-      left = toGeo(left);
-      right = toGeo(right);
-
-      Messagebus.publish('cameraMoved', {
-        cam: camPos,
-        left: left,
-        right: right
-      });
+    this.showLabel = function(site) {
+      var message = site.description_site; // jshint ignore:line
+      var center = SitesService.centerOfSite(site);
+      var bbox = SitesService.getBoundingBox(site);
+      var maxAltIndex = 5;
+      var top = bbox[maxAltIndex];
+      var labelPosition = new THREE.Vector3(center[0], center[1], top);
+      addTextLabel(message, labelPosition);
     };
 
     this.update = function() {
@@ -467,19 +420,14 @@
 
         sitePointcloud.update(camera, me.renderer);
       }
-      
+
 
       PathControls.updateInput();
 
       MeasuringService.update();
 
-      // create hash for camera state
-      var cameraOrientation = new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorld).determinant();
-      if (cameraOrientation !== prevCameraOrientation) {
-        this.updateMapFrustum();
-      }
-      // compare current camera state with state in previous render loop
-      prevCameraOrientation = cameraOrientation;
+      CameraService.update();
+
       updateStats();
     };
 
@@ -499,7 +447,6 @@
         skybox.camera.rotation.copy(camera.rotation);
         me.renderer.render(skybox.scene, skybox.camera);
       }
-      CameraService.camera.position.copy(camera.position);
 
       SiteBoxService.siteBoxSelection(mouse.x, mouse.y);
 
@@ -523,11 +470,6 @@
       el.appendChild(canvas);
       me.loop();
     };
-
-    $rootScope.$watch(function() {
-      return SiteBoxService.siteBoxList;
-    }, this.loadSiteBoxes);
-
   }
 
   angular.module('pattyApp.pointcloud')

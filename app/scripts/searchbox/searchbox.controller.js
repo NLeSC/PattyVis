@@ -1,23 +1,22 @@
 (function() {
   'use strict';
 
-  function SearchPanelController($scope, sitesservice, PointcloudService) {
-    this.query = '';
-
-    this.sitesservice = sitesservice;
-
-    sitesservice.load();
-
-    // when query in view is change propagate to sites service
-    this.queryChanged = function() {
-      sitesservice.find(this.query);
-    };
+  function SearchPanelController(SitesService, PointcloudService) {
+    this.pageSize = 2;
+    this.currentPage = 1;
+    this.SitesService = SitesService;
 
     this.lookAtSite = function(site) {
       PointcloudService.lookAtSite(site);
     };
     this.showLabel = function(site) {
       PointcloudService.showLabel(site);
+    };
+    /**
+     * jump back to first page when query changes
+     */
+    this.onQueryChange = function() {
+      this.currentPage = 1;
     };
   }
 

@@ -1,9 +1,13 @@
 (function() {
   'use strict';
 
-  function CamFrustrumService(ol, proj4) {
+  function CamFrustrumService(ol, proj4, DrivemapService) {
     var olProjectionCode = 'EPSG:3857';
-    var siteProjectionCode = 'EPSG:32633';
+    var siteProjectionCode = null;
+
+    DrivemapService.ready.then(function() {
+      siteProjectionCode = DrivemapService.getCrs();
+    });
 
     this.camFrustum = new ol.geom.LineString([
       [0, 0],

@@ -6,6 +6,7 @@ PattyVis
 [![Test Coverage](https://codeclimate.com/github/NLeSC/PattyVis/badges/coverage.svg)](https://codeclimate.com/github/NLeSC/PattyVis)
 [![Sauce Test Status](https://saucelabs.com/buildstatus/patty-vis)](https://saucelabs.com/u/patty-vis)
 [![devDependency Status](https://david-dm.org/NLeSC/PattyVis/dev-status.svg)](https://david-dm.org/NLeSC/PattyVis#info=devDependencies)
+[![Codacy Badge](https://www.codacy.com/project/badge/a2ebd9977fe04aa1af6e5c47dc8d6927)](https://www.codacy.com/public/sverhoeven/PattyVis)
 
 Getting started (windows, from scratch)
 ---------------------------------------
@@ -35,6 +36,7 @@ Prerequisites
 1. nodejs, http://nodejs.org/
 2. bower, http://bower.io
 3. compass, http://compass-style.org
+4. Java Development Kit, https://www.java.com/
 
 Installation
 ------------
@@ -95,11 +97,6 @@ Generates test report and coverage inside `test/reports` folder.
 
 ### Run end-to-end tests with local browser (chrome)
 
-Before tests can be run the webdrivers must be updated/installed with
-```
-npm run webdriver-update
-```
-
 Tests in Chrome can be run with
 ```
 grunt e2e-local
@@ -110,15 +107,13 @@ Open `e2e/reports/report.html` in a web-browser.
 
 ### Run end-to-end tests on [sauce labs](https://saucelabs.com/)
 
-Before tests can be run the sauce labs credentials must be setup
-```
-export SAUCE_USER=<your sauce labs username>
-export SAUCE_ACCESS_KEY=<your sauce labs access key>
-```
+To connnect to Sauce Labs use sauce connect program. [Here](https://docs.saucelabs.com/reference/sauce-connect/) you can find the details on how to install and run it.
 
-Also before tests can be run the webdrivers must be updated/installed with
+Before tests can be run the sauce labs credentials must be setup
+
 ```
-npm run webdriver-update
+export SAUCE_USERNAME=<your sauce labs username>
+export SAUCE_ACCESS_KEY=<your sauce labs access key>
 ```
 
 Tests in Chrome, Firefox on Windows, Linux and OSX can be run with
@@ -126,9 +121,11 @@ Tests in Chrome, Firefox on Windows, Linux and OSX can be run with
 grunt e2e-sauce
 ```
 
-The pointcloud and minimap use a canvas and can't be tested automatically so they must be verified manually using the screencast in the report at https://saucelabs.com/u/patty-vis.
+The pointcloud and minimap use a canvas and can't be tested automatically so they must be verified manually using the screencast in the report at `https://saucelabs.com/u/<your sauce labs username>`.
 
 Travis-ci also runs end-to-end tests on sauce labs.
+
+Note! Running `grunt e2e-sauce` will undo all changes in `app/` folder.
 
 ### Build a distro
 
@@ -136,6 +133,14 @@ Travis-ci also runs end-to-end tests on sauce labs.
 grunt dist
 ```
 The `dist` folder has production ready distribution.
+
+### Generate API documentation
+
+```
+grunt jsdoc
+```
+
+API documentation is generated in `doc/` directory.
 
 Mockup
 ------

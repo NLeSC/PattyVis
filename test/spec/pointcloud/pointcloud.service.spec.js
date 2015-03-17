@@ -4,6 +4,7 @@ describe('pointcloud.service', function() {
 
   // load the module
   beforeEach(module('pattyApp.pointcloud'));
+  beforeEach(module('mockedSites'));
 
   var PointcloudService;
   var Potree;
@@ -36,6 +37,39 @@ describe('pointcloud.service', function() {
       };
 
       expect(PointcloudService.settings).toEqual(expected);
+    });
+  });
+
+  describe('with SitesService loaded', function() {
+    var SitesService = null,
+      site162 = null;
+
+    beforeEach(function() {
+      inject(function(_SitesService_, defaultSitesJSON) {
+        SitesService = _SitesService_;
+        SitesService.onLoad(defaultSitesJSON);
+        site162 = defaultSitesJSON[0];
+      });
+    });
+
+    describe('enterOrbitMode() function', function() {
+      beforeEach(function() {
+        PointcloudService.enterOrbitMode(site162);
+      });
+
+      it('should select the site', function() {
+        expect(SitesService.searched).toEqual([site162]);
+      });
+    });
+
+    describe('exitOrbitMode() function', function() {
+      beforeEach(function() {
+        PointcloudService.exitOrbitMode();
+      });
+
+      it('should select no sites', function() {
+        expect(SitesService.searched).toEqual([]);
+      });
     });
   });
 

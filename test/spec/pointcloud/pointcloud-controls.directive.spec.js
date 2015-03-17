@@ -3,8 +3,7 @@
 describe('pointcloud-controls.directive', function() {
 
   // load the module
-  // use main module because it contains filled template cache
-  beforeEach(module('pattyApp'));
+  beforeEach(module('pattyApp.pointcloud'));
 
   var $compile;
   var $rootScope;

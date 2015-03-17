@@ -12,3 +12,5 @@ e2e/reports
 # exvim
 .exvim.project*
 project.exvim
+
+/doc

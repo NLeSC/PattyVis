@@ -28,19 +28,19 @@ describe('pattyApp', function() {
     });
   });
 
-  describe('searched on "py"', function() {
+  describe('searched on "site:162"', function() {
     beforeEach(function() {
-      element(by.model('sp.query')).sendKeys('py');
+      element(by.model('sp.SitesService.query')).sendKeys('site:162');
     });
 
-    it('should have one search result', function() {
-      expect(element.all(by.css('.search-result')).count()).toBe(1);
+    it('should have one site details div', function() {
+      expect(element.all(by.css('.site-details')).count()).toBe(1);
     });
   });
 
-  describe('search on "bla"', function() {
+  describe('search on "zzzz"', function() {
     beforeEach(function() {
-      element(by.model('sp.query')).sendKeys('bla');
+      element(by.model('sp.SitesService.query')).sendKeys('zzzz');
     });
 
     it('should have zero search results', function() {
@@ -50,7 +50,7 @@ describe('pattyApp', function() {
 
   describe('click on settings gear', function() {
     beforeEach(function() {
-      element(by.css('.btn.gear')).click();
+      element(by.css('.icon-big.gear-icon')).click();
     });
 
     it('should show settings panel', function() {
@@ -61,7 +61,7 @@ describe('pattyApp', function() {
 
   describe('click on help icon', function() {
     beforeEach(function() {
-      element(by.css('.btn.help')).click();
+      element(by.css('.icon-big.help-icon')).click();
     });
 
     it('should show help panel', function() {
@@ -72,7 +72,7 @@ describe('pattyApp', function() {
 
   describe('clicking on toolbox icon', function() {
     beforeEach(function() {
-      element(by.css('.toolbox .btn')).click();
+      element(by.css('.icon-big.toolbox-icon')).click();
     });
 
     it('should show tools', function() {
@@ -83,7 +83,9 @@ describe('pattyApp', function() {
     describe('and then clicking on bottom toolbox icon', function() {
 
       beforeEach(function() {
-        element(by.css('.toolbox .btn')).click();
+        element(by.css('.icon-big.toolbox-icon')).click();
+        // wait for toolbox to close, otherwise it will still be displayed partly
+        browser.sleep(200);
       });
 
       it('should hide tools', function() {
@@ -95,7 +97,11 @@ describe('pattyApp', function() {
     describe('and then clicking on top toolbox icon', function() {
 
       beforeEach(function() {
-        element(by.css('.toolbox-tray-top')).click();
+        // wait for toolbox to open, otherwise icon is moving when click is attempted
+        browser.sleep(500);
+        element(by.css('.icon-big.toolbox-tray-top-icon')).click();
+        // wait for toolbox to close, otherwise it will still be displayed partly
+        browser.sleep(200);
       });
 
       it('should hide tools', function() {
