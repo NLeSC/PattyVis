@@ -8,9 +8,10 @@ describe('minimap.controller', function() {
   var $controller;
   var $rootScope;
   var controller;
+  var CamFrustumService;
 
   beforeEach(function() {
-    inject(function(_$controller_, _$rootScope_, DrivemapService, defaultDrivemapJSON) {
+    inject(function(_$controller_, _$rootScope_, DrivemapService, defaultDrivemapJSON, _CamFrustumService_) {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
 
@@ -24,6 +25,8 @@ describe('minimap.controller', function() {
       // promise.then are called in digest loop
       // minimap uses promise.then to fetch the crs of the drivemap
       $rootScope.$digest();
+
+      CamFrustumService = _CamFrustumService_;
     });
   });
 
@@ -31,7 +34,9 @@ describe('minimap.controller', function() {
     it('should have a map', function() {
       expect(controller.map).toBeDefined();
     });
-    it('should have a CamFrustumService.layer in the map');
+    it('should have CamFrustumService.layer as a layer in the map', function() {
+      expect(controller.map.getLayers().getArray()).toContain(CamFrustumService.layer);
+    });
     it('should have a on click event on the map');
     it('should have a on rightclick event on the map');
     it('should have subscribed "sitesChanged" on the Messagebus');
