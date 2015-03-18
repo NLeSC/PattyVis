@@ -7,10 +7,9 @@
     var olProjectionCode = 'EPSG:3857';
     var siteProjectionCode = null;
 
-    var syncSiteProjectionCode = function() {
-      siteProjectionCode = DrivemapService.getCrs();
-    };
-    DrivemapService.ready.then(syncSiteProjectionCode);
+    var vectorSource = new ol.source.GeoJSON({
+      projection: olProjectionCode
+    });
 
     var siteStyle = new ol.style.Style({
       stroke: new ol.style.Stroke({
@@ -22,13 +21,40 @@
       })
     });
 
-    function centerOnVisibleSites() {
-      me.map.getView().fitExtent(vectorSource.getExtent(), me.map.getSize());
-    }
-
-    var vectorSource = new ol.source.GeoJSON({
-      projection: olProjectionCode
+    var vectorLayer = new ol.layer.Vector({
+      source: vectorSource,
+      style: siteStyle
     });
+
+    var mapType = new ol.source.MapQuest({
+      layer: 'osm'
+    });
+
+    var rasterLayer = new ol.layer.Tile({
+      source: mapType
+    });
+
+    this.map = new ol.Map({
+      layers: [rasterLayer, vectorLayer],
+      view: new ol.View({
+        center: ol.proj.transform([12.5469185, 41.8286509], 'EPSG:4326', 'EPSG:3857'),
+        zoom: 17
+      })
+    });
+
+    var syncSiteProjectionCode = function() {
+      siteProjectionCode = DrivemapService.getCrs();
+    };
+
+    DrivemapService.ready.then(syncSiteProjectionCode);
+
+    function centerOnVisibleSites() {
+      var sitesExtent = vectorSource.getExtent();
+      var mapSize = me.map.getSize();
+      console.log(sitesExtent);
+      console.log(mapSize);
+      me.map.getView().fitExtent(sitesExtent, mapSize);
+    }
 
     this.sites2GeoJSON = function(sites) {
       var features = sites.filter(function(site) {
@@ -70,27 +96,6 @@
     };
 
     Messagebus.subscribe('sitesChanged', this.sitesChangedMessage);
-
-    var vectorLayer = new ol.layer.Vector({
-      source: vectorSource,
-      style: siteStyle
-    });
-
-    var mapType = new ol.source.MapQuest({
-      layer: 'osm'
-    });
-
-    var rasterLayer = new ol.layer.Tile({
-      source: mapType
-    });
-
-    this.map = new ol.Map({
-      layers: [rasterLayer, vectorLayer],
-      view: new ol.View({
-        center: ol.proj.transform([12.5469185, 41.8286509], 'EPSG:4326', 'EPSG:3857'),
-        zoom: 17
-      })
-    });
 
     this.onMapRightclick = function(event) {
       console.log('right clicked on the map!');
