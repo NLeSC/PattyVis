@@ -1,9 +1,19 @@
 'use strict';
 
 describe('site-box.service', function() {
+  // TODO: tests using the referenceFrame
 
   // load the module
-  beforeEach(module('pattyApp.pointcloud'));
+  var mockWindow;
+  beforeEach(module('pattyApp.pointcloud', function($provide) {
+    mockWindow = {
+      innerWidth: 1920,
+      innerHeight: 1200,
+      addEventListener: jasmine.createSpy('addEventListener')
+    };
+    $provide.value('$window', mockWindow);
+  }));
+
   beforeEach(module('mockedSites'));
 
   var SiteBoxService;
@@ -25,10 +35,15 @@ describe('site-box.service', function() {
     });
   });
 
-// Wat valt er te testen aan init?
-//  describe('initialization', function() {
-//    it('');
-//  });
+  describe('SiteBoxService initialization', function() {
+    it('should set the mouse coordinates', function() {
+      var realMouse = {x: 0.1, y: -0.1};
+
+      SiteBoxService.init(realMouse);
+
+      expect(SiteBoxService.mouse).toEqual(realMouse);
+    });
+  });
 
   describe('with SitesService loaded', function() {
     var SitesService = null;
@@ -36,6 +51,8 @@ describe('site-box.service', function() {
     var THREE = null;
     var site162 = null;
     var siteBox162 = null;
+    var hoverColor = null;
+    var unHoverColor = null;
 
     beforeEach(function() {
       inject(function(_SitesService_, _THREE_, _CameraService_, defaultSitesJSON) {
@@ -45,6 +62,9 @@ describe('site-box.service', function() {
         CameraService = _CameraService_;
         site162 = defaultSitesJSON[0];
         siteBox162 = SiteBoxService.createSiteBox(site162);
+        SiteBoxService.siteBoxList = [siteBox162];
+        hoverColor = new THREE.Color( 0x99FFFF );
+        unHoverColor = new THREE.Color( 0xFF99CC );
       });
     });
 
@@ -69,20 +89,58 @@ describe('site-box.service', function() {
       expect(SiteBoxService.siteBoxList[0].site.id).toEqual(siteBox162.site.id);
     });
 
-    it('hoverOver function', function() {
-      var color = new THREE.Color( 0x99FFFF );
-
+    it('hoverOver(siteBox)', function() {
       SiteBoxService.hoverOver(siteBox162);
 
-      expect(siteBox162.material.color).toEqual(color);
+      expect(siteBox162.material.color).toEqual(hoverColor);
+    });
+
+    it('hoverOver(null)', function() {
+      expect(SiteBoxService.hoverOver(null)).toEqual();
     });
 
     it('hoverOut function', function() {
-      var color = new THREE.Color( 0xFF99CC );
+      expect(siteBox162.material.color).toEqual(unHoverColor);
 
+      SiteBoxService.hoverOver(siteBox162);
       SiteBoxService.hoverOut(siteBox162);
 
-      expect(siteBox162.material.color).toEqual(color);
+      expect(siteBox162.material.color).toEqual(unHoverColor);
+    });
+
+    it('hoverOut(null)', function() {
+      expect(SiteBoxService.hoverOut(null)).toEqual();
+    });
+
+    it('resetHovering()', function() {
+      SiteBoxService.hoverOver(siteBox162);
+      SiteBoxService.resetHovering();
+
+      expect(siteBox162.material.color).toEqual(unHoverColor);
+    });
+
+    it('should call functions in doHovering()', function() {
+      var mouse = {x: -0.03288409703504047, y: 0.4328358208955224};
+      var cameraPosition = new THREE.Vector3(745.9560389992655, 130.67543380673797, -1464.348219166323);
+
+      CameraService.camera.position.copy(cameraPosition);
+
+      spyOn(SiteBoxService, 'resetHovering');
+      spyOn(SiteBoxService, 'hoverOver');
+
+      SiteBoxService.doHovering(mouse.x, mouse.y);
+
+      expect(SiteBoxService.resetHovering).toHaveBeenCalled();
+      expect(SiteBoxService.hoverOver).toHaveBeenCalled();
+      expect(SiteBoxService.hoverOver).toHaveBeenCalledWith(siteBox162);
+
+    });
+
+    it('addTextLabel function', function() {
+      var textLabelName = 'textLabel for SiteBox ' + siteBox162.site.id;
+      SiteBoxService.addTextLabel(siteBox162);
+
+      expect(siteBox162.textLabel.name).toEqual(textLabelName);
     });
 
     it('toggleTextLabel function', function() {
@@ -99,32 +157,68 @@ describe('site-box.service', function() {
       expect(siteBox162.textLabel.visible).toEqual(true);
     });
 
-    it('should select site 162 (siteBoxSelection function)', function() {
+    it('should detect site 162 (detectNearestSiteBoxUnderMouse function)', function() {
       var mouse = {x: -0.03288409703504047, y: 0.4328358208955224};
       var cameraPosition = new THREE.Vector3(745.9560389992655, 130.67543380673797, -1464.348219166323);
 
       CameraService.camera.position.copy(cameraPosition);
 
-      var selected = SiteBoxService.siteBoxSelection(mouse.x, mouse.y);
+      var selected = SiteBoxService.detectNearestSiteBoxUnderMouse(mouse.x, mouse.y);
 
-      expect(selected.site).toEqual(site162);
+      expect(selected).toEqual(siteBox162);
 
     });
 
 /*
-    it('should select null (siteBoxSelection function)', function() {
+    it('should select null (detectNearestSiteBoxUnderMouse function)', function() {
       // TODO: fix this test, selected is not null, though it should be
       var mouse = {x: 0.3466307277628031, y: 0.8971807628524047};
-      var cameraPosition = new THREE.Vector3(745.9560389992655, 130.67543380673797, -1464.348219166323);
+      var cameraPosition = new THREE.Vector3(284.42472005449457, 1930.0100119084634, -2049.556595142666); // very high
+      //var cameraPosition = new THREE.Vector3(745.9560389992655, 130.67543380673797, -1464.348219166323);
 
       CameraService.camera.position.copy(cameraPosition);
 
-      var selected = SiteBoxService.siteBoxSelection(mouse.x, mouse.y);
+      SiteBoxService.mouse = mouse;
+
+      var selected = SiteBoxService.detectNearestSiteBoxUnderMouse(mouse.x, mouse.y);
+
+      console.log(SiteBoxService.siteBoxList.length);
 
       expect(selected).toEqual(null);
 
     });
 */
+    it('should set textLabel of selected site box (function selectSite)', function() {
+      var mouse = {x: -0.03288409703504047, y: 0.4328358208955224};
+      var cameraPosition = new THREE.Vector3(745.9560389992655, 130.67543380673797, -1464.348219166323);
+
+      CameraService.camera.position.copy(cameraPosition);
+
+      spyOn(SiteBoxService, 'addTextLabel');
+
+      SiteBoxService.mouse = mouse;
+      SiteBoxService.selectSite('event');
+
+      expect(SiteBoxService.addTextLabel).toHaveBeenCalledWith(siteBox162);
+
+    });
+
+    it('should toggle textLabel of selected site box (function selectSite)', function() {
+      var mouse = {x: -0.03288409703504047, y: 0.4328358208955224};
+      var cameraPosition = new THREE.Vector3(745.9560389992655, 130.67543380673797, -1464.348219166323);
+
+      CameraService.camera.position.copy(cameraPosition);
+
+      spyOn(SiteBoxService, 'toggleTextLabel');
+
+      SiteBoxService.mouse = mouse;
+
+      SiteBoxService.addTextLabel(siteBox162);
+
+      SiteBoxService.selectSite('event');
+
+      expect(SiteBoxService.toggleTextLabel).toHaveBeenCalledWith(siteBox162);
+    });
   });
 
   describe('eventListener for double click', function() {
@@ -148,12 +242,12 @@ describe('site-box.service', function() {
     it('should select site on double click', function () {
       var mouse = {x: -0.03288409703504047, y: 0.4328358208955224};
 
-      spyOn(SiteBoxService, 'siteBoxSelection');
+      spyOn(SiteBoxService, 'detectNearestSiteBoxUnderMouse');
 
       SiteBoxService.mouse = mouse;
       SiteBoxService.selectSite('event');
 
-      expect(SiteBoxService.siteBoxSelection).toHaveBeenCalledWith(mouse.x, mouse.y);
+      expect(SiteBoxService.detectNearestSiteBoxUnderMouse).toHaveBeenCalledWith(mouse.x, mouse.y);
     });
   });
 
