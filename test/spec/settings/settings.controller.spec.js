@@ -1,9 +1,9 @@
 'use strict';
 
-describe('pointcloud-controls.controller', function() {
+describe('settings.controller', function() {
 
   // load the module
-  beforeEach(module('pattyApp.pointcloud'));
+  beforeEach(module('pattyApp.settings'));
 
   var $rootScope;
   var ctrl;
@@ -14,7 +14,7 @@ describe('pointcloud-controls.controller', function() {
       var $controller = _$controller_;
       PointcloudService = _PointcloudService_;
 
-      ctrl = $controller('PointcloudControlsController');
+      ctrl = $controller('SettingsController');
     });
   });
 
