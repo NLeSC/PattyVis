@@ -14,3 +14,4 @@ e2e/reports
 project.exvim
 
 /doc
+/npm-debug.log

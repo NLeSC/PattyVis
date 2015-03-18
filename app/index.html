@@ -34,14 +34,18 @@
       <div class="col-xs-3">
         <span class="pull-right">
           <patty-minimap class="clickable"></patty-minimap>
-          </span>
+        </span>
       </div>
     </div>
   </div>
   <patty-pointcloud-canvas></patty-pointcloud-canvas>
   <patty-pointcloud-stats></patty-pointcloud-stats>
-  <patty-pointcloud-controls class="clickable" ></patty-pointcloud-controls>
-  <measuring-directive class="clickable" ></measuring-directive>
+  <div class="controls">
+    <patty-settings></patty-settings>
+    <patty-help></patty-help>
+  </div>
+  <patty-camera-modes></patty-camera-modes>
+  <measuring-directive class="clickable"></measuring-directive>
 
   <!-- build:js(.) scripts/oldieshim.js -->
   <!--[if lt IE 9]>
@@ -89,6 +93,10 @@
   <script src="scripts/core/drivemap.service.js"></script>
   <script src="scripts/searchbox/searchbox.directive.js"></script>
   <script src="scripts/searchbox/searchbox.controller.js"></script>
+  <script src="scripts/settings/settings.directive.js"></script>
+  <script src="scripts/settings/settings.controller.js"></script>
+  <script src="scripts/help/help.directive.js"></script>
+  <script src="scripts/help/help.controller.js"></script>
   <script src="scripts/minimap/constants.js"></script>
   <script src="scripts/minimap/cam-frustum.service.js"></script>
   <script src="scripts/minimap/minimap.directive.js"></script>
@@ -99,8 +107,8 @@
   <script src="scripts/pointcloud/path.controls.js"></script>
   <script src="scripts/pointcloud/pointcloud-canvas.directive.js"></script>
   <script src="scripts/pointcloud/pointcloud-canvas.controller.js"></script>
-  <script src="scripts/pointcloud/pointcloud-controls.directive.js"></script>
-  <script src="scripts/pointcloud/pointcloud-controls.controller.js"></script>
+  <script src="scripts/cameramodes/cameramodes.directive.js"></script>
+  <script src="scripts/cameramodes/cameramodes.controller.js"></script>
   <script src="scripts/pointcloud/pointcloud-stats.directive.js"></script>
   <script src="scripts/pointcloud/pointcloud-stats.controller.js"></script>
   <script src="scripts/pointcloud/site-box.service.js"></script>

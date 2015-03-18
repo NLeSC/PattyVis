@@ -7,10 +7,9 @@
     var olProjectionCode = 'EPSG:3857';
     var siteProjectionCode = null;
 
-    var syncSiteProjectionCode = function() {
-      siteProjectionCode = DrivemapService.getCrs();
-    };
-    DrivemapService.ready.then(syncSiteProjectionCode);
+    var vectorSource = new ol.source.GeoJSON({
+      projection: olProjectionCode
+    });
 
     var siteStyle = new ol.style.Style({
       stroke: new ol.style.Stroke({
@@ -22,13 +21,37 @@
       })
     });
 
-    function centerOnVisibleSites() {
-      me.map.getView().fitExtent(vectorSource.getExtent(), me.map.getSize());
-    }
-
-    var vectorSource = new ol.source.GeoJSON({
-      projection: olProjectionCode
+    var vectorLayer = new ol.layer.Vector({
+      source: vectorSource,
+      style: siteStyle
     });
+
+    var mapType = new ol.source.MapQuest({
+      layer: 'osm'
+    });
+
+    var rasterLayer = new ol.layer.Tile({
+      source: mapType
+    });
+
+    this.map = new ol.Map({
+      layers: [rasterLayer, vectorLayer],
+      view: new ol.View({
+        center: ol.proj.transform([12.5469185, 41.8286509], 'EPSG:4326', 'EPSG:3857'),
+        zoom: 17
+      })
+    });
+
+    var syncSiteProjectionCode = function() {
+      siteProjectionCode = DrivemapService.getCrs();
+    };
+
+    DrivemapService.ready.then(syncSiteProjectionCode);
+
+    this.centerOnVisibleSites = function() {
+      var sitesExtent = vectorSource.getExtent();
+      me.fitMapToExtent(sitesExtent);
+    };
 
     this.sites2GeoJSON = function(sites) {
       var features = sites.filter(function(site) {
@@ -61,36 +84,15 @@
       var featuresArray = vectorSource.readFeatures(geojson);
       vectorSource.clear();
       vectorSource.addFeatures(featuresArray);
-      centerOnVisibleSites();
+      me.centerOnVisibleSites();
     };
 
-    this.sitesChangedMessage = function() {
+    this.sitesChangedListener = function() {
       var sites = SitesService.filtered;
       me.onSitesChanged(sites);
     };
 
-    Messagebus.subscribe('sitesChanged', this.sitesChangedMessage);
-
-    var vectorLayer = new ol.layer.Vector({
-      source: vectorSource,
-      style: siteStyle
-    });
-
-    var mapType = new ol.source.MapQuest({
-      layer: 'osm'
-    });
-
-    var rasterLayer = new ol.layer.Tile({
-      source: mapType
-    });
-
-    this.map = new ol.Map({
-      layers: [rasterLayer, vectorLayer],
-      view: new ol.View({
-        center: ol.proj.transform([12.5469185, 41.8286509], 'EPSG:4326', 'EPSG:3857'),
-        zoom: 17
-      })
-    });
+    Messagebus.subscribe('sitesChanged', this.sitesChangedListener);
 
     this.onMapRightclick = function(event) {
       console.log('right clicked on the map!');
@@ -128,12 +130,25 @@
 
     this.map.addLayer(CamFrustumService.layer);
 
-    this.cameraMovedMessage = function(event, frustum) {
-      CamFrustumService.onCameraMove(frustum);
-      me.map.getView().fitExtent(CamFrustumService.getExtent(), me.map.getSize());
+    this.fitMapToExtent = function(extent) {
+      var mapSize = me.map.getSize();
+      console.log(mapSize);
+      me.map.getView().fitExtent(extent, me.map.getSize());
     };
 
-    Messagebus.subscribe('cameraMoved', this.cameraMovedMessage);
+    this.fitMapToFrustrumAndSearchedSites = function(event, frustum) {
+      CamFrustumService.onCameraMove(frustum);
+      var frustumExtent = CamFrustumService.getExtent();
+      if (SitesService.searched) {  // searched sites exist
+        var sitesExtent = vectorSource.getExtent();
+        var combinedExtent = [Math.min(sitesExtent[0], frustumExtent[0]), Math.min(sitesExtent[1], frustumExtent[1]), Math.max(sitesExtent[2], frustumExtent[2]), Math.max(sitesExtent[3], frustumExtent[3])];
+        me.fitMapToExtent(combinedExtent);
+      } else {                      // no searched sites
+        me.fitMapToExtent(frustumExtent);
+      }
+    };
+
+    Messagebus.subscribe('cameraMoved', this.fitMapToFrustrumAndSearchedSites);
   }
 
   angular.module('pattyApp.minimap')

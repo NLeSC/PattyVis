@@ -72,5 +72,4 @@ describe('pointcloud.service', function() {
       });
     });
   });
-
 });

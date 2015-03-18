@@ -433,11 +433,6 @@
       // resize
       var width = $window.innerWidth;
       var height = $window.innerHeight;
-      var aspect = width / height;
-
-      camera.aspect = aspect;
-      camera.updateProjectionMatrix();
-
       me.renderer.setSize(width, height);
 
       // render skybox
