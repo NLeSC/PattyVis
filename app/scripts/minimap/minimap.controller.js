@@ -48,13 +48,10 @@
 
     DrivemapService.ready.then(syncSiteProjectionCode);
 
-    function centerOnVisibleSites() {
+    this.centerOnVisibleSites = function() {
       var sitesExtent = vectorSource.getExtent();
-      var mapSize = me.map.getSize();
-      console.log(sitesExtent);
-      console.log(mapSize);
-      me.map.getView().fitExtent(sitesExtent, mapSize);
-    }
+      me.fitMapToExtent(sitesExtent);
+    };
 
     this.sites2GeoJSON = function(sites) {
       var features = sites.filter(function(site) {
@@ -87,15 +84,15 @@
       var featuresArray = vectorSource.readFeatures(geojson);
       vectorSource.clear();
       vectorSource.addFeatures(featuresArray);
-      centerOnVisibleSites();
+      me.centerOnVisibleSites();
     };
 
-    this.sitesChangedMessage = function() {
+    this.sitesChangedListener = function() {
       var sites = SitesService.filtered;
       me.onSitesChanged(sites);
     };
 
-    Messagebus.subscribe('sitesChanged', this.sitesChangedMessage);
+    Messagebus.subscribe('sitesChanged', this.sitesChangedListener);
 
     this.onMapRightclick = function(event) {
       console.log('right clicked on the map!');
@@ -133,12 +130,25 @@
 
     this.map.addLayer(CamFrustumService.layer);
 
-    this.cameraMovedMessage = function(event, frustum) {
-      CamFrustumService.onCameraMove(frustum);
-      me.map.getView().fitExtent(CamFrustumService.getExtent(), me.map.getSize());
+    this.fitMapToExtent = function(extent) {
+      var mapSize = me.map.getSize();
+      console.log(mapSize);
+      me.map.getView().fitExtent(extent, me.map.getSize());
     };
 
-    Messagebus.subscribe('cameraMoved', this.cameraMovedMessage);
+    this.fitMapToFrustrumAndSearchedSites = function(event, frustum) {
+      CamFrustumService.onCameraMove(frustum);
+      var frustumExtent = CamFrustumService.getExtent();
+      if (SitesService.searched) {  // searched sites exist
+        var sitesExtent = vectorSource.getExtent();
+        var combinedExtent = [Math.min(sitesExtent[0], frustumExtent[0]), Math.min(sitesExtent[1], frustumExtent[1]), Math.max(sitesExtent[2], frustumExtent[2]), Math.max(sitesExtent[3], frustumExtent[3])];
+        me.fitMapToExtent(combinedExtent);
+      } else {                      // no searched sites
+        me.fitMapToExtent(frustumExtent);
+      }
+    };
+
+    Messagebus.subscribe('cameraMoved', this.fitMapToFrustrumAndSearchedSites);
   }
 
   angular.module('pattyApp.minimap')
