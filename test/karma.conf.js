@@ -67,7 +67,8 @@ module.exports = function(config) {
       // 'karma-chrome-launcher',
       'karma-jasmine',
       'karma-coverage',
-      'karma-junit-reporter'
+      'karma-junit-reporter',
+      'karma-htmlfile-reporter'
     ],
 
     preprocessors: {
@@ -76,7 +77,7 @@ module.exports = function(config) {
       // (these files will be instrumented by Istanbul)
       'app/scripts/**/*.js': ['coverage']
     },
-    reporters: ['dots', 'junit', 'coverage'],
+    reporters: ['dots', 'junit', 'coverage', 'html'],
     junitReporter: {
       outputFile: 'test/reports/TEST-results.xml'
     },
@@ -87,6 +88,9 @@ module.exports = function(config) {
       }, {
         type: 'cobertura' // for use in Jenkins
       }]
+    },
+    htmlReporter: {
+      outputFile: 'test/reports/units.html'
     },
 
     // Continuous Integration mode

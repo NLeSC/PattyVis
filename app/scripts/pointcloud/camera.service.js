@@ -2,6 +2,7 @@
   'use strict';
 
   function CameraService($window, $log, THREE, Messagebus, SceneService) {
+    var me = this;
     var fov = 75;
     var width = $window.innerWidth;
     var height = $window.innerHeight;
@@ -12,6 +13,9 @@
     this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     this.toGeo = null;
     this.waypoints = [];
+    $window.addEventListener('resize', function() {
+      me.onWindowResize();
+    });
 
     this.recordLocation = function() {
       this.waypoints.push(SceneService.toGeo(this.camera.position.clone()).toArray());
@@ -57,6 +61,16 @@
         left: left,
         right: right
       });
+    };
+
+    this.onWindowResize = function() {
+      // resize
+      var width = $window.innerWidth;
+      var height = $window.innerHeight;
+      var aspect = width / height;
+
+      this.camera.aspect = aspect;
+      this.camera.updateProjectionMatrix();
     };
   }
 

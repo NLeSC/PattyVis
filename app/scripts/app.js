@@ -4,7 +4,7 @@
 (function() {
   'use strict';
 
-  angular.module('pattyApp.three', []) 
+  angular.module('pattyApp.three', [])
     .constant('THREE', THREE);
 
   angular.module('pattyApp.potree', [])
@@ -28,6 +28,9 @@
       'pattyApp.searchbox',
       'pattyApp.minimap',
       'pattyApp.measuring',
+      'pattyApp.settings',
+      'pattyApp.help',
+      'pattyApp.cameramodes',
       'pattyApp.pointcloud'
     ])
     .run(function(SitesService, DrivemapService) {
@@ -41,5 +44,8 @@
   angular.module('pattyApp.minimap', ['pattyApp.core']);
   angular.module('pattyApp.measuring', ['pattyApp.potree', 'pattyApp.three']);
   angular.module('pattyApp.pointcloud', ['pattyApp.core', 'pattyApp.potree', 'pattyApp.three', 'pattyApp.measuring']);
+  angular.module('pattyApp.settings', ['pattyApp.pointcloud']);
+  angular.module('pattyApp.help', ['pattyApp.templates']);
+  angular.module('pattyApp.cameramodes', ['pattyApp.pointcloud']);
   angular.module('pattyApp.searchbox', ['pattyApp.core', 'pattyApp.pointcloud']);
 })();

@@ -42,11 +42,35 @@
     });
 
     this.hoverOver = function(siteBox) {
+      if(siteBox === null){
+        return;
+      }
       siteBox.material.color.setHex(0x99FFFF);
     };
 
     this.hoverOut = function(siteBox) {
+      if(siteBox === null){
+        return;
+      }
       siteBox.material.color.setHex(0xFF99CC);
+    };
+
+    this.resetHovering = function() {
+      me.siteBoxList.forEach(function(siteBox) {
+        me.hoverOut(siteBox);
+      });
+    };
+
+    /**
+     * Handle the hovering over site boxes.
+     * This function is called in the render loop of the pointcloud service.
+     * @param {float} mouseX x coordinate of the current mouse position
+     * @param {float} mouseY y coordinate of the current mouse position
+     */
+    this.doHovering = function(mouseX, mouseY) {
+      me.resetHovering();
+      var nearestSiteBox = me.detectNearestSiteBoxUnderMouse(mouseX, mouseY);
+      me.hoverOver(nearestSiteBox);
     };
 
     this.listenTo = function(element) {
@@ -58,7 +82,7 @@
         return;
       }
 
-      var selectedSiteBox = me.siteBoxSelection(me.mouse.x, me.mouse.y);
+      var selectedSiteBox = me.detectNearestSiteBoxUnderMouse(me.mouse.x, me.mouse.y);
       if (selectedSiteBox) {
         if (selectedSiteBox.hasOwnProperty('textLabel')) {
           me.toggleTextLabel(selectedSiteBox);
@@ -194,23 +218,17 @@
       return bBox;
     };
 
-    this.siteBoxSelection = function(mouseX, mouseY) {
+    this.detectNearestSiteBoxUnderMouse = function(mouseX, mouseY) {
       //console.log('mouse x: ' + mouseX);
       //console.log('mouse y: ' + mouseY);
       var vector = new THREE.Vector3(mouseX, mouseY, 0.5);
       vector.unproject(CameraService.camera);
       raycaster.ray.set(CameraService.camera.position, vector.sub(CameraService.camera.position).normalize());
 
-      // hovering over SiteBoxes
       var intersects = raycaster.intersectObjects(me.siteBoxList, false);
 
-      // reset hovering
-      me.siteBoxList.forEach(function(siteBox) {
-        me.hoverOut(siteBox);
-      });
-
       if (intersects.length > 0) {
-        me.hoverOver(intersects[0].object);
+        console.log(intersects[0].distance);
         return intersects[0].object;
       } else {
         return null;

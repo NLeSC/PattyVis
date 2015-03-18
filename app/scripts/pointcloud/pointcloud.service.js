@@ -433,11 +433,6 @@
       // resize
       var width = $window.innerWidth;
       var height = $window.innerHeight;
-      var aspect = width / height;
-
-      camera.aspect = aspect;
-      camera.updateProjectionMatrix();
-
       me.renderer.setSize(width, height);
 
       // render skybox
@@ -446,7 +441,7 @@
         me.renderer.render(skybox.scene, skybox.camera);
       }
 
-      SiteBoxService.siteBoxSelection(mouse.x, mouse.y);
+      SiteBoxService.doHovering(mouse.x, mouse.y);
 
       // render scene
       me.renderer.render(scene, camera);
