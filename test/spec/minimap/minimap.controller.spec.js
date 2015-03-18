@@ -9,11 +9,13 @@ describe('minimap.controller', function() {
   var $rootScope;
   var controller;
   var CamFrustumService;
+  var ol;
 
   beforeEach(function() {
-    inject(function(_$controller_, _$rootScope_, DrivemapService, defaultDrivemapJSON, _CamFrustumService_) {
+    inject(function(_$controller_, _$rootScope_, DrivemapService, defaultDrivemapJSON, _CamFrustumService_, _ol_) {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
+      ol = _ol_;
 
       var scope = $rootScope.$new();
 
@@ -31,8 +33,9 @@ describe('minimap.controller', function() {
   });
 
   describe('initial state', function() {
-    it('should have a map', function() {
-      expect(controller.map).toBeDefined();
+    it('should have a map of type ol.Map', function() {
+      // expect(controller.map).toBeDefined();
+      expect(controller.map instanceof ol.Map).toBeTruthy();
     });
     it('should have CamFrustumService.layer as a layer in the map', function() {
       expect(controller.map.getLayers().getArray()).toContain(CamFrustumService.layer);
@@ -52,10 +55,26 @@ describe('minimap.controller', function() {
   });
 
   describe('onSitesChanged() function', function() {
-    it('should reload sites as feature array in vectorSource', inject(function(defaultSitesJSON, defaultSitesGeoJSON) {
+    // it('should reload sites as feature array in vectorSource', inject(function(defaultSitesJSON, defaultSitesGeoJSON) {
+    // }));
+    it('should fit map to show all newly filtered sites', inject(function(defaultSitesJSON) {
+      // controller.onSitesChanged(defaultSitesJSON);
+      // var result = controller.map.getView().calculateExtent(controller.map.getSize());
+      // var expected = [1395780.6625184629, 5134928.40372647, 1397166.0836561315, 5136313.824864138];
+      // expect(result).toEqual(expected);
     }));
-    it('should center on visible sites', inject(function(defaultSitesJSON, defaultSitesGeoJSON) {
-    }));
+  });
+
+  describe('fitMapToExtent() function', function() {
+    it('should fit map to given extent (not an exact resize due to integer zoom-levels)', function() {
+      // spyOn(controller.map, 'getSize').and.returnValue([290, 290]);  // mock size, this is what we set it to in the CSS
+
+      // var extent = [1396655.7426223664, 5135386.69290534, 1396678.8143506004, 5135455.753098455];
+      // controller.fitMapToExtent(extent);
+      // var result = controller.map.getView().calculateExtent([290, 290]);
+      // var expected = [1395808.0073149959, 5134899.1359227635, 1397193.4284526645, 5136284.557060432];
+      // expect(result).toEqual(expected);
+    });
   });
 
   describe('onMapRightclick() function', function() {
