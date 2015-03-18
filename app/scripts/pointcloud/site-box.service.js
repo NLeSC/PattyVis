@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function SiteBoxService(THREE, SitesService, CameraService, SceneService) {
+  function SiteBoxService(THREE, SitesService, CameraService, SceneService, Messagebus) {
     var me = this;
 
     var raycaster = new THREE.Raycaster();
@@ -89,6 +89,7 @@
         } else {
           me.addTextLabel(selectedSiteBox);
         }
+        Messagebus.publish('siteSelected', selectedSiteBox.site);
       }
     };
 

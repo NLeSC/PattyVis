@@ -5,7 +5,7 @@
   function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope,
     DrivemapService,
     SitesService, CameraService, SceneService,
-    PathControls, SiteBoxService, MeasuringService) {
+    PathControls, SiteBoxService, MeasuringService, Messagebus) {
 
     var me = this;
 
@@ -59,6 +59,10 @@
       x: 0,
       y: 0
     };
+
+    this.orbitControls = null;
+    this.isInOrbitMode = false;
+
 
     function loadSkybox(path) {
       var camera = new THREE.PerspectiveCamera(75, $window.innerWidth / $window.innerHeight, 1, 100000);
@@ -356,18 +360,31 @@
 
     };
 
-    this.enterOrbitMode = function(site) {
+    this.enterOrbitMode = function(event, site) {
       SitesService.selectSite(site);
+
+      me.lookAtSite(site);
+
+      me.orbitControls = new THREE.OrbitControls(CameraService.camera, me.elRenderArea);
+      // var siteCenter = SitesService.centerOfSite(site);
+      // me.orbitControls.target.x = siteCenter[0];
+      // me.orbitControls.target.y = siteCenter[1];
+      // me.orbitControls.target.z = siteCenter[2];
+
+      me.isInOrbitMode = true;
 
       // TODO replace PathControls with OrbitControls
       // TODO replace camera drivemap toggles (rails, free, demo) with orbit exit button
       // TODO Show pointcloud of site if available
     };
 
+    Messagebus.subscribe('siteSelected', this.enterOrbitMode);
+
     this.exitOrbitMode = function() {
       // TODO Hide pointcloud of site if shown
       // TODO replace OrbitControls with PathControls
       // TODO replace orbit exit button with camera drivemap toggles (rails, free, demo)
+      me.isInOrbitMode = false;
 
       SitesService.clearSiteSelection();
     };
@@ -420,7 +437,11 @@
       }
 
 
-      PathControls.updateInput();
+      if (me.isInOrbitMode) {
+        me.orbitControls.update();
+      } else {
+        PathControls.updateInput();
+      }
 
       MeasuringService.update();
 
