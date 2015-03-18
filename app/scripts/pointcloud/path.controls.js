@@ -19,9 +19,9 @@
 	var bodyPosition;
 	var xAngle = 0;
 	var yAngle = 0;
-	
+
 	var initialized = false;
-	
+
 	var mouseX = window.innerWidth / 2;
 	var mouseY = window.innerHeight / 2;
 
@@ -45,7 +45,7 @@
 		for (var i = 0; i < 130; i++) {
 			keys.push(false);
 		}
-		
+
 		this.camera = null;
 		this.path = null;
 
@@ -63,18 +63,18 @@
 	PathControls.prototype.initCamera = function(cam, startPos) {
 		this.camera = cam;
 		camera = cam;
-		
+
 		camera.position.copy(startPos);
 		camera.up.set(0, 1, 0);
 		camera.rotation.order = 'YXZ';
-		
+
 		bodyPosition = camera.position;
 		zoom = camera.fov;
 		maxZoom = camera.fov;
 	};
-	
+
 	PathControls.prototype.initListeners = function(element) {	
-	
+
 		document.addEventListener('keydown', onKeyDown, false);
 		document.addEventListener('keyup', onKeyUp, false);
 
@@ -82,7 +82,7 @@
 
 		element.addEventListener('mouseleave', onBlur, false);
 		element.addEventListener('mouseout', onBlur, false);
-		
+
 		element.addEventListener('mousemove', mousemove, false);
 		element.addEventListener('mousedown', mousedown, false);
 		element.addEventListener('mouseup', mouseup, false);
@@ -104,11 +104,11 @@
 		camera.updateProjectionMatrix();
 
 		this.initListeners(element);
-		
+
 		this.initialized = true;
 	};
-	
-	
+
+
 	/*
 	 * TODO: I have a weird bug that pressing the goHome button and executing the goHome function here does not always perform a lookat correctly
 	 * in particular for the firstperson (fly) mode. pressing the gohome button again fixes the lookat somehow, not sure why it does work the second time.
@@ -116,16 +116,16 @@
 	PathControls.prototype.goHome = function() {
 		positionOnRoad = 0.0;
 		bodyPosition = path.getPointAt(0);
-		
+
 		this.lookat(path.getPointAt(0.1));
 	};
-	
+
 
 	PathControls.prototype.goTo = function(point) {
 		bodyPosition.copy(point);
 	};
-	
-	
+
+
 	function findNearestPointOnPath(path, point) {
 		//first find nearest point on road
 		var minDist = Number.MAX_VALUE;
@@ -139,15 +139,15 @@
 				index = i;
 			}
 		}
-		
+
 		return index;
 	}
-	
+
 	function findPrecisePositionOnPath(cpath, point) {
-		
+
 		//first find nearest point on road
 		var index = findNearestPointOnPath(cpath, point);
-		
+
 		//interpolate to find precise positionOnRoad
 		//first find second nearest point on the road
 		var distOne = Number.MAX_VALUE;
@@ -165,58 +165,58 @@
 			index = index-1;
 			secondIndex = index+1;
 		}
-		         
+
 		//interpolate using dot product of vector A and B
-		
+
 		//vector A is the vector from index to point
 		var A = point.clone();
 		A.sub(cpath.points[index]);
-		
+
 		//vector B is the vector from index to secondIndex
 		var B = cpath.points[secondIndex].clone();
 		B.sub(cpath.points[index].clone());
 		B.normalize();
-		
+
 		//project vector A onto vector B
 		var delta = A.dot(B) / A.length();
-		
+
 		//delta = delta / B.length();
-		
+
 		//compute new position on road
 		return ((index + delta) / cpath.points.length) * looptime;
 	}
-	
-	
+
+
 	//go to a point on the road near the specified point
-	PathControls.prototype.goToPointOnRoad = function(point) {	
+	PathControls.prototype.goToPointOnRoad = function(point) {
 		if (!initialized) {
 			console.error('error: goToPointOnRoad called before path.controls is initialized');
 			return;
 		}
-	
+
 		//find position on road
 		positionOnRoad = findPrecisePositionOnPath(path, point);
-		
+
 		//move the camera there
 		bodyPosition.copy(path.getPointAt(positionOnRoad / looptime));
 	};
 
 
 	PathControls.prototype.lookat = function(center) {
-		
+
 		camera.up = new THREE.Vector3(0,1,0);
 		camera.lookAt(center);
-		
+
 		xAngle = camera.rotation.y;
 		yAngle = camera.rotation.x;
 
 	};
-	
+
 	function addBalls(scene, pointsArray, colorHex) {
 		var sphereGeo;
 		var meshMat;
 		var sphere;
-		
+
 		sphereGeo = new THREE.SphereGeometry(0.5,32,32);
 		meshMat = new THREE.MeshBasicMaterial({color: colorHex});
 		for (var i=0; i<pointsArray.length; i++) {
@@ -225,13 +225,13 @@
 			scene.add(sphere);
 		}
 	}
-	
-	
+
+
 	PathControls.prototype.createPath = function() {
 
 		var tube = new THREE.TubeGeometry(path, 1024, 0.25, 8, false);
 		var lookTube = new THREE.TubeGeometry(lookatPath, 1024, 0.25, 8, false);
-		
+
 		var tubeMesh = THREE.SceneUtils.createMultiMaterialObject( tube, [
 				new THREE.MeshLambertMaterial({
 					color: 0x00ffff
@@ -254,46 +254,46 @@
 			})]);
 
 		tubeMesh.add(lookTubeMesh);
-		
+
 		addBalls(tubeMesh, path.points, 0xff0000);
-		
+
 		addBalls(tubeMesh, lookatPath.points, 0x00ff00);
-		
+
 		return tubeMesh;
 	};
-	
+
 	function cap(value) {
 		return Math.min(Math.max(value, 0), 1);
 	}
-	
+
 	function getInterpOnPath() {
 		var position = path.getPointAt(positionOnRoad / looptime);
 		var index = findNearestPointOnPath(path, position);
-		
+
 		return (positionOnRoad / looptime) - (index / path.points.length);
-		
+
 	}
-	
+
 	function findPerpendicularPointOnLookPath(){
 		var position = path.getPointAt(positionOnRoad / looptime);
 		var positionAhead = path.getPointAt(cap(positionOnRoad + 0.01 / looptime));
 		var walkDirection = new THREE.Vector3().subVectors(positionAhead, position).normalize();
-		
+
 		for (var i=0; i<lookatPath.points.length; i++) {
 			var point = lookatPath.points[i];
 			var vectorToPosition = new THREE.Vector3().subVectors(position, point).normalize();
 			var dotproduct = vectorToPosition.dot(walkDirection);
 			var angle = Math.acos(dotproduct);
-			
+
 			//if angle is less than half PI we have passed our position on the path, for now look at this point
 			if (angle > Math.PI/2) {
 				if (i === 0) {
 					return lookatPath.getPointAt(0.1);
 				}
-				
+
 				var found = lookatPath.points[i];
 				//console.log('position=' + position.x + ',' + position.y + ',' + position.z + ' found perpendicular point=' + found.x + ',' + found.y + ',' + found.z);
-				
+
 				var start = ((i-1)/lookatPath.points.length);
 				var end = (i/lookatPath.points.length);
 				for (var j = start; j < end; j += 0.000001) {
@@ -301,41 +301,41 @@
 					vectorToPosition = new THREE.Vector3().subVectors(position, point).normalize();
 					dotproduct = vectorToPosition.dot(walkDirection);
 					angle = Math.acos(dotproduct);
-					
+
 					if (angle > Math.PI/2) {
 						console.log('start=' + start + ' end=' + end + ' precise location=' + j);
 						return lookatPath.getPointAt(cap(j + 0.005));
 					}
 				}
-				
+
 				return lookatPath.getPointAt(cap((i/lookatPath.points.length)));
 			}
 		}
-		
+
 	}
-	
+
 	PathControls.prototype.moveForward = function(step) {
 		bodyPosition.x -= Math.cos(-xAngle + Math.PI / 2) * step;
 		bodyPosition.y -= Math.cos(yAngle + Math.PI / 2) * step;
 		bodyPosition.z -= Math.sin(-xAngle + Math.PI / 2) * step;
 	};
-	
+
 	PathControls.prototype.moveBackward = function(step) {
 		bodyPosition.x += Math.cos(-xAngle + Math.PI / 2) * step;
 		bodyPosition.y += Math.cos(yAngle + Math.PI / 2) * step;
 		bodyPosition.z += Math.sin(-xAngle + Math.PI / 2) * step;
 	};
-	
+
 	PathControls.prototype.strafeLeft = function(step) {
 		bodyPosition.x -= Math.cos(-xAngle) * step;
 		bodyPosition.z -= Math.sin(-xAngle) * step;
 	};
-	
+
 	PathControls.prototype.strafeRight = function(step) {
 		bodyPosition.x += Math.cos(-xAngle) * step;
 		bodyPosition.z += Math.sin(-xAngle) * step;
 	};
-	
+
 	PathControls.prototype.updateCameraRotation = function() {
 		if (yAngle < -0.95 * Math.PI / 2) {
 			yAngle = -0.95 * Math.PI / 2;
@@ -347,14 +347,14 @@
  		camera.rotation.x = yAngle;
  		camera.rotation.set(yAngle, xAngle, 0, 'YXZ');
 	};
-	
+
 	PathControls.prototype.updateInput = function() {
 		if (!path) {
 			return;
 		}
 
 		var delta = clock.getDelta();
-				
+
 		if (keys[32]) {
 			delta *= 6;
 		}
@@ -363,7 +363,7 @@
 		var pos;
 
 		this.updateCameraRotation();
-		
+
 		if (this.mode === this.modes.DEMO) {
 
 			positionOnRoad += delta;
@@ -382,13 +382,13 @@
 			//Ideally you would want to compute this factor on the fly. which you could realize by calculating the closest point on the
 			//lookpath perpendicular to the direction on the walk path.
 
-	
+
 			//var positionOnLookPath = (positionOnRoad / looptime) * (  path.getLength() / lookatPath.getLength() ) * 1.08;
 			//var lookPoint = lookatPath.getPointAt(cap(positionOnLookPath);
 			var lookPoint = findPerpendicularPointOnLookPath();
-			
-			this.lookat(lookPoint);			
-			
+
+			this.lookat(lookPoint);
+
 		} else if (this.mode === this.modes.FLY) {
 
 			// Forward/backward
@@ -443,22 +443,22 @@
 		}
 
 	};
-			
+
 	PathControls.prototype.enableFlightMode = function() {
 		this.mode = this.modes.FLY;
 	};
-		
+
 	PathControls.prototype.transitionFromFlightMode = function() {
 		if (this.mode === this.modes.FLY) {
 			this.goToPointOnRoad(bodyPosition);
 		}
 	};
-	
+
 	PathControls.prototype.enableRailsMode = function() {
 		this.transitionFromFlightMode();
 		this.mode = this.modes.ONRAILS;
 	};
-	
+
 	PathControls.prototype.enableDemoMode = function() {
 		this.transitionFromFlightMode();
 		this.mode = this.modes.DEMO;
@@ -466,15 +466,15 @@
 
 	function onKeyDown(event) {
 		keys[event.keyCode] = true;
-		
+
 		if (event.keyCode === 32) {
 			event.preventDefault();
 		}
 
 		if (event.keyCode === 50) { // the 2 key
 			me.enableFlightMode();
-		}	
-		
+		}
+
 		if (event.keyCode === 49) { //the 1 key
 			me.enableRailsMode();
 		}
@@ -484,11 +484,11 @@
 		}
 		//console.log(event.keyCode);
 	}
-	
 
-	
-	
-	
+
+
+
+
 
 	function onKeyUp(event) {
 		keys[event.keyCode] = false;
@@ -497,17 +497,17 @@
 	//a blur event is fired when we lose focus
 	//in such an event we want to turn off all keys
 	function onBlur() {
-		
+
 		drag = false;
-		
+
 		var i;
 		for (i=0; i < keys.length; i++) {
 			keys[i] = false;
 		}
-				
+
 	}
-	
-	
+
+
 	function mousedown(event) {
 		//right mouse button going down!!
 		if (event.button === 2) {
@@ -532,7 +532,7 @@
 	function mousemove(event) {
 		if (!drag) {
 			return;
-		}		
+		}
 
 		xAngle -= factor * (event.pageX - mouseX) / (window.innerWidth);
 		yAngle -= factor * (event.pageY - mouseY) / (window.innerHeight);

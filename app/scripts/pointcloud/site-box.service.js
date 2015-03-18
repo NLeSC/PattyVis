@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function SiteBoxService(THREE, SitesService, CameraService, SceneService) {
+  function SiteBoxService(THREE, SitesService, RenderingService, CameraService, SceneService) {
     var me = this;
 
     var raycaster = new THREE.Raycaster();
@@ -11,17 +11,14 @@
       }
     };
 
-    this.mouse = {
-      x: 0,
-      y: 0
-    };
-
     this.siteBoxList = [];
     this.referenceFrame = SceneService.referenceFrame;
 
-    this.init = function(mouse) {
-      me.mouse = mouse;
+    this.init = function() {
+      RenderingService.renderer.domElement.addEventListener('dblclick', this.selectSite, false);
     };
+
+    RenderingService.ready.then(this.init.bind(this));
 
     this.onSitesChanged = function(sites) {
       me.siteBoxList = [];
@@ -49,16 +46,12 @@
       siteBox.material.color.setHex(0xFF99CC);
     };
 
-    this.listenTo = function(element) {
-      element.addEventListener('dblclick', this.selectSite, false);
-    };
-
     this.selectSite = function(event) {
       if (event === undefined) {
         return;
       }
 
-      var selectedSiteBox = me.siteBoxSelection(me.mouse.x, me.mouse.y);
+      var selectedSiteBox = me.siteBoxSelection(RenderingService.mouse.x, RenderingService.mouse.y);
       if (selectedSiteBox) {
         if (selectedSiteBox.hasOwnProperty('textLabel')) {
           me.toggleTextLabel(selectedSiteBox);
@@ -216,6 +209,12 @@
         return null;
       }
     };
+
+    this.update = function()  {
+      this.siteBoxSelection(RenderingService.mouse.x, RenderingService.mouse.y);
+    };
+
+    RenderingService.registerToBeUpdated(this.update.bind(this));
 
   }
 

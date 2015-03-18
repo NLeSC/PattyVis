@@ -1,15 +1,12 @@
-/* global requestAnimationFrame:false */
 (function() {
   'use strict';
 
   function PointcloudService(THREE, Potree, POCLoader, $window, $rootScope,
     DrivemapService,
-    SitesService, CameraService, SceneService,
+    SitesService, RenderingService, CameraService, SceneService,
     PathControls, SiteBoxService, MeasuringService) {
 
     var me = this;
-
-    this.elRenderArea = null;
 
     me.settings = {
       pointCountTarget: 1.0,
@@ -44,65 +41,21 @@
       }
     };
 
-    this.renderer = null;
-    var camera;
-    var scene;
     var pointcloud;
     var sitePointcloud;
-
-    var skybox;
 
     me.pathMesh = null;
 
     var referenceFrame = SceneService.referenceFrame;
-    var mouse = {
-      x: 0,
-      y: 0
-    };
-
-    function loadSkybox(path) {
-      var camera = new THREE.PerspectiveCamera(75, $window.innerWidth / $window.innerHeight, 1, 100000);
-      var scene = new THREE.Scene();
-
-      var format = '.jpg';
-      var urls = [
-        path + 'px' + format, path + 'nx' + format,
-        path + 'py' + format, path + 'ny' + format,
-        path + 'pz' + format, path + 'nz' + format
-      ];
-
-      var textureCube = THREE.ImageUtils.loadTextureCube(urls, new THREE.CubeRefractionMapping());
-
-      var shader = THREE.ShaderLib.cube;
-      shader.uniforms.tCube.value = textureCube;
-
-      var material = new THREE.ShaderMaterial({
-
-          fragmentShader: shader.fragmentShader,
-          vertexShader: shader.vertexShader,
-          uniforms: shader.uniforms,
-          depthWrite: false,
-          side: THREE.BackSide
-
-        }),
-
-        mesh = new THREE.Mesh(new THREE.BoxGeometry(100000, 100000, 100000), material);
-      scene.add(mesh);
-
-      return {
-        'camera': camera,
-        'scene': scene
-      };
-    }
 
     function getMousePointCloudIntersection() {
-      var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-      vector.unproject(camera);
-      var direction = vector.sub(camera.position).normalize();
-      var ray = new THREE.Ray(camera.position, direction);
+      var vector = new THREE.Vector3(RenderingService.mouse.x, RenderingService.mouse.y, 0.5);
+      vector.unproject(CameraService.camera);
+      var direction = vector.sub(CameraService.camera.position).normalize();
+      var ray = new THREE.Ray(CameraService.camera.position, direction);
 
       var pointClouds = [];
-      scene.traverse(function(object) {
+      SceneService.scene.traverse(function(object) {
         if (object instanceof Potree.PointCloudOctree) {
           pointClouds.push(object);
         }
@@ -113,7 +66,7 @@
 
       for (var i = 0; i < pointClouds.length; i++) {
         var pointcloud = pointClouds[i];
-        var point = pointcloud.pick(me.renderer, camera, ray, {
+        var point = pointcloud.pick(RenderingService.renderer, CameraService.camera, ray, {
           accuracy: 0.5
         });
 
@@ -121,7 +74,7 @@
           continue;
         }
 
-        var distance = camera.position.distanceTo(point.position);
+        var distance = CameraService.camera.position.distanceTo(point.position);
 
         if (!closestPoint || distance < closestPointDistance) {
           closestPoint = point;
@@ -161,37 +114,15 @@
       }
     }
 
-    function onMouseMove(event) {
-      mouse.x = (event.clientX / me.renderer.domElement.clientWidth) * 2 - 1;
-      mouse.y = -(event.clientY / me.renderer.domElement.clientHeight) * 2 + 1;
-    }
-
-    this.initThree = function() {
-      var width = $window.innerWidth;
-      var height = $window.innerHeight;
-
-      scene = SceneService.getScene();
-      camera = CameraService.camera;
-
-      me.renderer = new THREE.WebGLRenderer();
-      me.renderer.setSize(width, height);
-      me.renderer.autoClear = false;
-      me.renderer.domElement.addEventListener('mousemove', onMouseMove, false);
-
-      MeasuringService.init(me.renderer, scene, camera);
-
-      skybox = loadSkybox('bower_components/potree/resources/textures/skybox/');
-
-      // enable frag_depth extension for the interpolation shader, if available
-      me.renderer.context.getExtension('EXT_frag_depth');
-
-      SiteBoxService.init(mouse);
-
-      SiteBoxService.listenTo(me.renderer.domElement);
-
+    this.init = function() {
       DrivemapService.ready.then(this.loadPointcloud);
       SitesService.ready.then(this.loadSite);
+
+      RenderingService.registerToBeUpdated(this.update);
+      RenderingService.registerToBeRendered(this.render);
     };
+
+    RenderingService.ready.then(this.init.bind(this));
 
     this.loadPointcloud = function() {
       // load pointcloud
@@ -232,15 +163,15 @@
           }
         );
 
-
         //PathControls.init(camera, myPath, lookPath, me.renderer.domElement);
-		PathControls.init(camera, myPath, lookPath, me.elRenderArea);
+        RenderingService.ready.then(function() {
+          PathControls.init(CameraService.camera, myPath, lookPath, RenderingService.renderArea);
+          me.pathMesh = PathControls.createPath();
+          SceneService.scene.add(me.pathMesh);
+          me.pathMesh.visible = false; // disabled by default
+        });
 
 
-
-        me.pathMesh = PathControls.createPath();
-        scene.add(me.pathMesh);
-        me.pathMesh.visible = false; // disabled by default
         MeasuringService.setPointcloud(pointcloud);
       });
     };
@@ -344,9 +275,7 @@
     }
 
     this.goHome = function() {
-
       PathControls.goHome();
-
     };
 
     this.lookAtSite = function(site) {
@@ -359,7 +288,6 @@
 
       PathControls.goToPointOnRoad(posLocal);
       PathControls.lookat(posLocal);
-
     };
 
     this.enterOrbitMode = function(site) {
@@ -389,7 +317,6 @@
     };
 
     this.update = function() {
-
       if (pointcloud) {
         pointcloud.material.clipMode = me.settings.clipMode;
         pointcloud.material.size = me.settings.pointSize;
@@ -404,7 +331,7 @@
         pointcloud.material.intensityMin = 0;
         pointcloud.material.intensityMax = 65000;
 
-        pointcloud.update(camera, me.renderer);
+        pointcloud.update(CameraService.camera, RenderingService.renderer);
 
       }
 
@@ -422,60 +349,18 @@
         sitePointcloud.material.intensityMin = 0;
         sitePointcloud.material.intensityMax = 65000;
 
-        sitePointcloud.update(camera, me.renderer);
+        sitePointcloud.update(CameraService.camera, RenderingService.renderer);
       }
 
-
       PathControls.updateInput();
-
-      MeasuringService.update();
-
-      CameraService.update();
 
       updateStats();
     };
 
     this.render = function() {
-      // resize
-      var width = $window.innerWidth;
-      var height = $window.innerHeight;
-      var aspect = width / height;
-
-      camera.aspect = aspect;
-      camera.updateProjectionMatrix();
-
-      me.renderer.setSize(width, height);
-
-      // render skybox
-      if (me.settings.showSkybox) {
-        skybox.camera.rotation.copy(camera.rotation);
-        me.renderer.render(skybox.scene, skybox.camera);
-      }
-
-      SiteBoxService.siteBoxSelection(mouse.x, mouse.y);
-
-      // render scene
-      me.renderer.render(scene, camera);
-
-      MeasuringService.render();
-    };
-
-    this.loop = function() {
-      requestAnimationFrame(me.loop);
-
-      me.update();
-      me.render();
-    };
-
-    this.attachCanvas = function(el) {
-      me.elRenderArea = el;
-      me.initThree();
-      var canvas = me.renderer.domElement;
-      el.appendChild(canvas);
-      me.loop();
+      RenderingService.renderer.render(SceneService.scene, CameraService.camera);
     };
   }
 
-  angular.module('pattyApp.pointcloud')
-    .service('PointcloudService', PointcloudService);
+  angular.module('pattyApp.pointcloud').service('PointcloudService', PointcloudService);
 })();

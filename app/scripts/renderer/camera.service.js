@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CameraService($window, $log, THREE, Messagebus, SceneService) {
+  function CameraService($window, $log, THREE, Messagebus, RenderingService, SceneService) {
     var fov = 75;
     var width = $window.innerWidth;
     var height = $window.innerHeight;
@@ -12,6 +12,7 @@
     this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
     this.toGeo = null;
     this.waypoints = [];
+
 
     this.recordLocation = function() {
       this.waypoints.push(SceneService.toGeo(this.camera.position.clone()).toArray());
@@ -32,6 +33,8 @@
       // compare current camera state with state in previous render loop
       prevCameraOrientation = cameraOrientation;
     };
+
+    RenderingService.registerToBeUpdated(this.update.bind(this));
 
     this.update2DFrustum = function() {
       var camera = this.camera;
@@ -60,6 +63,5 @@
     };
   }
 
-  angular.module('pattyApp.pointcloud')
-    .service('CameraService', CameraService);
+  angular.module('pattyApp.renderer').service('CameraService', CameraService);
 })();

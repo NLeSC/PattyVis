@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function MeasuringService($rootScope, Potree, THREE, $window) {
+  function MeasuringService($rootScope, Potree, THREE, $window, RenderingService, SceneService, CameraService) {
     this.tools = {
       distance: null,
       angle: null,
@@ -24,7 +24,6 @@
     this.sitePointcloud = null;
 
     this.profileWidth = 0.1;
-    this.initialized = false;
 
     this.onKeyDown = function(event) {
       //console.log(event.keyCode);
@@ -51,22 +50,23 @@
     };
 
     this.clear = function() {
-        this.clearStandardPotreeMeasurementTool(this.tools.distance);
-        this.clearStandardPotreeMeasurementTool(this.tools.area);
-        this.clearStandardPotreeMeasurementTool(this.tools.angle);
-        this.clearVolumes();
-        this.clearProfile();
+      this.clearStandardPotreeMeasurementTool(this.tools.distance);
+      this.clearStandardPotreeMeasurementTool(this.tools.area);
+      this.clearStandardPotreeMeasurementTool(this.tools.angle);
+
+      this.clearVolumes();
+      this.clearProfile();
     };
 
     this.clearStandardPotreeMeasurementTool = function(tool) {
-        tool.measurements = [];
-        tool.sceneMeasurement = new THREE.Scene();
-        tool.sceneRoot = new THREE.Object3D();
-        tool.sceneMeasurement.add(tool.sceneRoot);
-        tool.light = new THREE.DirectionalLight( 0xffffff, 1 );
-        tool.light.position.set( 0, 0, 10 );
-        tool.light.lookAt(new THREE.Vector3(0,0,0));
-        tool.sceneMeasurement.add( tool.light );
+      tool.measurements = [];
+      tool.sceneMeasurement = new THREE.Scene();
+      tool.sceneRoot = new THREE.Object3D();
+      tool.sceneMeasurement.add(tool.sceneRoot);
+      tool.light = new THREE.DirectionalLight(0xffffff, 1);
+      tool.light.position.set(0, 0, 10);
+      tool.light.lookAt(new THREE.Vector3(0, 0, 0));
+      tool.sceneMeasurement.add(tool.light);
     };
 
     this.clearVolumes = function() {
@@ -79,20 +79,6 @@
       this.tools.heightprofile.sceneProfile = new THREE.Scene();
       this.tools.heightprofile.sceneRoot = new THREE.Object3D();
       this.tools.heightprofile.sceneProfile.add(this.tools.heightprofile.sceneRoot);
-    };
-
-    this.init = function(renderer, scene, camera) {
-      this.tools.distance = new Potree.MeasuringTool(scene, camera, renderer);
-      this.tools.angle = new Potree.AngleTool(scene, camera, renderer);
-      this.tools.area = new Potree.AreaTool(scene, camera, renderer);
-      this.tools.volume = new Potree.VolumeTool(scene, camera, renderer);
-      this.tools.heightprofile = new Potree.ProfileTool(scene, camera, renderer);
-      this.tools.transformation = new Potree.TransformationTool(scene, camera, renderer);
-      // TODO do pollute global namespace, but Potree.VolumeTool uses the global var
-      $window.transformationTool = this.tools.transformation;
-
-      $window.addEventListener('keydown', this.onKeyDown.bind(this), false);
-      this.initialized = true;
     };
 
     this.setPointcloud = function(pointcloud) {
@@ -150,57 +136,75 @@
     };
 
     this.render = function() {
-      if (this.initialized) {
-        this.tools.heightprofile.render();
-        this.tools.volume.render();
+      this.tools.heightprofile.render();
+      this.tools.volume.render();
 
-        this.tools.distance.renderer.clearDepth();
-        this.tools.distance.render();
-        this.tools.area.render();
-        this.tools.angle.render();
-        this.tools.transformation.render();
-      }
+      this.tools.distance.renderer.clearDepth();
+      this.tools.distance.render();
+      this.tools.area.render();
+      this.tools.angle.render();
+      this.tools.transformation.render();
     };
 
     this.update = function() {
-      if (this.initialized) {
-        this.tools.volume.update();
-        this.tools.transformation.update();
-        this.tools.heightprofile.update();
+      this.tools.volume.update();
+      this.tools.transformation.update();
+      this.tools.heightprofile.update();
 
-        var clipBoxes = [];
+      var clipBoxes = [];
 
-        for (var i = 0; i < this.tools.heightprofile.profiles.length; i++) {
-          var profile = this.tools.heightprofile.profiles[i];
+      for (var i = 0; i < this.tools.heightprofile.profiles.length; i++) {
+        var profile = this.tools.heightprofile.profiles[i];
 
-          for (var j = 0; j < profile.boxes.length; j++) {
-            var box = profile.boxes[j];
-            box.updateMatrixWorld();
-            var boxInverse = new THREE.Matrix4().getInverse(box.matrixWorld);
-            clipBoxes.push(boxInverse);
-          }
-        }
-
-        for (var k = 0; k < this.tools.volume.volumes.length; k++) {
-          var volume = this.tools.volume.volumes[k];
-
-          if (volume.clip) {
-            volume.updateMatrixWorld();
-            var boxInverseV = new THREE.Matrix4().getInverse(volume.matrixWorld);
-
-            clipBoxes.push(boxInverseV);
-          }
-        }
-
-        if (this.pointcloud) {
-          this.pointcloud.material.setClipBoxes(clipBoxes);
-        }
-
-        if (this.sitePointcloud) {
-          this.sitePointcloud.material.setClipBoxes(clipBoxes);
+        for (var j = 0; j < profile.boxes.length; j++) {
+          var box = profile.boxes[j];
+          box.updateMatrixWorld();
+          var boxInverse = new THREE.Matrix4().getInverse(box.matrixWorld);
+          clipBoxes.push(boxInverse);
         }
       }
+
+      for (var k = 0; k < this.tools.volume.volumes.length; k++) {
+        var volume = this.tools.volume.volumes[k];
+
+        if (volume.clip) {
+          volume.updateMatrixWorld();
+          var boxInverseV = new THREE.Matrix4().getInverse(volume.matrixWorld);
+
+          clipBoxes.push(boxInverseV);
+        }
+      }
+
+      if (this.pointcloud) {
+        this.pointcloud.material.setClipBoxes(clipBoxes);
+      }
+
+      if (this.sitePointcloud) {
+        this.sitePointcloud.material.setClipBoxes(clipBoxes);
+      }
     };
+
+    this.init = function() {
+      var renderer = RenderingService.renderer;
+      var scene = SceneService.scene;
+      var camera = CameraService.camera;
+
+      this.tools.distance = new Potree.MeasuringTool(scene, camera, renderer);
+      this.tools.angle = new Potree.AngleTool(scene, camera, renderer);
+      this.tools.area = new Potree.AreaTool(scene, camera, renderer);
+      this.tools.volume = new Potree.VolumeTool(scene, camera, renderer);
+      this.tools.heightprofile = new Potree.ProfileTool(scene, camera, renderer);
+      this.tools.transformation = new Potree.TransformationTool(scene, camera, renderer);
+      // TODO do pollute global namespace, but Potree.VolumeTool uses the global var
+      $window.transformationTool = this.tools.transformation;
+
+      $window.addEventListener('keydown', this.onKeyDown.bind(this), false);
+
+      RenderingService.registerToBeUpdated(this.update.bind(this));
+      RenderingService.registerToBeRendered(this.render.bind(this));
+    };
+
+    RenderingService.ready.then(this.init.bind(this));
   }
 
   angular.module('pattyApp.measuring').service('MeasuringService', MeasuringService);

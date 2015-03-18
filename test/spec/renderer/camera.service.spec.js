@@ -7,11 +7,13 @@ describe('pointcloud.CameraService', function() {
 
   var service;
   var THREE;
+  var RenderingService;
   var SceneService;
   beforeEach(function() {
-    inject(function(_CameraService_, _THREE_, _SceneService_) {
+    inject(function(_CameraService_, _THREE_, _RenderingService_, _SceneService_) {
       service = _CameraService_;
       THREE = _THREE_;
+      RenderingService = _RenderingService_;
       SceneService = _SceneService_;
       SceneService.toGeo = function(d) {
         return d.negate();

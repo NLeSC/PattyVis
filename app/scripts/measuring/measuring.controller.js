@@ -33,28 +33,24 @@
       this.showTransformationToolboxTray = false;
     };
 
-    this.isTransformationRotate = function() {
+    this.checkTransformationState = function(state) {
       var result = false;
-      if (this.measuringService.activeTransformationTool === this.measuringService.transformationTools.ROTATE) {
+      if (this.measuringService.activeTransformationTool === state) {
         result = true;
       }
       return result;
+    };
+
+    this.isTransformationRotate = function() {
+      return this.checkTransformationState(this.measuringService.transformationTools.ROTATE);
     };
 
     this.isTransformationTranslate = function() {
-      var result = false;
-      if (this.measuringService.activeTransformationTool === this.measuringService.transformationTools.TRANSLATE) {
-        result = true;
-      }
-      return result;
+      return this.checkTransformationState(this.measuringService.transformationTools.TRANSLATE);
     };
 
     this.isTransformationScale = function() {
-      var result = false;
-      if (this.measuringService.activeTransformationTool === this.measuringService.transformationTools.SCALE) {
-        result = true;
-      }
-      return result;
+      return this.checkTransformationState(this.measuringService.transformationTools.SCALE);
     };
 
     this.startDistance = function() {
