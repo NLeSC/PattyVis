@@ -29,6 +29,10 @@ describe('minimap.controller', function() {
       $rootScope.$digest();
 
       CamFrustumService = _CamFrustumService_;
+
+      // size will undefined when map.setTarget() has not been called
+      // so set size ourselves
+      controller.map.setSize([290, 290]);
     });
   });
 
@@ -78,23 +82,48 @@ describe('minimap.controller', function() {
   });
 
   describe('onMapRightclick() function', function() {
-    it('should ', inject(function(defaultSitesJSON, defaultSitesGeoJSON) {
-    }));
+    it('should swallow event', function() {
+      var event = jasmine.createSpyObj('event', ['preventDefault']);
+
+      var result = controller.onMapRightclick(event);
+
+      expect(result).toBeFalsy();
+      expect(event.preventDefault).toHaveBeenCalled();
+    });
   });
 
-  describe('onMapClick() function', function() {
-    it('should ', inject(function(defaultSitesJSON, defaultSitesGeoJSON) {
+  describe('onFeatureClick() function', function() {
+    var SitesService;
+    beforeEach(inject(function(_SitesService_, defaultSitesJSON) {
+      SitesService = _SitesService_;
+      SitesService.onLoad(defaultSitesJSON);
     }));
+
+    it('should select site', function() {
+      // stub for event.target.item(0).getId()
+      var event = {
+        target: {
+          item: function() {
+            return {
+              getId: function() {
+                return 162;
+              }
+            };
+          }
+        }
+      };
+
+      controller.onFeatureClick(event);
+
+      expect(SitesService.query).toEqual('site:162');
+    });
   });
 
   describe('cameraMovedMessage() function', function() {
-    it('should ', inject(function(defaultSitesJSON, defaultSitesGeoJSON) {
-    }));
+    it('should ', inject(function(defaultSitesJSON, defaultSitesGeoJSON) {}));
   });
 
   describe('sitesChangedMessage() function', function() {
-    it('should ', inject(function(defaultSitesJSON, defaultSitesGeoJSON) {
-    }));
+    it('should ', inject(function(defaultSitesJSON, defaultSitesGeoJSON) {}));
   });
 });
-

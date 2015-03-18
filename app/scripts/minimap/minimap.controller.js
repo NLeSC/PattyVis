@@ -106,27 +106,20 @@
     // TODO set initial location for the map
     // TODO toggle map on/of
 
-    // listen on map click
-    this.onMapClick = function(event) {
-      // EPSG:3857 (strange internal OpenLayers lat/lon units)
-      var lat = event.coordinate[0];
-      var lon = event.coordinate[1];
-      // EPSG:4326 'normal' lat/long:
-      var coord4326 = ol.proj.transform([lat, lon], 'EPSG:3857', 'EPSG:4326');
-      var lat4326 = coord4326[0];
-      var lon4326 = coord4326[1];
-      // EPSG:32633 laz coordinate system:
-      var coordlas = proj4('EPSG:3857', siteProjectionCode, [lat, lon]);
-      var latlas = coordlas[0];
-      var lonlas = coordlas[1];
-
-      console.log('EPSG:3857 (openlayers)\nx: ' + lat + '\ny: ' + lon +
-        '\nESPG:4326 (google)\nx: ' + lat4326 +
-        '\ny: ' + lon4326 + '\n' + siteProjectionCode +' (drivemap)\nx: ' + latlas +
-        '\ny: ' + lonlas);
+    // setup click on a site
+    var selectClick = new ol.interaction.Select({
+      condition: ol.events.condition.click,
+      layers: [vectorLayer],
+      style: siteStyle
+    });
+    this.onFeatureClick = function(event) {
+      var feature = event.target.item(0);
+      var site = SitesService.getById(feature.getId());
+      SitesService.selectSite(site);
     };
+    selectClick.getFeatures().on('add', this.onFeatureClick);
+    this.map.addInteraction(selectClick);
 
-    this.map.on('click', this.onMapClick);
 
     this.map.addLayer(CamFrustumService.layer);
 
@@ -139,14 +132,15 @@
     this.fitMapToFrustrumAndSearchedSites = function(event, frustum) {
       CamFrustumService.onCameraMove(frustum);
       var frustumExtent = CamFrustumService.getExtent();
-      if (SitesService.searched) {  // searched sites exist
+      if (SitesService.searched) { // searched sites exist
         var sitesExtent = vectorSource.getExtent();
         var combinedExtent = [Math.min(sitesExtent[0], frustumExtent[0]),
-                              Math.min(sitesExtent[1], frustumExtent[1]),
-                              Math.max(sitesExtent[2], frustumExtent[2]),
-                              Math.max(sitesExtent[3], frustumExtent[3])];
+          Math.min(sitesExtent[1], frustumExtent[1]),
+          Math.max(sitesExtent[2], frustumExtent[2]),
+          Math.max(sitesExtent[3], frustumExtent[3])
+        ];
         me.fitMapToExtent(combinedExtent);
-      } else {                      // no searched sites
+      } else { // no searched sites
         me.fitMapToExtent(frustumExtent);
       }
     };
