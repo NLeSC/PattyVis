@@ -228,7 +228,6 @@
       var intersects = raycaster.intersectObjects(me.siteBoxList, false);
 
       if (intersects.length > 0) {
-        console.log(intersects[0].distance);
         return intersects[0].object;
       } else {
         return null;
