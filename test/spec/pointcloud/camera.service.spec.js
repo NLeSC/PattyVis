@@ -2,8 +2,15 @@
 
 describe('pointcloud.CameraService', function() {
 
-  // load the module
-  beforeEach(module('pattyApp.pointcloud'));
+  var mockWindow;
+  beforeEach(module('pattyApp.pointcloud', function($provide) {
+    mockWindow = {
+      innerWidth: 1920,
+      innerHeight: 1200,
+      addEventListener: jasmine.createSpy('addEventListener')
+    };
+    $provide.value('$window', mockWindow);
+  }));
 
   var service;
   var THREE;
@@ -16,6 +23,16 @@ describe('pointcloud.CameraService', function() {
       SceneService.toGeo = function(d) {
         return d.negate();
       };
+    });
+  });
+
+  describe('initial state', function() {
+    it('camera should have aspect', function() {
+      expect(service.camera.aspect).toEqual(1.6);
+    });
+
+    it('should listen on window resize', function() {
+      expect(mockWindow.addEventListener).toHaveBeenCalledWith('resize', jasmine.any(Function));
     });
   });
 
@@ -62,7 +79,7 @@ describe('pointcloud.CameraService', function() {
 
       // comparing floats fails, so serialize
       var result = JSON.stringify(listener.calls.argsFor(0)[1]);
-      var expected = '{"cam":{"x":0,"y":0,"z":0},"left":{"x":-390.23792056875243,"y":-173.2050808846806,"z":43.82776527242672},"right":{"x":43.82776527242672,"y":-173.20507441164509,"z":-390.23792056875243}}';
+      var expected = '{"cam":{"x":0,"y":0,"z":0},"left":{"x":-433.6444891528704,"y":-173.20508153198415,"z":87.23433385654471},"right":{"x":87.23433385654471,"y":-173.20507376434153,"z":-433.6444891528704}}';
       expect(listener).toHaveBeenCalled();
       expect(result).toEqual(expected);
     });
@@ -75,7 +92,7 @@ describe('pointcloud.CameraService', function() {
 
       // comparing floats fails, so serialize
       var result = JSON.stringify(listener.calls.argsFor(0)[1]);
-      var expected = '{"cam":{"x":0,"y":0,"z":0},"left":{"x":186.52306326199943,"y":0,"z":300},"right":{"x":-186.52306326199943,"y":0,"z":300}}';
+      var expected = '{"cam":{"x":0,"y":0,"z":0},"left":{"x":223.82767591439935,"y":0,"z":300},"right":{"x":-223.82767591439935,"y":0,"z":300}}';
       expect(listener).toHaveBeenCalled();
       expect(result).toEqual(expected);
     });
@@ -84,6 +101,17 @@ describe('pointcloud.CameraService', function() {
       service.update();
 
       expect(listener).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('onWindowResize() function', function() {
+    it('should update aspect of camera', function() {
+      mockWindow.innerWidth = 1440;
+      mockWindow.innnerHeight = 768;
+
+      service.onWindowResize();
+
+      expect(service.camera.aspect).toEqual(1.2);
     });
   });
 });
