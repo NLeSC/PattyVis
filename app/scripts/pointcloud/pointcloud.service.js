@@ -446,7 +446,7 @@
         me.renderer.render(skybox.scene, skybox.camera);
       }
 
-      SiteBoxService.siteBoxSelection(mouse.x, mouse.y);
+      SiteBoxService.doHovering(mouse.x, mouse.y);
 
       // render scene
       me.renderer.render(scene, camera);
