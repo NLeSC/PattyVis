@@ -170,7 +170,6 @@
 	//go to a point on the road near the specified point
 	PathControls.prototype.goToPointOnRoad = function(point) {	
 		if (!initialized) {
-			console.error('error: goToPointOnRoad called before path.controls is initialized');
 			return;
 		}
 	
