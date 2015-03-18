@@ -48,11 +48,6 @@
 
     DrivemapService.ready.then(syncSiteProjectionCode);
 
-    this.centerOnVisibleSites = function() {
-      var sitesExtent = vectorSource.getExtent();
-      me.fitMapToExtent(sitesExtent);
-    };
-
     this.sites2GeoJSON = function(sites) {
       var features = sites.filter(function(site) {
         return 'footprint' in site;
@@ -77,6 +72,11 @@
           }
         }
       };
+    };
+
+    this.centerOnVisibleSites = function() {
+      var sitesExtent = vectorSource.getExtent();
+      me.fitMapToExtent(sitesExtent);
     };
 
     this.onSitesChanged = function(filtered) {
@@ -132,16 +132,19 @@
 
     this.fitMapToExtent = function(extent) {
       var mapSize = me.map.getSize();
-      console.log(mapSize);
-      me.map.getView().fitExtent(extent, me.map.getSize());
+      me.map.getView().fitExtent(extent, mapSize);
     };
 
+    // Possible improvement: http://stackoverflow.com/a/26381201
     this.fitMapToFrustrumAndSearchedSites = function(event, frustum) {
       CamFrustumService.onCameraMove(frustum);
       var frustumExtent = CamFrustumService.getExtent();
       if (SitesService.searched) {  // searched sites exist
         var sitesExtent = vectorSource.getExtent();
-        var combinedExtent = [Math.min(sitesExtent[0], frustumExtent[0]), Math.min(sitesExtent[1], frustumExtent[1]), Math.max(sitesExtent[2], frustumExtent[2]), Math.max(sitesExtent[3], frustumExtent[3])];
+        var combinedExtent = [Math.min(sitesExtent[0], frustumExtent[0]),
+                              Math.min(sitesExtent[1], frustumExtent[1]),
+                              Math.max(sitesExtent[2], frustumExtent[2]),
+                              Math.max(sitesExtent[3], frustumExtent[3])];
         me.fitMapToExtent(combinedExtent);
       } else {                      // no searched sites
         me.fitMapToExtent(frustumExtent);
