@@ -20,12 +20,10 @@
 	var bodyPosition;
 	var xAngle = 0;
 	var yAngle = 0;
-	
+
 	var MAX_YANGLE = 0.95 * Math.PI / 2;
 	var MIN_YANGLE = -0.95 * Math.PI / 2;
-	
-	var initialized = false;
-	
+
 	var mouseX = window.innerWidth / 2;
 	var mouseY = window.innerHeight / 2;
 
@@ -49,7 +47,7 @@
 		for (var i = 0; i < 130; i++) {
 			keys.push(false);
 		}
-		
+
 		this.camera = null;
 		this.path = null;
 
@@ -67,23 +65,23 @@
 	PathControls.prototype.initCamera = function(cam, startPos) {
 		this.camera = cam;
 		camera = cam;
-		
+
 		camera.position.copy(startPos);
 		camera.up.set(0, 1, 0);
 		camera.rotation.order = 'YXZ';
-		
+
 		bodyPosition = camera.position;
 		zoom = camera.fov;
 		maxZoom = camera.fov;
 	};
-	
-	PathControls.prototype.initListeners = function(element) {	
+
+	PathControls.prototype.initListeners = function(element) {
 		document.addEventListener('keydown', onKeyDown, false);
 		document.addEventListener('keyup', onKeyUp, false);
 
 		element.addEventListener('mouseleave', onBlur, false);
 		element.addEventListener('mouseout', onBlur, false);
-		
+
 		element.addEventListener('mousemove', mousemove, false);
 		element.addEventListener('mousedown', mousedown, false);
 		element.addEventListener('mouseup', mouseup, false);
@@ -105,10 +103,8 @@
 		camera.updateProjectionMatrix();
 
 		this.initListeners(element);
-		
-		this.initialized = true;
 	};
-	
+
 	function findNearestPointOnPath(path, point) {
 		//first find nearest point on road
 		var minDist = Number.MAX_VALUE;
@@ -122,14 +118,14 @@
 				index = i;
 			}
 		}
-		
+
 		return index;
 	}
-	
+
 	function findPrecisePositionOnPath(cpath, point) {
 		//first find nearest point on road
 		var index = findNearestPointOnPath(cpath, point);
-		
+
 		//interpolate to find precise positionOnRoad
 		//first find second nearest point on the road
 		var distOne = Number.MAX_VALUE;
@@ -166,16 +162,12 @@
 		//compute new position on road
 		return ((index + delta) / cpath.points.length) * looptime;
 	}
-	
+
 	//go to a point on the road near the specified point
-	PathControls.prototype.goToPointOnRoad = function(point) {	
-		if (!initialized) {
-			return;
-		}
-	
+	PathControls.prototype.goToPointOnRoad = function(point) {
 		//find position on road
 		positionOnRoad = findPrecisePositionOnPath(path, point);
-		
+
 		//move the camera there
 		bodyPosition.copy(path.getPointAt(positionOnRoad / looptime));
 	};
@@ -183,16 +175,16 @@
 	PathControls.prototype.lookat = function(center) {
 		camera.up = new THREE.Vector3(0,1,0);
 		camera.lookAt(center);
-		
+
 		xAngle = camera.rotation.y;
 		yAngle = camera.rotation.x;
 	};
-	
+
 	function addBalls(scene, pointsArray, colorHex) {
 		var sphereGeo;
 		var meshMat;
 		var sphere;
-		
+
 		sphereGeo = new THREE.SphereGeometry(0.5,32,32);
 		meshMat = new THREE.MeshBasicMaterial({color: colorHex});
 		for (var i=0; i<pointsArray.length; i++) {
@@ -201,11 +193,11 @@
 			scene.add(sphere);
 		}
 	}
-	
+
 	PathControls.prototype.createPath = function() {
 		var tube = new THREE.TubeGeometry(path, 1024, 0.25, 8, false);
 		var lookTube = new THREE.TubeGeometry(lookatPath, 1024, 0.25, 8, false);
-		
+
 		var tubeMesh = THREE.SceneUtils.createMultiMaterialObject( tube, [
 				new THREE.MeshLambertMaterial({
 					color: 0x00ffff
@@ -228,34 +220,34 @@
 			})]);
 
 		tubeMesh.add(lookTubeMesh);
-		
+
 		addBalls(tubeMesh, path.points, 0xff0000);
-		
+
 		addBalls(tubeMesh, lookatPath.points, 0x00ff00);
-		
+
 		return tubeMesh;
 	};
-	
+
 	function cap(value) {
 		return Math.min(Math.max(value, 0), 1);
 	}
-	
+
 	function moveStep(step) {
 		var vec = new THREE.Vector3(Math.sin(xAngle), Math.sin(-yAngle), Math.cos(xAngle));
 		return vec.multiplyScalar(-step);
 	}
-	
+
 	function strafeStep(step) {
 		var vec = new THREE.Vector3(Math.cos(-xAngle), 0.0, Math.sin(-xAngle));
 		return vec.multiplyScalar(-step);
 	}
-	
+
 	function updateCameraRotation() {
 		yAngle = Math.max(Math.min(yAngle,MAX_YANGLE),MIN_YANGLE);
  		camera.rotation.set(yAngle, xAngle, 0, 'YXZ');
 	}
-	
-	function updateOnRailsMode(delta) {				
+
+	function updateOnRailsMode(delta) {
 		// Forward/backward on the rails
 		if (keys[87] || keys[38]) { // W or UP
 			positionOnRoad += delta;
@@ -272,37 +264,37 @@
 
 		camera.position.copy(path.getPointAt(positionOnRoad / looptime));
 	}
-	
+
 	function updateForwardBackward(step) {
 		// Forward/backward
 		if (keys[87] || keys[119] || keys[38]) { // W or UP
 			bodyPosition.add(moveStep(step));
-		} 
+		}
 		if (keys[83] || keys[115] || keys[40]) { // S or DOWN
 			bodyPosition.sub(moveStep(step));
 		}
 	}
-	
+
 	function updateUpDown(step) {
 		// Fly up or down
 		if (keys[90] || keys[122]) { // Z
 			bodyPosition.y -= step;
-		} 
+		}
 		if (keys[81] || keys[113]) { // Q
 			bodyPosition.y += step;
 		}
 	}
-	
+
 	function updateStrafe(vec) {
 		// Strafe
 		if (keys[65] || keys[97] || keys[37]) { // A or left
 			bodyPosition.add(vec);
-		} 
+		}
 		if (keys[68] || keys[100] || keys[39]) { // D or right
 			bodyPosition.sub(vec);
 		}
 	}
-	
+
 	function updateFlyMode(step) {
 		updateForwardBackward(step);
 
@@ -310,23 +302,23 @@
 
 		updateStrafe(strafeStep(step));
 	}
-	
+
 	function getLocalFactor() {
 		var factor = 1;
-		
+
 		//compute the factor that will be used to scale the arclength used to index the lookatpath
 		var estArcLookPath = findPrecisePositionOnPath(lookatPath, bodyPosition) / lookatPath.points.length;
 		var estArcPath = findPrecisePositionOnPath(path, bodyPosition) / path.points.length;
-		
+
 		//prevent div by zero
 		if (estArcPath !== 0 && estArcLookPath !== 0) {
 			//divide the larger by the smaller value
 			factor = Math.max(estArcPath,estArcLookPath) / Math.min(estArcPath, estArcLookPath);
 		}
-		
+
 		return factor;
 	}
-	
+
 	PathControls.prototype.updateDemoMode = function(delta) {
 		positionOnRoad += delta;
 		positionOnRoad = positionOnRoad % looptime;
@@ -335,17 +327,17 @@
 			positionOnRoad = looptime + positionOnRoad;
 		}
 		camera.position.copy(path.getPointAt(positionOnRoad / looptime));
-		
+
 		//slowly adjust the factor over time to the local factor
 		lookatPathFactor = (1.0 - delta/3.0) * lookatPathFactor + (delta/3.0) * getLocalFactor();
 		//console.log('f=' + lookatPathFactor);
-		
+
 		var positionOnLookPath = (positionOnRoad / looptime) * (  lookatPath.getLength() / path.getLength() ) * lookatPathFactor;
 		var lookPoint = lookatPath.getPointAt(cap(positionOnLookPath));
-		
+
 		this.lookat(lookPoint);
 	};
-	
+
 	PathControls.prototype.updateInput = function() {
 		if (!path) {
 			return;
@@ -357,7 +349,7 @@
 		}
 
 		updateCameraRotation();
-		
+
 		if (this.mode === this.modes.DEMO) {
 			this.updateDemoMode(delta);
 		} else if (this.mode === this.modes.FLY) {
@@ -392,7 +384,7 @@
 
 	function onKeyDown(event) {
 		keys[event.keyCode] = true;
-		
+
 		if (event.keyCode === 32) {
 			event.preventDefault();
 		}
@@ -406,13 +398,13 @@
 	//in such an event we want to turn off all keys
 	function onBlur() {
 		drag = false;
-		
+
 		var i;
 		for (i=0; i < keys.length; i++) {
 			keys[i] = false;
 		}
 	}
-	
+
 	function mousedown(event) {
 		//right mouse button going down!!
 		if (event.button === 2) {
@@ -437,7 +429,7 @@
 	function mousemove(event) {
 		if (!drag) {
 			return;
-		}		
+		}
 
 		xAngle -= factor * (event.pageX - mouseX) / (window.innerWidth);
 		yAngle -= factor * (event.pageY - mouseY) / (window.innerHeight);
