@@ -125,7 +125,7 @@
 
     this.setupSiteHover = function() {
       var siteHover = new ol.interaction.Select({
-        condition: ol.events.condition.mouseMove,
+        condition: ol.events.condition.pointerMove,
         layers: [vectorLayer],
         style: function(feature) {
           var text = feature.getId();
