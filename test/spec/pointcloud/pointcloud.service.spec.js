@@ -4,7 +4,7 @@ describe('pointcloud.service', function() {
 
   // load the module
   beforeEach(module('pattyApp.pointcloud'));
-  beforeEach(module('mockedSites'));
+  beforeEach(module('mockedSites', 'mockedDrivemap'));
 
   var PointcloudService;
   var Potree;
@@ -40,21 +40,29 @@ describe('pointcloud.service', function() {
     });
   });
 
-  describe('with SitesService loaded', function() {
+  describe('with SitesService, DrivemapService and PathControls loaded', function() {
     var SitesService = null,
+      DrivemapService = null,
       site162 = null;
 
-    beforeEach(function() {
-      inject(function(_SitesService_, defaultSitesJSON) {
-        SitesService = _SitesService_;
-        SitesService.onLoad(defaultSitesJSON);
-        site162 = defaultSitesJSON[0];
-      });
-    });
+    beforeEach(inject(function(_SitesService_, defaultSitesJSON) {
+      SitesService = _SitesService_;
+      SitesService.onLoad(defaultSitesJSON);
+      site162 = defaultSitesJSON[0];
+    }));
+
+    beforeEach(inject(function(_DrivemapService_, defaultDrivemapJSON) {
+      DrivemapService = _DrivemapService_;
+      DrivemapService.onLoad(defaultDrivemapJSON);
+    }));
+
+    beforeEach(inject(function(PathControls, CameraService) {
+      PathControls.init(CameraService.camera, [], [], {});
+    }));
 
     describe('enterOrbitMode() function', function() {
       beforeEach(function() {
-        PointcloudService.enterOrbitMode(site162);
+        PointcloudService.enterOrbitMode(null, site162);
       });
 
       it('should select the site', function() {
