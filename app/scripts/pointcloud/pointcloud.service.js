@@ -259,8 +259,7 @@
         return;
       }
 
-      //TODO Check if pointcloud is still in memory and destroy it.
-      referenceFrame.remove(sitePointcloud);
+      this.removeSitePointcloud();
 
       POCLoader.load(pointcloudPath, function(geometry) {
         sitePointcloud = new Potree.PointCloudOctree(geometry);
@@ -304,6 +303,11 @@
 
       */
 
+    };
+
+    this.removeSitePointcloud = function() {
+      //TODO Check if pointcloud is still in memory and destroy it.
+      referenceFrame.remove(sitePointcloud);
     };
 
     function addTextLabel(message, position) {
@@ -393,7 +397,7 @@
     Messagebus.subscribe('siteSelected', this.enterOrbitMode.bind(this));
 
     this.exitOrbitMode = function() {
-      referenceFrame.remove(sitePointcloud);
+      this.removeSitePointcloud();
 
       me.orbitControls.enabled = false;
       me.isInOrbitMode = false;
@@ -405,7 +409,7 @@
       SitesService.clearSiteSelection();
     };
 
-    Messagebus.subscribe('exitOrbitMode', this.exitOrbitMode);
+    Messagebus.subscribe('exitOrbitMode', this.exitOrbitMode.bind(this));
 
     this.showLabel = function(site) {
       var message = site.description_site; // jshint ignore:line
