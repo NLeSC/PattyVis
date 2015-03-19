@@ -53,6 +53,11 @@
         },
         set: function(bool) {
           this._driveMap = bool;
+          if(bool){
+            console.log('show drive map');
+          } else {
+            console.log('hide dive map');
+          }
         },
         enumerable: true,
         configurable: true
@@ -63,6 +68,11 @@
         },
         set: function(bool) {
           this._siteMesh = bool;
+          if(bool){
+            console.log('show site mesh');
+          } else {
+            console.log('hide site mesh');
+          }
         },
         enumerable: true,
         configurable: true
@@ -74,7 +84,7 @@
     Messagebus.subscribe('singleSite', function(event, site){
         this.currentSite = site;
         this.disabledButtons.sitePc = !('pointcloud' in site);
-        this.disabledButtons.siteMesh = !('mesh' in site);
+        //this.disabledButtons.siteMesh = !('mesh' in site);
     }.bind(this));
 
     this.lookAtSite = function(site) {
