@@ -1,10 +1,17 @@
 (function() {
   'use strict';
 
-  function SearchPanelController(SitesService, PointcloudService) {
+  function SearchPanelController(SitesService, PointcloudService, Messagebus) {
     this.pageSize = 2;
     this.currentPage = 1;
     this.SitesService = SitesService;
+    this.Messagebus = Messagebus;
+
+    this.currentSite = null;
+    this.disabledButtons = {
+      site_pc: true,
+      site_mesh: true
+    };
 
     this.toggleButtons = {
       _site_pc: true,
@@ -50,6 +57,12 @@
     SitesService.ready.then(function() {
       SitesService.query = 'site:162';
     });
+
+    Messagebus.subscribe('singleSite', function(event, site){
+        this.currentSite = site;
+        this.disabledButtons.site_pc = !('pointcloud' in site);
+        this.disabledButtons.site_mesh = !('mesh' in site);
+    }.bind(this));
 
     this.lookAtSite = function(site) {
       PointcloudService.lookAtSite(site);
