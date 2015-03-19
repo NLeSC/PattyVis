@@ -211,8 +211,6 @@
 
       SiteBoxService.listenTo(me.renderer.domElement);
 
-      me.orbitControls = new THREE.OrbitControls(camera, me.elRenderArea);
-
       DrivemapService.ready.then(this.loadPointcloud);
     };
 
@@ -395,6 +393,10 @@
 
       var siteCenter = SitesService.centerOfSite(site);
       var sceneCoords = SceneService.toLocal(new THREE.Vector3(siteCenter[0],siteCenter[1],siteCenter[2]));
+
+      if (me.orbitControls === null) {
+        me.orbitControls = new THREE.OrbitControls(CameraService.camera, me.elRenderArea);
+      }
 
       this.orbitControls.target.x = sceneCoords.x;
       this.orbitControls.target.y = sceneCoords.y;
