@@ -54,9 +54,9 @@
         set: function(bool) {
           this._driveMap = bool;
           if(bool){
-            console.log('show drive map');
+            PointcloudService.enableDrivemap();
           } else {
-            console.log('hide dive map');
+            PointcloudService.disableDrivemap();
           }
         },
         enumerable: true,
