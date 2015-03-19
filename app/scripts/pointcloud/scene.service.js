@@ -12,9 +12,9 @@
 
     /**
      * transform from geo coordinates to local scene coordinates
+     *
      */
     this.toLocal = function(position) {
-
       var scenePos = position.clone().applyMatrix4(this.referenceFrame.matrixWorld);
 
       return scenePos;

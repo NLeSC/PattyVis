@@ -77,6 +77,7 @@
 
 	PathControls.prototype.initListeners = function(element) {
 		document.addEventListener('keydown', onKeyDown, false);
+
 		document.addEventListener('keyup', onKeyUp, false);
 
 		element.addEventListener('mouseleave', onBlur, false);
@@ -88,6 +89,21 @@
 
 		element.addEventListener('mousewheel', mousewheel, false);
 		element.addEventListener('DOMMouseScroll', mousewheel, false); // firefox
+	};
+
+	PathControls.prototype.disableListeners = function(element) {
+		document.removeEventListener('keydown', onKeyDown, false);
+		document.removeEventListener('keyup', onKeyUp, false);
+
+		element.removeEventListener('mouseleave', onBlur, false);
+		element.removeEventListener('mouseout', onBlur, false);
+
+		element.removeEventListener('mousemove', mousemove, false);
+		element.removeEventListener('mousedown', mousedown, false);
+		element.removeEventListener('mouseup', mouseup, false);
+
+		element.removeEventListener('mousewheel', mousewheel, false);
+		element.removeEventListener('DOMMouseScroll', mousewheel, false); // firefox
 	};
 
 	PathControls.prototype.init = function(cam, cameraPath, lookPath, element) {
