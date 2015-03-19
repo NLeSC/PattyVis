@@ -99,6 +99,11 @@
          * @event sitesChanged
          */
         Messagebus.publish('sitesChanged');
+
+        if(this.searched.length===1){
+          Messagebus.publish('singleSite', this.searched[0]);
+        }
+
         // angular does not know that SitesService.searched and SitesService.filtered when query has been changed
         // trigger a $digest to let angular detect changes
         if (!$rootScope.$$phase) {
