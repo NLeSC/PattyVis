@@ -266,6 +266,14 @@
       });
     };
 
+    this.disableDrivemap = function() {
+      referenceFrame.remove(pointcloud);
+    };
+
+    this.enableDrivemap = function() {
+      referenceFrame.remove(pointcloud);
+    };
+
     this.loadSite = function(site) {
       // load pointcloud
       var pointcloudPath = site.pointcloud;
@@ -393,6 +401,8 @@
     };
 
     this.enterOrbitMode = function(event, site) {
+      debugger
+
       SitesService.selectSite(site);
 
       PathControls.disableListeners(this.elRenderArea);
