@@ -1,9 +1,21 @@
 (function() {
   'use strict';
 
-  function CameramodesController(PathControls) {
+  function CameramodesController($rootScope, PathControls, Messagebus) {
     this.PathControls = PathControls;
     this.cameraMode = PathControls.mode;
+    this.orbitModeEnabled = false;
+
+    Messagebus.subscribe('orbitModeEnabled', function(event, value) {
+      this.orbitModeEnabled = value;
+      if (value) {
+        $rootScope.$apply();
+      }
+    }.bind(this));
+
+    this.exitOrbitMode = function() {
+      Messagebus.publish('exitOrbitMode');
+    };
   }
 
   angular.module('pattyApp.cameramodes')

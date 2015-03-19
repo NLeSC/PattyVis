@@ -196,7 +196,6 @@
       me.orbitControls = new THREE.OrbitControls(camera, me.elRenderArea);
 
       DrivemapService.ready.then(this.loadPointcloud);
-      SitesService.ready.then(this.loadSite);
     };
 
     this.loadPointcloud = function() {
@@ -251,10 +250,17 @@
       });
     };
 
-    this.loadSite = function() {
+    this.loadSite = function(site) {
       // load pointcloud
-      var site = SitesService.getById(162);
       var pointcloudPath = site.pointcloud;
+
+      if (site.pointcloud === undefined) {
+        console.log('No pointcloud available for site ' + site.id);
+        return;
+      }
+
+      //TODO Check if pointcloud is still in memory and destroy it.
+      referenceFrame.remove(sitePointcloud);
 
       POCLoader.load(pointcloudPath, function(geometry) {
         sitePointcloud = new Potree.PointCloudOctree(geometry);
@@ -365,37 +371,41 @@
     this.enterOrbitMode = function(event, site) {
       SitesService.selectSite(site);
 
-      PathControls.disableListeners(me.elRenderArea);
+      PathControls.disableListeners(this.elRenderArea);
 
-      me.lookAtSite(site);
+      this.lookAtSite(site);
 
       var siteCenter = SitesService.centerOfSite(site);
       var sceneCoords = SceneService.toLocal(new THREE.Vector3(siteCenter[0],siteCenter[1],siteCenter[2]));
 
-      me.orbitControls.target.x = sceneCoords.x;
-      me.orbitControls.target.y = sceneCoords.y;
-      me.orbitControls.target.z = sceneCoords.z;
+      this.orbitControls.target.x = sceneCoords.x;
+      this.orbitControls.target.y = sceneCoords.y;
+      this.orbitControls.target.z = sceneCoords.z;
 
-      me.orbitControls.enabled = true;
-      me.isInOrbitMode = true;
-      
-      // TODO replace camera drivemap toggles (rails, free, demo) with orbit exit button
-      // TODO Show pointcloud of site if available
+      this.orbitControls.enabled = true;
+      this.isInOrbitMode = true;
+
+      this.loadSite(site);
+
+      Messagebus.publish('orbitModeEnabled', true);
     };
 
-    Messagebus.subscribe('siteSelected', this.enterOrbitMode);
+    Messagebus.subscribe('siteSelected', this.enterOrbitMode.bind(this));
 
     this.exitOrbitMode = function() {
-      // TODO Hide pointcloud of site if shown
-      // TODO replace OrbitControls with PathControls
-      // TODO replace orbit exit button with camera drivemap toggles (rails, free, demo)
+      referenceFrame.remove(sitePointcloud);
+
       me.orbitControls.enabled = false;
       me.isInOrbitMode = false;
+
+      Messagebus.publish('orbitModeEnabled', false);
 
       PathControls.initListeners(me.elRenderArea);
 
       SitesService.clearSiteSelection();
     };
+
+    Messagebus.subscribe('exitOrbitMode', this.exitOrbitMode);
 
     this.showLabel = function(site) {
       var message = site.description_site; // jshint ignore:line

@@ -56,7 +56,8 @@
 		this.modes = {
 			ONRAILS: 'onrails',
 			FLY: 'fly',
-			DEMO: 'demo'
+			DEMO: 'demo',
+			OFF: 'off'
 		};
 
 		this.mode = this.modes.ONRAILS;
@@ -372,6 +373,8 @@
 			updateFlyMode(10 * delta);
 		} else if (this.mode === this.modes.ONRAILS) {
 			updateOnRailsMode(delta);
+		} else if (this.mode === this.modes.OFF) {
+			//TODO: Implement something else
 		} else {
 			console.log('error: unknown control mode in path.controls');
 		}

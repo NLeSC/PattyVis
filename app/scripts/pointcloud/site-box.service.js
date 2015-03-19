@@ -19,6 +19,9 @@
     this.siteBoxList = [];
     this.referenceFrame = SceneService.referenceFrame;
 
+    this.colorWithPointcloud = 0x00FF00;
+    this.colorWithoutPointcloud = 0xFF0000;
+
     this.init = function(mouse) {
       me.mouse = mouse;
     };
@@ -52,7 +55,8 @@
       if(siteBox === null){
         return;
       }
-      siteBox.material.color.setHex(0xFF99CC);
+      siteBox.material.color.set(siteBox.defaultMaterial.color);
+      //siteBox.material.color.setHex(0xFF99CC);
     };
 
     this.resetHovering = function() {
@@ -84,11 +88,11 @@
 
       var selectedSiteBox = me.detectNearestSiteBoxUnderMouse(me.mouse.x, me.mouse.y);
       if (selectedSiteBox) {
-        if (selectedSiteBox.hasOwnProperty('textLabel')) {
-          me.toggleTextLabel(selectedSiteBox);
-        } else {
-          me.addTextLabel(selectedSiteBox);
-        }
+        //if (selectedSiteBox.hasOwnProperty('textLabel')) {
+        //  me.toggleTextLabel(selectedSiteBox);
+        //} else {
+        //  me.addTextLabel(selectedSiteBox);
+        //}
         Messagebus.publish('siteSelected', selectedSiteBox.site);
       }
     };
@@ -204,17 +208,26 @@
       var boxSize = SitesService.getBoundingBoxSize(site);
 
       var boxGeometry = new THREE.BoxGeometry(boxSize[0], boxSize[1], boxSize[2]);
+
+      var boxColor = this.colorWithPointcloud;
+      if (site.pointcloud === undefined) {
+        boxColor = this.colorWithoutPointcloud;
+      }
+
       var boxMaterial = new THREE.MeshBasicMaterial({
-        color: 0xFF99CC,
+        color: boxColor,
         // transparent: false,
         wireframe: true,
         // opacity: 1,
         // overdraw: 0.5
       });
+
       var bBox = new THREE.Mesh(boxGeometry, boxMaterial);
       bBox.position.set(siteCenter[0], siteCenter[1], siteCenter[2]);
       // bBox.name = site.id;
       bBox.site = site;
+
+      bBox.defaultMaterial = boxMaterial.clone();
 
       return bBox;
     };
