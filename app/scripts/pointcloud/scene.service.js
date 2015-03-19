@@ -12,6 +12,8 @@
 
     /**
      * transform from geo coordinates to local scene coordinates
+     * @param {THREE.Vector3} position With lon, lat, alt
+     * @return {THREE.Vector3} with x, y, z
      */
     this.toLocal = function(position) {
 
@@ -22,6 +24,8 @@
 
     /**
      * transform from local scene coordinates to geo coordinates
+     * @param {THREE.Vector3|THREE.Box3} object With lon, lat, alt
+     * @return {THREE.Vector3|THREE.Box3} with x, y, z
      */
     this.toGeo = function(object) {
       var geo;
