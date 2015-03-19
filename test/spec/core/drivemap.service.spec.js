@@ -102,14 +102,14 @@ describe('core.SitesService', function() {
     });
 
     describe('getCameraPath() function', function() {
-      it('should return coordinates of first feature', inject(function(defaultCameraPath) {
-        expect(service.getCameraPath()).toEqual(defaultCameraPath);
+      it('should return coordinates of first feature', inject(function(defaultCameraPathGeo) {
+        expect(service.getCameraPath()).toEqual(defaultCameraPathGeo);
       }));
     });
 
     describe('getLookPath() function', function() {
-      it('should return coordinates of first feature', inject(function(defaultLookPath) {
-        expect(service.getLookPath()).toEqual(defaultLookPath);
+      it('should return coordinates of first feature', inject(function(defaultLookPathGeo) {
+        expect(service.getLookPath()).toEqual(defaultLookPathGeo);
       }));
     });
   });

@@ -225,7 +225,7 @@
         ));
         referenceFrame.updateMatrixWorld(true);
 
-        var myPath = DrivemapService.getCameraPath().map(
+        var cameraPath = DrivemapService.getCameraPath().map(
           function(coord) {
             return SceneService.toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
           }
@@ -239,7 +239,7 @@
 
 
         //PathControls.init(camera, myPath, lookPath, me.renderer.domElement);
-		PathControls.init(camera, myPath, lookPath, me.elRenderArea);
+        PathControls.init(camera, cameraPath, lookPath, me.elRenderArea);
 
 
 

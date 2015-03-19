@@ -40,9 +40,10 @@ describe('pointcloud.service', function() {
     });
   });
 
-  describe('with SitesService, DrivemapService and PathControls loaded', function() {
+  describe('with SitesService, DrivemapService loaded and OrbitControls and PathControls initialized', function() {
     var SitesService = null,
       DrivemapService = null,
+      canvasElement = null,
       site162 = null;
 
     beforeEach(inject(function(_SitesService_, defaultSitesJSON) {
@@ -56,8 +57,11 @@ describe('pointcloud.service', function() {
       DrivemapService.onLoad(defaultDrivemapJSON);
     }));
 
-    beforeEach(inject(function(PathControls, CameraService) {
-      PathControls.init(CameraService.camera, [], [], {});
+    beforeEach(inject(function(PathControls, CameraService, defaultCameraPathThree, defaultLookPathThree, THREE) {
+      canvasElement = jasmine.createSpyObj('element', ['addEventListener', 'removeEventListener']);
+      PathControls.init(CameraService.camera, defaultCameraPathThree, defaultLookPathThree, canvasElement);
+      PointcloudService.elRenderArea = canvasElement;
+      PointcloudService.orbitControls = new THREE.OrbitControls(CameraService.camera, canvasElement);
     }));
 
     describe('enterOrbitMode() function', function() {
@@ -68,6 +72,10 @@ describe('pointcloud.service', function() {
       it('should select the site', function() {
         expect(SitesService.searched).toEqual([site162]);
       });
+
+      it('should set isInOrbitMode to true', function() {
+        expect(PointcloudService.isInOrbitMode).toBeTruthy();
+      });
     });
 
     describe('exitOrbitMode() function', function() {
@@ -77,6 +85,10 @@ describe('pointcloud.service', function() {
 
       it('should select no sites', function() {
         expect(SitesService.searched).toEqual([]);
+      });
+
+      it('should set isInOrbitMode to false', function() {
+        expect(PointcloudService.isInOrbitMode).toBeFalsy();
       });
     });
   });
