@@ -266,6 +266,14 @@
       });
     };
 
+    this.disableDrivemap = function() {
+      referenceFrame.remove(pointcloud);
+    };
+
+    this.enableDrivemap = function() {
+      referenceFrame.add(pointcloud);
+    };
+
     this.loadSite = function(site) {
       // load pointcloud
       var pointcloudPath = site.pointcloud;
@@ -446,7 +454,6 @@
     };
 
     this.update = function() {
-
       if (pointcloud) {
         pointcloud.material.clipMode = me.settings.clipMode;
         pointcloud.material.size = me.settings.pointSize;
