@@ -7,50 +7,62 @@
     this.SitesService = SitesService;
     this.Messagebus = Messagebus;
 
-    this.currentSite = null;
+    var _currentSite = null;
+    Object.defineProperty(this, 'currentSite', {
+      get: function() {
+        return _currentSite;
+      },
+      set: function(site) {
+        _currentSite = site;
+        this.toggleButtons.sitePc = PointcloudService.sitePointcloudId === site.id;
+      },
+      enumerable: true,
+      configurable: true
+    });
+
     this.disabledButtons = {
-      site_pc: true,
-      site_mesh: true
+      sitePc: true,
+      siteMesh: true
     };
 
     this.toggleButtons = {
-      _site_pc: true,
-      _drive_map: true,
-      _site_mesh: false
+      _sitePc: false,
+      _driveMap: true,
+      _siteMesh: false
     };
 
     Object.defineProperties(this.toggleButtons, {
-      site_pc: {
+      sitePc: {
         get: function() {
-          return this._site_pc;
+          return this._sitePc;
         },
         set: function(bool) {
-          //this._site_pc = bool;
-          //if(bool){
-          //  this.PointcloudService.loadSite(this.currentSite);
-          //} else {
-
-          //}
+          this._sitePc = bool;
+          if(bool){
+            PointcloudService.loadSite(_currentSite);
+          } else {
+            PointcloudService.removeSitePointcloud();
+          }
         },
         enumerable: true,
         configurable: true
       },
-      drive_map: {
+      driveMap: {
         get: function() {
-          return this._drive_map;
+          return this._driveMap;
         },
         set: function(bool) {
-          this._drive_map = bool;
+          this._driveMap = bool;
         },
         enumerable: true,
         configurable: true
       },
-      site_mesh: {
+      siteMesh: {
         get: function() {
-          return this._site_mesh;
+          return this._siteMesh;
         },
         set: function(bool) {
-          this._site_mesh = bool;
+          this._siteMesh = bool;
         },
         enumerable: true,
         configurable: true
@@ -59,11 +71,10 @@
 
     this.reconstruction_mesh = 0;
 
-
     Messagebus.subscribe('singleSite', function(event, site){
         this.currentSite = site;
-        this.disabledButtons.site_pc = !('pointcloud' in site);
-        this.disabledButtons.site_mesh = !('mesh' in site);
+        this.disabledButtons.sitePc = !('pointcloud' in site);
+        this.disabledButtons.siteMesh = !('mesh' in site);
     }.bind(this));
 
     this.lookAtSite = function(site) {
