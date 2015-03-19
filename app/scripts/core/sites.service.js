@@ -284,7 +284,6 @@
                     materialMatched ||
                     conditionMatched);
           }, this);
-          console.log(this.filtered.length + ' search result(s)');
         } else {
           this.searched = [];
           this.filtered = this.all;
