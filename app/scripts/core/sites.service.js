@@ -206,12 +206,35 @@
           var re = new RegExp(query, 'i');
 
           this.filtered = this.searched = this.all.filter(function(site) {
-            var description = site.description_site; // jshint ignore:line
-            var interpretation = site.interpretation_site; // jshint ignore:line
-            return (re.test(description) ||
-              re.test(interpretation) ||
-              'site:' + site.id === query);
+            var descriptionSite = site.description_site; // jshint ignore:line
+            var siteInterpretation = site.site_interpretation; // jshint ignore:line
+            var siteContext = site.site_context; // jshint ignore:line
+            var allText = descriptionSite +
+              ' ' + siteInterpretation +
+              ' ' + siteContext;
+
+            for (var i = 0; i < site.objects.length; i++) {
+              var object = site.objects[i];
+              allText += ' ' + object.description_restorations;
+              allText += ' ' + object.object_interpretation;
+              allText += ' ' + object.date_specific;
+              allText += ' ' + object.object_type;
+              allText += ' ' + object.period;
+              allText += ' ' + object.description_object;
+              allText += ' ' + object.Damaged;
+
+              for (var j = 0; j < object.object_material.length; j++) {
+                var objectMaterial = object.object_material[j];
+                allText += ' ' + objectMaterial.material_subtype;
+                allText += ' ' + objectMaterial.material_type;
+                allText += ' ' + objectMaterial.material_technique;
+              }
+            }
+
+            return (re.test(allText) ||
+                    'site:' + site.id === query);
           }, this);
+          console.log(this.filtered.length + ' search result(s)');
         } else {
           this.searched = [];
           this.filtered = this.all;
