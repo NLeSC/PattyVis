@@ -80,7 +80,7 @@
         <div class="icon-inline heightprofile-icon"></div>
         Height Profile
       </div>
-      Left Mouse: Insert Profile Marker Right Mouse: Finish insertion Drag&Drop: Move Profile Marker ctrl + Drag&Drop: Drag upwards to increase or downwards to decrease the profile width Depending on the Clip Mode, points inside the profile will be highlighted
+      Left Mouse: Insert Profile Marker Right Mouse: Finish insertion Drag&amp;Drop: Move Profile Marker ctrl + Drag&amp;Drop: Drag upwards to increase or downwards to decrease the profile width Depending on the Clip Mode, points inside the profile will be highlighted
       or points outside the profile will be clipped.
     </div>
     <div>
@@ -90,5 +90,49 @@
       </div>
       Left Mouse: Insert Volume or Select Inserted Volume Switch between translation (icon), scale (icon) and rotation (icon) mode Keyboard shortcut: T, E, R
     </div>
+
+      <h2>Search Box</h2>
+    <p>
+    In the search box, one can search all (textual) properties of the site
+    objects, plus the site ID-numbers.
+    There are several possibilities for searching.
+    You can search for words or phrases, or use "tags" to search in specific
+    fields.
+    The supported tags are "site:", "condition:", "material:" and "time:".
+    Below we list some example searches.
+    Note that all searches are case-insensitive.
+    </p>
+    <dl>
+      <dt>pyramid</dt>
+      <dd>Searches all textual fields of the site objects for the word "pyramid".</dd>
+
+      <dt>pyramidal monument</dt>
+      <dd>Searches all textual fields of the site objects for the exact phrase
+      "pyramidal monument". Only objects containing this exact phrase will be
+      found! For instance, if the description contains "pyramidal funerary
+      monument", it will not be found by searching for "pyramidal monument".</dd>
+
+      <dt>site:21</dt>
+      <dd>Matched the site_id field of the site objects to the given number (21 in
+      this case).</dd>
+
+      <dt>condition:complete</dt>
+      <dd>Searches the condition field of the site objects for the word "complete"
+      (or "damaged").</dd>
+
+      <dt>material:tufo</dt>
+      <dd>Searches the material fields (material_type, material_subtype and
+      material_technique) of the site objects for the word "tufo" or "peperino".</dd>
+
+      <dt>time:A.D</dt>
+      <dd>Searches the time fields (date_specific and period) of the site objects
+      for the "A.D".</dd>
+
+      <dt>time:2nd time:century</dt>
+      <dd>When looking for multiple words using tags, one needs to add the tag to
+      all words!</dd>
+    </dl>
+
   </div>
+
 </div>
