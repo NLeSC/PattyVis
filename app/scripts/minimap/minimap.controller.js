@@ -22,20 +22,56 @@
     });
 
     var vectorLayer = new ol.layer.Vector({
+      title: 'Sites',
       source: vectorSource,
       style: siteStyle
     });
 
-    var mapType = new ol.source.MapQuest({
-      layer: 'osm'
+    var baseLayers = new ol.layer.Group({
+      'title': 'Base maps',
+      layers: [
+        new ol.layer.Tile({
+          title: 'MapQuest',
+          type: 'base',
+          visible: true,
+          source: new ol.source.MapQuest({
+            layer: 'osm'
+          })
+        }),
+        new ol.layer.Tile({
+          title: 'Water color',
+          type: 'base',
+          visible: false,
+          source: new ol.source.Stamen({
+            layer: 'watercolor'
+          })
+        }),
+        new ol.layer.Tile({
+          title: 'OSM',
+          type: 'base',
+          visible: false,
+          source: new ol.source.OSM()
+        }),
+        new ol.layer.Tile({
+          title: 'Satellite',
+          type: 'base',
+          visible: false,
+          source: new ol.source.MapQuest({
+            layer: 'sat'
+          })
+        })
+      ]
     });
 
-    var rasterLayer = new ol.layer.Tile({
-      source: mapType
+    var overlayLayers = new ol.layer.Group({
+      title: 'Overlays',
+      layers: [
+        vectorLayer
+      ]
     });
 
     this.map = new ol.Map({
-      layers: [rasterLayer, vectorLayer],
+      layers: [baseLayers, overlayLayers],
       view: new ol.View({
         center: ol.proj.transform([12.5469185, 41.8286509], 'EPSG:4326', 'EPSG:3857'),
         zoom: 17
@@ -196,6 +232,11 @@
       this.map.addControl(new ResizeControl());
     };
     this.setupResizeControl();
+
+    var layerSwitcher = new ol.control.LayerSwitcher({
+      tipLabel: 'Legend'
+    });
+    this.map.addControl(layerSwitcher);
 
     this.map.addLayer(CamFrustumService.layer);
 
