@@ -12,12 +12,27 @@
     this.elRenderArea = null;
 
     me.settings = {
-      pointCountTarget: 1.0,
-      pointSize: 0.2,
+      pointCountTarget: 2.0,
+      pointSize: 0.15,
       opacity: 1,
       showSkybox: true,
-      interpolate: false,
+      interpolate: true,
       showStats: false,
+      pointSizeType: Potree.PointSizeType.ATTENUATED,
+      pointSizeTypes: Potree.PointSizeType,
+      pointColorType: Potree.PointColorType.RGB,
+      pointColorTypes: Potree.PointColorType,
+      pointShapes: Potree.PointShape,
+      pointShape: Potree.PointShape.CIRCLE,
+      clipMode: Potree.ClipMode.HIGHLIGHT_INSIDE,
+      clipModes: Potree.ClipMode
+    };
+
+    me.siteSettings = {
+      pointCountTarget: 2.0,
+      pointSize: 0.02,
+      opacity: 1,
+      interpolate: false,
       pointSizeType: Potree.PointSizeType.ATTENUATED,
       pointSizeTypes: Potree.PointSizeType,
       pointColorType: Potree.PointColorType.RGB,
@@ -62,6 +77,9 @@
 
     this.orbitControls = null;
     this.isInOrbitMode = false;
+
+    var drivemapMaterial = new Potree.PointCloudMaterial();
+    var siteMaterial = new Potree.PointCloudMaterial();
 
 
     function loadSkybox(path) {
@@ -204,7 +222,7 @@
       me.stats.lasCoordinates.crs = DrivemapService.getCrs();
 
       POCLoader.load(pointcloudPath, function(geometry) {
-        pointcloud = new Potree.PointCloudOctree(geometry);
+        pointcloud = new Potree.PointCloudOctree(geometry, drivemapMaterial);
 
         pointcloud.material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
         pointcloud.material.size = me.settings.pointSize;
@@ -263,11 +281,11 @@
       referenceFrame.remove(sitePointcloud);
 
       POCLoader.load(pointcloudPath, function(geometry) {
-        sitePointcloud = new Potree.PointCloudOctree(geometry);
+        sitePointcloud = new Potree.PointCloudOctree(geometry, siteMaterial);
 
         sitePointcloud.material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
-        sitePointcloud.material.size = me.settings.pointSize;
-        sitePointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
+        sitePointcloud.material.size = me.siteSettings.pointSize;
+        sitePointcloud.visiblePointsTarget = me.siteSettings.pointCountTarget * 1000 * 1000;
 
         referenceFrame.add(sitePointcloud);
         MeasuringService.setSitePointcloud(sitePointcloud);
@@ -438,14 +456,14 @@
       }
 
       if (sitePointcloud) {
-        sitePointcloud.material.clipMode = me.settings.clipMode;
-        sitePointcloud.material.size = me.settings.pointSize;
-        sitePointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
-        sitePointcloud.material.opacity = me.settings.opacity;
-        sitePointcloud.material.pointSizeType = me.settings.pointSizeType;
-        sitePointcloud.material.pointColorType = me.settings.pointColorType;
-        sitePointcloud.material.pointShape = me.settings.pointShape;
-        sitePointcloud.material.interpolate = me.settings.interpolate;
+        sitePointcloud.material.clipMode = me.siteSettings.clipMode;
+        sitePointcloud.material.size = me.siteSettings.pointSize;
+        sitePointcloud.visiblePointsTarget = me.siteSettings.pointCountTarget * 1000 * 1000;
+        sitePointcloud.material.opacity = me.siteSettings.opacity;
+        sitePointcloud.material.pointSizeType = me.siteSettings.pointSizeType;
+        sitePointcloud.material.pointColorType = me.siteSettings.pointColorType;
+        sitePointcloud.material.pointShape = me.siteSettings.pointShape;
+        sitePointcloud.material.interpolate = me.siteSettings.interpolate;
         sitePointcloud.material.heightMin = 0;
         sitePointcloud.material.heightMax = 8;
         sitePointcloud.material.intensityMin = 0;
@@ -453,7 +471,6 @@
 
         sitePointcloud.update(camera, me.renderer);
       }
-
 
       if (me.isInOrbitMode) {
         me.orbitControls.update();

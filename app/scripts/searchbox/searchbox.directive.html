@@ -10,7 +10,7 @@
         <div ng-if="sp.SitesService.searched.length > 1" ng-cloak>
           <div class="search-result" ng-repeat="site in sp.SitesService.searched|startFrom:(sp.currentPage-1)*sp.pageSize|limitTo:sp.pageSize">
             <div style="display: inline-block; vertical-align: top;">
-                <img ng-src="{{site.thumbnail ? site.thumbnail : 'http://placehold.it/120x80'}}" width="120">
+                <img class="site-thumb" ng-src="{{site.thumbnail ? site.thumbnail : 'http://placehold.it/120x80'}}" width="120">
             </div>
             <div style="display:inline-block;">
                 <strong>{{ site.description_site }}</strong>
