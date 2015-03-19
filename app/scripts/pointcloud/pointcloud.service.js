@@ -63,6 +63,8 @@
     this.orbitControls = null;
     this.isInOrbitMode = false;
 
+    this.sitePointcloudId = null;
+
 
     function loadSkybox(path) {
       var camera = new THREE.PerspectiveCamera(75, $window.innerWidth / $window.innerHeight, 1, 100000);
@@ -272,6 +274,8 @@
         MeasuringService.setSitePointcloud(sitePointcloud);
       });
 
+      this.sitePointcloudId = site.id;
+
       /*
       var meshPath = site.mesh.data_location;
       var meshMtlPath = site.mesh.mtl_location;
@@ -308,6 +312,8 @@
     this.removeSitePointcloud = function() {
       //TODO Check if pointcloud is still in memory and destroy it.
       referenceFrame.remove(sitePointcloud);
+
+      this.sitePointcloudId = null;
     };
 
     function addTextLabel(message, position) {
