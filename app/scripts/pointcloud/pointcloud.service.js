@@ -271,7 +271,7 @@
     };
 
     this.enableDrivemap = function() {
-      referenceFrame.remove(pointcloud);
+      referenceFrame.add(pointcloud);
     };
 
     this.loadSite = function(site) {
@@ -401,8 +401,6 @@
     };
 
     this.enterOrbitMode = function(event, site) {
-      debugger
-
       SitesService.selectSite(site);
 
       PathControls.disableListeners(this.elRenderArea);
@@ -456,7 +454,6 @@
     };
 
     this.update = function() {
-
       if (pointcloud) {
         pointcloud.material.clipMode = me.settings.clipMode;
         pointcloud.material.size = me.settings.pointSize;
