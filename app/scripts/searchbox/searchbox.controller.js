@@ -25,7 +25,12 @@
           return this._site_pc;
         },
         set: function(bool) {
-          this._site_pc = bool;
+          //this._site_pc = bool;
+          //if(bool){
+          //  this.PointcloudService.loadSite(this.currentSite);
+          //} else {
+
+          //}
         },
         enumerable: true,
         configurable: true
@@ -54,9 +59,6 @@
 
     this.reconstruction_mesh = 0;
 
-    SitesService.ready.then(function() {
-      SitesService.query = 'site:162';
-    });
 
     Messagebus.subscribe('singleSite', function(event, site){
         this.currentSite = site;
@@ -71,7 +73,7 @@
       PointcloudService.showLabel(site);
     };
     this.enterOrbitMode = function(site) {
-      PointcloudService.enterOrbitMode(site);
+      PointcloudService.enterOrbitMode('event', site);
     };
     /**
      * jump back to first page when query changes
