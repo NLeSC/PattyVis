@@ -33,7 +33,8 @@
     "OculusRiftEffect": "https://raw.githubusercontent.com/troffmo5/OculusStreetView/master/js/OculusRiftEffect.js",
     "potree": "https://github.com/potree/potree.git",
     "bluebird": "1.0.8",
-    "angular-bootstrap": "~0.12.0"
+    "angular-bootstrap": "~0.12.0",
+    "ol3-layerswitcher": "~1.0.1"
   },
   "overrides": {
     "openlayers3": {
