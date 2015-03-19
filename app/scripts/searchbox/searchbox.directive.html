@@ -10,7 +10,7 @@
         <div ng-if="sp.SitesService.searched.length > 1" ng-cloak>
           <div class="search-result" ng-repeat="site in sp.SitesService.searched|startFrom:(sp.currentPage-1)*sp.pageSize|limitTo:sp.pageSize">
             <div style="display: inline-block; vertical-align: top;">
-                <img ng-src="{{site.thumbnail ? site.thumbnail : 'http://placehold.it/120x80'}}" width="120">
+                <img class="site-thumb" ng-src="{{site.thumbnail ? site.thumbnail : 'http://placehold.it/120x80'}}" width="120">
             </div>
             <div style="display:inline-block;">
                 <strong>{{ site.description_site }}</strong>
@@ -26,13 +26,13 @@
         <div ng-if="sp.SitesService.searched.length == 0" ng-cloak>No results.</div>
         <div ng-if="sp.SitesService.searched.length == 1" class="site-details" ng-cloak>
           <div class="form-group btn-group">
-            <label class="btn btn-primary" ng-click="sp.lookAtSite(sp.currentSite)">Look at site</label>
-            <label class="btn btn-primary" ng-click="sp.enterOrbitMode(sp.currentSite)">Orbit mode</label>
+            <label class="btn btn-primary" ng-click="sp.lookAtSite(sp.currentSite)">Go to site</label>
+            <label class="btn btn-primary" ng-click="sp.enterOrbitMode(sp.currentSite)">Inspect site</label>
           </div>
           <div class="form-group btn-group" dropdown>
-            <button class="btn btn-primary" ng-disabled="sp.disabledButtons.site_pc" ng-model="sp.toggleButtons.site_pc" btn-checkbox>Site point cloud</button>
-            <label class="btn btn-primary" ng-model="sp.toggleButtons.drive_map" btn-checkbox>Drive map</label>
-            <label class="btn btn-primary" ng-disabled="sp.disabledButtons.site_mesh" ng-model="sp.toggleButtons.site_mesh" btn-checkbox>Site mesh</label>
+            <button class="btn btn-primary" ng-disabled="sp.disabledButtons.sitePc" ng-model="sp.toggleButtons.sitePc" btn-checkbox>Site point cloud</button>
+            <label class="btn btn-primary" ng-model="sp.toggleButtons.driveMap" btn-checkbox>Drive map</label>
+            <label class="btn btn-primary" ng-disabled="sp.disabledButtons.siteMesh" ng-model="sp.toggleButtons.siteMesh" btn-checkbox>Site mesh</label>
             <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle ng-disabled="disabled">
               Reconstruction meshes <span class="caret"></span>
             </button>

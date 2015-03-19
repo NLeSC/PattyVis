@@ -12,12 +12,27 @@
     this.elRenderArea = null;
 
     me.settings = {
-      pointCountTarget: 1.0,
-      pointSize: 0.2,
+      pointCountTarget: 2.0,
+      pointSize: 0.15,
       opacity: 1,
       showSkybox: true,
-      interpolate: false,
+      interpolate: true,
       showStats: false,
+      pointSizeType: Potree.PointSizeType.ATTENUATED,
+      pointSizeTypes: Potree.PointSizeType,
+      pointColorType: Potree.PointColorType.RGB,
+      pointColorTypes: Potree.PointColorType,
+      pointShapes: Potree.PointShape,
+      pointShape: Potree.PointShape.CIRCLE,
+      clipMode: Potree.ClipMode.HIGHLIGHT_INSIDE,
+      clipModes: Potree.ClipMode
+    };
+
+    me.siteSettings = {
+      pointCountTarget: 2.0,
+      pointSize: 0.02,
+      opacity: 1,
+      interpolate: false,
       pointSizeType: Potree.PointSizeType.ATTENUATED,
       pointSizeTypes: Potree.PointSizeType,
       pointColorType: Potree.PointColorType.RGB,
@@ -62,7 +77,10 @@
 
     this.orbitControls = null;
     this.isInOrbitMode = false;
+    this.sitePointcloudId = null;
 
+    var drivemapMaterial = new Potree.PointCloudMaterial();
+    var siteMaterial = new Potree.PointCloudMaterial();
 
     function loadSkybox(path) {
       var camera = new THREE.PerspectiveCamera(75, $window.innerWidth / $window.innerHeight, 1, 100000);
@@ -193,8 +211,6 @@
 
       SiteBoxService.listenTo(me.renderer.domElement);
 
-      me.orbitControls = new THREE.OrbitControls(camera, me.elRenderArea);
-
       DrivemapService.ready.then(this.loadPointcloud);
     };
 
@@ -204,7 +220,7 @@
       me.stats.lasCoordinates.crs = DrivemapService.getCrs();
 
       POCLoader.load(pointcloudPath, function(geometry) {
-        pointcloud = new Potree.PointCloudOctree(geometry);
+        pointcloud = new Potree.PointCloudOctree(geometry, drivemapMaterial);
 
         pointcloud.material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
         pointcloud.material.size = me.settings.pointSize;
@@ -259,19 +275,20 @@
         return;
       }
 
-      //TODO Check if pointcloud is still in memory and destroy it.
-      referenceFrame.remove(sitePointcloud);
+      this.removeSitePointcloud();
 
       POCLoader.load(pointcloudPath, function(geometry) {
-        sitePointcloud = new Potree.PointCloudOctree(geometry);
+        sitePointcloud = new Potree.PointCloudOctree(geometry, siteMaterial);
 
         sitePointcloud.material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
-        sitePointcloud.material.size = me.settings.pointSize;
-        sitePointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
+        sitePointcloud.material.size = me.siteSettings.pointSize;
+        sitePointcloud.visiblePointsTarget = me.siteSettings.pointCountTarget * 1000 * 1000;
 
         referenceFrame.add(sitePointcloud);
         MeasuringService.setSitePointcloud(sitePointcloud);
       });
+
+      this.sitePointcloudId = site.id;
 
       /*
       var meshPath = site.mesh.data_location;
@@ -304,6 +321,13 @@
 
       */
 
+    };
+
+    this.removeSitePointcloud = function() {
+      //TODO Check if pointcloud is still in memory and destroy it.
+      referenceFrame.remove(sitePointcloud);
+
+      this.sitePointcloudId = null;
     };
 
     function addTextLabel(message, position) {
@@ -378,6 +402,10 @@
       var siteCenter = SitesService.centerOfSite(site);
       var sceneCoords = SceneService.toLocal(new THREE.Vector3(siteCenter[0],siteCenter[1],siteCenter[2]));
 
+      if (me.orbitControls === null) {
+        me.orbitControls = new THREE.OrbitControls(CameraService.camera, me.elRenderArea);
+      }
+
       this.orbitControls.target.x = sceneCoords.x;
       this.orbitControls.target.y = sceneCoords.y;
       this.orbitControls.target.z = sceneCoords.z;
@@ -393,7 +421,7 @@
     Messagebus.subscribe('siteSelected', this.enterOrbitMode.bind(this));
 
     this.exitOrbitMode = function() {
-      referenceFrame.remove(sitePointcloud);
+      this.removeSitePointcloud();
 
       me.orbitControls.enabled = false;
       me.isInOrbitMode = false;
@@ -405,7 +433,7 @@
       SitesService.clearSiteSelection();
     };
 
-    Messagebus.subscribe('exitOrbitMode', this.exitOrbitMode);
+    Messagebus.subscribe('exitOrbitMode', this.exitOrbitMode.bind(this));
 
     this.showLabel = function(site) {
       var message = site.description_site; // jshint ignore:line
@@ -438,14 +466,14 @@
       }
 
       if (sitePointcloud) {
-        sitePointcloud.material.clipMode = me.settings.clipMode;
-        sitePointcloud.material.size = me.settings.pointSize;
-        sitePointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
-        sitePointcloud.material.opacity = me.settings.opacity;
-        sitePointcloud.material.pointSizeType = me.settings.pointSizeType;
-        sitePointcloud.material.pointColorType = me.settings.pointColorType;
-        sitePointcloud.material.pointShape = me.settings.pointShape;
-        sitePointcloud.material.interpolate = me.settings.interpolate;
+        sitePointcloud.material.clipMode = me.siteSettings.clipMode;
+        sitePointcloud.material.size = me.siteSettings.pointSize;
+        sitePointcloud.visiblePointsTarget = me.siteSettings.pointCountTarget * 1000 * 1000;
+        sitePointcloud.material.opacity = me.siteSettings.opacity;
+        sitePointcloud.material.pointSizeType = me.siteSettings.pointSizeType;
+        sitePointcloud.material.pointColorType = me.siteSettings.pointColorType;
+        sitePointcloud.material.pointShape = me.siteSettings.pointShape;
+        sitePointcloud.material.interpolate = me.siteSettings.interpolate;
         sitePointcloud.material.heightMin = 0;
         sitePointcloud.material.heightMax = 8;
         sitePointcloud.material.intensityMin = 0;
@@ -453,7 +481,6 @@
 
         sitePointcloud.update(camera, me.renderer);
       }
-
 
       if (me.isInOrbitMode) {
         me.orbitControls.update();

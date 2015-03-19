@@ -9,7 +9,9 @@
     Messagebus.subscribe('orbitModeEnabled', function(event, value) {
       this.orbitModeEnabled = value;
       if (value) {
-        $rootScope.$apply();
+        if (!$rootScope.$$phase) {
+          $rootScope.$apply();
+        }
       }
     }.bind(this));
 

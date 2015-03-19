@@ -35,12 +35,26 @@ body {
   overflow-y: scroll;
 }
 patty-minimap {
-  display: block;
-  padding: 5px;
   background-color: #fff;
+  display: block;
   height: 300px;
+  padding: 5px;
   width: 300px;
 }
+
+.big-minimap {
+  height: 800px;
+  width: 800px;
+}
+
+.resize-minimap {
+  bottom: .5em;
+  left: .5em;
+}
+.ol-touch .resize-minimap {
+  bottom: .5em;
+}
+
 patty-pointcloud-canvas {
   position: absolute;
   right: 0;
@@ -48,13 +62,25 @@ patty-pointcloud-canvas {
   z-index: -100;
   width: 100%;
   height: 100%;
+  tabindex: 1;
 }
-.settings-panel,
+
+.settings-panel {
+  position: absolute;
+  left: 5px;
+  bottom: 70px;
+}
+.site-settings-panel {
+  position: absolute;
+  left: 165px;
+  bottom: 70px;
+}
 .help-panel {
   position: absolute;
   left: 5px;
   bottom: 70px;
 }
+
 patty-pointcloud-stats {
   position: absolute;
   left: 0;
@@ -188,7 +214,7 @@ patty-pointcloud-stats {
   box-shadow: none;
 }
 .icon-small:hover {
-  outline:0;
+  outline: 0;
 }
 .icon-tiny {
   width: 30px;
@@ -198,9 +224,8 @@ patty-pointcloud-stats {
   box-shadow: none;
 }
 .icon-tiny:hover {
-  outline:0;
+  outline: 0;
 }
-
 .distance-icon {
   background-image: url("../images/icons/toolbox_distance_icon_50px.png");
 }
@@ -243,4 +268,7 @@ patty-pointcloud-stats {
 }
 .toolbox-tools {
   padding-left: 13px;
+}
+.site-thumb {
+  padding: 4px;
 }
