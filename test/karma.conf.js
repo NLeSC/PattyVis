@@ -35,6 +35,7 @@ module.exports = function(config) {
       'bower_components/potree/build/js/potree.js',
       'bower_components/potree/build/js/laslaz.js',
       'bower_components/openlayers3/build/ol.js',
+      'bower_components/ol3-layerswitcher/src/ol3-layerswitcher.js',
       'bower_components/oculus-bridge/web/build/OculusBridge.min.js',
       'bower_components/OculusRiftEffect/index.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
