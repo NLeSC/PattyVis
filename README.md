@@ -130,7 +130,7 @@ Note! Running `grunt e2e-sauce` will undo all changes in `app/` folder.
 ### Build a distro
 
 ```
-grunt dist
+grunt build
 ```
 The `dist` folder has production ready distribution.
 
