@@ -279,7 +279,6 @@
       var pointcloudPath = site.pointcloud;
 
       if (site.pointcloud === undefined) {
-        console.log('No pointcloud available for site ' + site.id);
         return;
       }
 
