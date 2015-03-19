@@ -193,6 +193,8 @@
 
       SiteBoxService.listenTo(me.renderer.domElement);
 
+      me.orbitControls = new THREE.OrbitControls(camera, me.elRenderArea);
+
       DrivemapService.ready.then(this.loadPointcloud);
       SitesService.ready.then(this.loadSite);
     };
@@ -363,17 +365,20 @@
     this.enterOrbitMode = function(event, site) {
       SitesService.selectSite(site);
 
+      PathControls.disableListeners(me.elRenderArea);
+
       me.lookAtSite(site);
 
-      me.orbitControls = new THREE.OrbitControls(CameraService.camera, me.elRenderArea);
-      // var siteCenter = SitesService.centerOfSite(site);
-      // me.orbitControls.target.x = siteCenter[0];
-      // me.orbitControls.target.y = siteCenter[1];
-      // me.orbitControls.target.z = siteCenter[2];
+      var siteCenter = SitesService.centerOfSite(site);
+      var sceneCoords = SceneService.toLocal(new THREE.Vector3(siteCenter[0],siteCenter[1],siteCenter[2]));
 
+      me.orbitControls.target.x = sceneCoords.x;
+      me.orbitControls.target.y = sceneCoords.y;
+      me.orbitControls.target.z = sceneCoords.z;
+
+      me.orbitControls.enabled = true;
       me.isInOrbitMode = true;
-
-      // TODO replace PathControls with OrbitControls
+      
       // TODO replace camera drivemap toggles (rails, free, demo) with orbit exit button
       // TODO Show pointcloud of site if available
     };
@@ -384,7 +389,10 @@
       // TODO Hide pointcloud of site if shown
       // TODO replace OrbitControls with PathControls
       // TODO replace orbit exit button with camera drivemap toggles (rails, free, demo)
+      me.orbitControls.enabled = false;
       me.isInOrbitMode = false;
+
+      PathControls.initListeners(me.elRenderArea);
 
       SitesService.clearSiteSelection();
     };

@@ -16,7 +16,6 @@
      * @return {THREE.Vector3} with x, y, z
      */
     this.toLocal = function(position) {
-
       var scenePos = position.clone().applyMatrix4(this.referenceFrame.matrixWorld);
 
       return scenePos;
