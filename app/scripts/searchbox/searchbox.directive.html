@@ -18,7 +18,6 @@
             </div>
             <div class="btn-group">
                 <button type="button" class="glyphicon glyphicon-eye-open" ng-click="sp.lookAtSite(site)" title="Look at site"></button>
-                <button type="button" class="glyphicon glyphicon-tag" ng-click="sp.showLabel(site)" title="Show label"></button>
             </div>
           </div>
           <pager total-items="sp.SitesService.searched.length" items-per-page="sp.pageSize" ng-model="sp.currentPage" align="false"></pager>
@@ -33,26 +32,26 @@
             <button class="btn btn-primary" ng-disabled="sp.disabledButtons.sitePc" ng-model="sp.toggleButtons.sitePc" btn-checkbox>Site point cloud</button>
             <label class="btn btn-primary" ng-model="sp.toggleButtons.driveMap" btn-checkbox>Drive map</label>
             <label class="btn btn-primary" ng-disabled="sp.disabledButtons.siteMesh" ng-model="sp.toggleButtons.siteMesh" btn-checkbox>Site mesh</label>
-            <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+            <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle disabled>
               Reconstruction meshes <span class="caret"></span>
             </button>
             <ul class="dropdown-menu pull-right" role="menu">
-              <li ng-repeat="mesh in sp.SitesService.searched[0].reconstruction_mesh">{{ mesh.id }}</li>
+              <li ng-repeat="mesh in sp.currentSite.reconstruction_mesh">{{ mesh.id }}</li>
             </ul>
           </div>
           <p>
-            <img ng-src="{{sp.SitesService.searched[0].thumbnail }}" width="120" align="left">
-            <strong>{{ sp.SitesService.searched[0].description_site }}</strong>
+            <img ng-src="{{sp.currentSite.thumbnail ? sp.currentSite.thumbnail : 'http://placehold.it/120x80'}}" width="120" align="left">
+            <strong>{{ sp.currentSite.description_site }}</strong>
           </p>
           <p>
-            Site interpretation: {{ sp.SitesService.searched[0].site_interpretation }}
+            Site interpretation: {{ sp.currentSite.site_interpretation }}
           </p>
           <p>
-            Site context: {{ sp.SitesService.searched[0].site_context }}
+            Site context: {{ sp.currentSite.site_context }}
           </p>
           <h2>Objects</h2>
           <ul>
-            <li ng-repeat="obj in sp.SitesService.searched[0].objects">{{ obj.description_object }}</li>
+            <li ng-repeat="obj in sp.currentSite.objects">{{ obj.description_object }}</li>
           </ul>
     </div>
 </div>
