@@ -48,13 +48,25 @@ patty-pointcloud-canvas {
   z-index: -100;
   width: 100%;
   height: 100%;
+  tabindex: 1;
 }
-.settings-panel,
+
+.settings-panel {
+  position: absolute;
+  left: 5px;
+  bottom: 70px;
+}
+.site-settings-panel {
+  position: absolute;
+  left: 165px;
+  bottom: 70px;
+}
 .help-panel {
   position: absolute;
   left: 5px;
   bottom: 70px;
 }
+
 patty-pointcloud-stats {
   position: absolute;
   left: 0;
@@ -243,4 +255,7 @@ patty-pointcloud-stats {
 }
 .toolbox-tools {
   padding-left: 13px;
+}
+.site-thumb {
+  padding: 4px;
 }
