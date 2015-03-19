@@ -20,11 +20,11 @@ describe('pointcloud.service', function() {
     it('should have settings', function() {
 
       var expected = {
-        pointCountTarget: 1.0,
-        pointSize: 0.2,
+        pointCountTarget: 2.0,
+        pointSize: 0.15,
         opacity: 1,
         showSkybox: true,
-        interpolate: false,
+        interpolate: true,
         showStats: false,
         pointSizeType: Potree.PointSizeType.ATTENUATED,
         pointSizeTypes: Potree.PointSizeType,
