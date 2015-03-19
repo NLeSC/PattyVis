@@ -206,33 +206,83 @@
           var re = new RegExp(query, 'i');
 
           this.filtered = this.searched = this.all.filter(function(site) {
-            var descriptionSite = site.description_site; // jshint ignore:line
-            var siteInterpretation = site.site_interpretation; // jshint ignore:line
-            var siteContext = site.site_context; // jshint ignore:line
+            var descriptionSite = site.description_site;
+            var siteInterpretation = site.site_interpretation;
+            var siteContext = site.site_context;
             var allText = descriptionSite +
               ' ' + siteInterpretation +
               ' ' + siteContext;
+
+            var allMaterialText = '';
+            var allTimeText = '';
+            var allConditionText = '';
 
             for (var i = 0; i < site.objects.length; i++) {
               var object = site.objects[i];
               allText += ' ' + object.description_restorations;
               allText += ' ' + object.object_interpretation;
-              allText += ' ' + object.date_specific;
               allText += ' ' + object.object_type;
-              allText += ' ' + object.period;
               allText += ' ' + object.description_object;
-              allText += ' ' + object.Damaged;
+
+              allTimeText += ' ' + object.date_specific;
+              allTimeText += ' ' + object.period;
+
+              allConditionText += ' ' + object.condition;
 
               for (var j = 0; j < object.object_material.length; j++) {
                 var objectMaterial = object.object_material[j];
-                allText += ' ' + objectMaterial.material_subtype;
-                allText += ' ' + objectMaterial.material_type;
-                allText += ' ' + objectMaterial.material_technique;
+                allMaterialText += ' ' + objectMaterial.material_subtype;
+                allMaterialText += ' ' + objectMaterial.material_type;
+                allMaterialText += ' ' + objectMaterial.material_technique;
               }
+            }
+            allText += ' ' + allMaterialText;
+            allText += ' ' + allTimeText;
+            allText += ' ' + allConditionText;
+
+            // The following three ifs do specific field searches using three
+            // search "tags":
+            //    'time:'
+            //    'material:'
+            //    'condition:'
+            // Note: currently the only thing that is included is the word
+            // right after the search-tag! If you want to search for multiple
+            // words with the same (or different) tags, you have to add the tag
+            // before every word.
+            var queryLowCase = query.toLowerCase();
+
+            var timeMatched = false;
+            if (queryLowCase.includes('time:')) {
+              var timeSearches = queryLowCase.split('time:').slice(1);
+              timeMatched = timeSearches.some(function(timeSearch, i, timeSearches) {
+                var taggedWord = timeSearch.trim().split(' ')[0];
+                return allTimeText.toLowerCase().includes(taggedWord);
+              });
+            }
+
+            var materialMatched = false;
+            if (query.toLowerCase().includes('material:')) {
+              var materialSearches = queryLowCase.split('material:').slice(1);
+              materialMatched = materialSearches.some(function(materialSearch, i, materialSearches) {
+                var taggedWord = materialSearch.trim().split(' ')[0];
+                return allMaterialText.toLowerCase().includes(taggedWord);
+              });
+            }
+
+            var conditionMatched = false;
+            if (query.toLowerCase().includes('condition:')) {
+              var conditionSearches = queryLowCase.split('condition:').slice(1);
+              conditionMatched = conditionSearches.some(function(conditionSearch, i, conditionSearches) {
+                var taggedWord = conditionSearch.trim().split(' ')[0];
+                return allConditionText.toLowerCase().includes(taggedWord);
+              });
             }
 
             return (re.test(allText) ||
-                    'site:' + site.id === query);
+                    'site:' + site.id === query ||
+                    timeMatched ||
+                    materialMatched ||
+                    conditionMatched);
           }, this);
           console.log(this.filtered.length + ' search result(s)');
         } else {
