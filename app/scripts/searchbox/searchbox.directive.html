@@ -2,6 +2,9 @@
     <div class="input-group">
         <div class="glyphicon glyphicon-search input-group-addon"></div>
         <input type="text" class="form-control" placeholder="Search..." ng-model="sp.SitesService.query" ng-model-options="{ updateOn: 'default', debounce: { default: 500 } }" ng-change="sp.onQueryChange()">
+        <div class="input-group-addon" ng-show="sp.SitesService.query">
+            <button class="btn btn-default btn-xs close" aria-label="Close" ng-click="sp.SitesService.query=''" ><span aria-hidden="true">&times;</span></button>
+        </div>
     </div>
     <div class="panel search-results" ng-show="sp.SitesService.query">
         <div ng-if="sp.SitesService.searched.length > 1" ng-cloak>
