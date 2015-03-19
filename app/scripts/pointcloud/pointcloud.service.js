@@ -77,10 +77,10 @@
 
     this.orbitControls = null;
     this.isInOrbitMode = false;
+    this.sitePointcloudId = null;
 
     var drivemapMaterial = new Potree.PointCloudMaterial();
     var siteMaterial = new Potree.PointCloudMaterial();
-
 
     function loadSkybox(path) {
       var camera = new THREE.PerspectiveCamera(75, $window.innerWidth / $window.innerHeight, 1, 100000);
@@ -275,8 +275,7 @@
         return;
       }
 
-      //TODO Check if pointcloud is still in memory and destroy it.
-      referenceFrame.remove(sitePointcloud);
+      this.removeSitePointcloud();
 
       POCLoader.load(pointcloudPath, function(geometry) {
         sitePointcloud = new Potree.PointCloudOctree(geometry, siteMaterial);
@@ -288,6 +287,8 @@
         referenceFrame.add(sitePointcloud);
         MeasuringService.setSitePointcloud(sitePointcloud);
       });
+
+      this.sitePointcloudId = site.id;
 
       /*
       var meshPath = site.mesh.data_location;
@@ -320,6 +321,13 @@
 
       */
 
+    };
+
+    this.removeSitePointcloud = function() {
+      //TODO Check if pointcloud is still in memory and destroy it.
+      referenceFrame.remove(sitePointcloud);
+
+      this.sitePointcloudId = null;
     };
 
     function addTextLabel(message, position) {
@@ -413,7 +421,7 @@
     Messagebus.subscribe('siteSelected', this.enterOrbitMode.bind(this));
 
     this.exitOrbitMode = function() {
-      referenceFrame.remove(sitePointcloud);
+      this.removeSitePointcloud();
 
       me.orbitControls.enabled = false;
       me.isInOrbitMode = false;
@@ -425,7 +433,7 @@
       SitesService.clearSiteSelection();
     };
 
-    Messagebus.subscribe('exitOrbitMode', this.exitOrbitMode);
+    Messagebus.subscribe('exitOrbitMode', this.exitOrbitMode.bind(this));
 
     this.showLabel = function(site) {
       var message = site.description_site; // jshint ignore:line
