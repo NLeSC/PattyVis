@@ -32,7 +32,7 @@ describe('pattyApp', function() {
     beforeEach(function() {
       element(by.model('sp.SitesService.query')).sendKeys('site:162');
       // wait for search to complete
-      browser.sleep(1600);
+      browser.sleep(600);
     });
 
     it('should have details of site 162 displayed', function() {
