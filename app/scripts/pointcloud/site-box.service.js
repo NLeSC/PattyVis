@@ -17,6 +17,7 @@
     };
 
     this.siteBoxList = [];
+    this.siteBoxReferenceFrame = new THREE.Object3D();
     this.referenceFrame = SceneService.referenceFrame;
 
     this.colorWithPointcloud = 0x00FF00;
@@ -28,20 +29,39 @@
 
     this.onSitesChanged = function(sites) {
       me.siteBoxList = [];
+      me.referenceFrame.remove(me.siteBoxReferenceFrame);
+      me.siteBoxReferenceFrame = new THREE.Object3D();
+
       for (var i = 0; i < sites.length; i++) {
         if (
           'pointcloud' in sites[i] || 'footprint' in sites[i]
         ) {
           var siteBox = me.createSiteBox(sites[i]);
           me.siteBoxList.push(siteBox);
-          me.referenceFrame.add(siteBox);
+          me.siteBoxReferenceFrame.add(siteBox);
         }
       }
+      me.referenceFrame.add(me.siteBoxReferenceFrame);
     };
 
     SitesService.ready.then(function() {
       var sites = SitesService.all;
       me.onSitesChanged(sites);
+    });
+
+    this.onSitesFiltered = function(sites) {
+      me.siteBoxList.forEach(function(siteBox) {
+        if (contains(sites, siteBox.site)) {
+          siteBox.material.opacity = 1;
+        } else {
+          siteBox.material.opacity = 0.1;
+        }
+      });
+    };
+
+    Messagebus.subscribe('sitesChanged', function() {
+      var visibleSites = SitesService.filtered;
+      me.onSitesFiltered(visibleSites);
     });
 
     this.hoverOver = function(siteBox) {
@@ -216,9 +236,9 @@
 
       var boxMaterial = new THREE.MeshBasicMaterial({
         color: boxColor,
-        // transparent: false,
+        transparent: true,
         wireframe: true,
-        // opacity: 1,
+        opacity: 1
         // overdraw: 0.5
       });
 
@@ -247,6 +267,16 @@
         return null;
       }
     };
+
+    function contains(a, obj) {
+      var i = a.length;
+      while (i--) {
+         if (a[i] === obj) {
+             return true;
+         }
+      }
+      return false;
+    }
 
   }
 

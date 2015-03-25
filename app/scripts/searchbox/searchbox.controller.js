@@ -69,9 +69,9 @@
         set: function(bool) {
           this._siteMesh = bool;
           if(bool){
-            console.log('show site mesh');
+            PointcloudService.enableSiteMesh();
           } else {
-            console.log('hide site mesh');
+            PointcloudService.disableSiteMesh();
           }
         },
         enumerable: true,

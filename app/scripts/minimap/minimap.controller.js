@@ -281,6 +281,9 @@
     // Possible improvement: http://stackoverflow.com/a/26381201
     this.fitMapToFrustrumAndSearchedSites = function(event, frustum) {
       CamFrustumService.onCameraMove(frustum);
+
+      //Disabled because the interaction was better without this -- Maarten
+      /*
       var frustumExtent = CamFrustumService.getExtent();
       if (SitesService.searched) { // searched sites exist
         var sitesExtent = vectorSource.getExtent();
@@ -293,6 +296,7 @@
       } else { // no searched sites
         me.fitMapToExtent(frustumExtent);
       }
+      */
     };
 
     Messagebus.subscribe('cameraMoved', this.fitMapToFrustrumAndSearchedSites);

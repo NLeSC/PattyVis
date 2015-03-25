@@ -64,6 +64,7 @@
     var scene;
     var pointcloud;
     var sitePointcloud;
+    var siteMesh;
 
     var skybox;
 
@@ -81,6 +82,8 @@
 
     var drivemapMaterial = new Potree.PointCloudMaterial();
     var siteMaterial = new Potree.PointCloudMaterial();
+
+    var objmtlLoader = new THREE.OBJMTLLoader();
 
     function loadSkybox(path) {
       var camera = new THREE.PerspectiveCamera(75, $window.innerWidth / $window.innerHeight, 1, 100000);
@@ -295,21 +298,49 @@
         MeasuringService.setSitePointcloud(sitePointcloud);
       });
 
-      this.sitePointcloudId = site.id;
+      //this.loadSiteMesh(site);
 
-      /*
+      this.sitePointcloudId = site.id;
+    };
+
+    this.loadSiteMesh = function(site) {
+      if (site.mesh === undefined) {
+        return;
+      }
+      console.log('Loading mesh for site : ' + site.id);
       var meshPath = site.mesh.data_location;
       var meshMtlPath = site.mesh.mtl_location;
+      var meshPosition = site.mesh.osg_position;
 
-      var objmtl_loader = new THREE.OBJMTLLoader();
+      console.log('mesh data location: ' + meshPath);
+      console.log('mesh mtl  location: ' + meshMtlPath);
+      console.log('mesh osg position : ' + meshPosition);
 
-      objmtl_loader.load(meshPath, meshMtlPath, function(object) {
-          referenceFrame.add(object);
+      objmtlLoader.load(meshPath, meshMtlPath, function(object) {
+        siteMesh = object;
+        siteMesh.position.x = meshPosition.x;
+        siteMesh.position.y = meshPosition.z;
+        siteMesh.position.z = meshPosition.y;
       }, function(){
         return 1;
       }, function() {
         console.log('Error while loading mesh for site');
       });
+    };
+
+    this.enableSiteMesh = function() {
+      if (siteMesh !== undefined) {
+        referenceFrame.add(siteMesh);
+      }
+    };
+
+    this.disableSiteMesh = function() {
+      if (siteMesh !== undefined) {
+        referenceFrame.remove(siteMesh);
+      }
+    };
+
+    /*
 
       var reconstructionMeshPath = site.reconstruction_mesh[0].data_location;
       var obj_loader = new THREE.OBJLoader();
@@ -327,8 +358,6 @@
       });
 
       */
-
-    };
 
     this.removeSitePointcloud = function() {
       //TODO Check if pointcloud is still in memory and destroy it.
