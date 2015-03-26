@@ -30,10 +30,32 @@ angular.module('mockedSites', [])
     'description_site': 'Pyramidal funerary monument. Composed of opus caementicium, mainly composed of black basalt chips mixed with a mortar full of red tufa grains and fragments as well as chalk pits. Some tiny pieces of white marble inserted. The mass is composed in various horizontal layers not entirely recognizable. From the west side, nine layers can be distinguished. One is the base, the first big protrusion has two layers, the following indent one, the part with the recessions for blocks two more, followed by two final layers. The pieces of basalt are systemized in more or less regular tiers.\r\nThe current form is due to the absence of elements in stone, especially in the base, and of the entire covering with white marble like the Pyramid of Cestius. Cavities made in the higher registers illustrate the practice of insertion of blocks to tighten the structure of the facing.',
     'site_context': 'Funerary',
     'site_interpretation': 'Funerary tower',
-    'pointcloud_bbox': [296247.246448120509740, 4633726.192645221017301, 121.484, 296264.387774608097970, 4633743.168275895528495, 144.177],
-    'pointcloud': 'http://148.251.106.132:8090/POTREE/PC/SITE/S162/SITE_162_cleaned_ALIGNED_DRIVE_1_V3/SITE_162_cleaned_ALIGNED_DRIVE_1_V3_levels_4/cloud.js',
-    'mesh': {
+    'pointcloud': [{
+      'dataLocation': 'http://148.251.106.132:8090/POTREE/PC/SITE/S162/SITE_162_FEB+JUL_MAX_cleaned_NEW_aligned_DRIVE_1_V3/SITE_162_FEB+JUL_MAX_cleaned_NEW_aligned_DRIVE_1_V3_levels_4/cloud.js',
+      'id': 1,
+      'bbox': [
+        296246.064142799,
+        4633726.5490373997,
+        126.826690673828,
+        296263.150743103,
+        4633743.6589598097,
+        143.21209716796901
+      ],
+      'osg_position': {
+        'h': 0.0,
+        'p': 0.0,
+        'r': 0.0,
+        'xs': 1.0,
+        'y': 4633735.1039985996,
+        'x': 296254.607442951,
+        'ys': 1.0,
+        'z': 135.01939392089801,
+        'zs': 1.0
+      }
+    }],
+    'mesh': [{
       'mtl_location': 'http://148.251.106.132:8090/RAW/MESH/SITE/CURR/S162/SITE_162_FEB+JUL_MAX_cleaned_ALIGNED_DRIVE_1_V3_SRID_32633/SITE_162_FEB+JUL_MAX_cleaned_ALIGNED.mtl',
+      'id': 1,
       'osg_position': {
         'h': 0.0,
         'p': 0.0,
@@ -46,7 +68,7 @@ angular.module('mockedSites', [])
         'zs': 1.0
       },
       'data_location': 'http://148.251.106.132:8090/RAW/MESH/SITE/CURR/S162/SITE_162_FEB+JUL_MAX_cleaned_ALIGNED_DRIVE_1_V3_SRID_32633/SITE_162_FEB+JUL_MAX_cleaned_ALIGNED_DRIVE_1_V3.obj'
-    },
+    }],
     'reconstruction_mesh': [{
       'id': 1,
       'osg_position': {
@@ -206,7 +228,9 @@ angular.module('mockedSites', [])
     'description_site': '13.1 > On top, block of white marble. 30,5 x 143,5 x 66 cm. Corners of north-west and south-east sides missing. Chipped and injured. On front and left sides moulding at square angles, forming corner of an entablature. The measurements of the plain lower side are 113 x 31 cm, indicating that the piece grew larger and longer going upwards. Bottom plain except for dowel hole in back (8 x 3 cm). Right side also plain, as is top apart from three shallow dowel holes of 2 \u00bd, 4, and 1 \u00bd cm deep and maybe a fourth one at the proper right side (3 cm deep). The left and front sides show the same moulding becoming wider going upwards and beveled at the top. Moulding from bottom to top: cyma reversa, dentil, cyma recta almost twice the height of the cyma below, half hollow with drooping lower rim, abacus with egg and dart, and finally plain cornice.',
     'site_context': 'Unknown',
     'site_interpretation': 'Unknown',
-    'mesh': {
+    'pointcloud': [],
+    'mesh': [{
+      'id': 1,
       'mtl_location': 'http://148.251.106.132:8090/RAW/MESH/SITE/CURR/S13/SITE_13_FIRST/SITE_13_MAX_tex.mtl',
       'osg_position': {
         'h': 0.0,
@@ -220,7 +244,7 @@ angular.module('mockedSites', [])
         'zs': 1.0
       },
       'data_location': 'http://148.251.106.132:8090/RAW/MESH/SITE/CURR/S13/SITE_13_FIRST/SITE_13_MAX.obj'
-    },
+    }],
     'reconstruction_mesh': [],
     'objects': [{
       'description_restorations': null,
@@ -277,8 +301,7 @@ angular.module('mockedSites', [])
       'description_object': 'Tufa block underneath is part of an architectonic structure. 30 x 170 x 48 cm. All surfaces in sight are plain except for west side, which is roughly worked with an axe. Bottom invisible. It looks similar to the foundation blocks in Site 25.',
       'condition': null
     }]
-  }]
-).value('defaultSitesGeoJSON', {
+  }]).value('defaultSitesGeoJSON', {
     'type': 'FeatureCollection',
     'features': [{
       'type': 'Feature',

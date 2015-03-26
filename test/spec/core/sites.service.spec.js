@@ -132,7 +132,9 @@ describe('core.SitesService', function() {
         var maxalt = 144.177;
         var bbox = [minlon, minlat, minalt, maxlon, maxlat, maxalt];
         site = {
-          pointcloud_bbox: bbox // jshint ignore:line
+          pointcloud: [{
+            'bbox': bbox
+          }]
         };
       });
 

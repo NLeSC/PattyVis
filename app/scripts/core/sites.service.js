@@ -167,8 +167,8 @@
        * @return {array} [minlon, minlat, minalt, maxlon, maxlat, maxalt]
        */
       getBoundingBox: function(site) {
-        if ('pointcloud_bbox' in site) {
-          return site.pointcloud_bbox; // jshint ignore:line
+        if (site.pointcloud !== undefined && site.pointcloud.length !== 0 && 'bbox' in site.pointcloud[0]) {
+          return site.pointcloud[0].bbox;
         } else {
           return this.getBoundingBoxOfFootprint(site);
         }

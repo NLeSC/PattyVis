@@ -31,6 +31,10 @@ module.exports = function(config) {
       'bower_components/angular-touch/angular-touch.js',
       'bower_components/proj4/dist/proj4.js',
       'bower_components/threejs/build/three.js',
+      'bower_components/OBJLoader/index.js',
+      'bower_components/MTLLoader/index.js',
+      'bower_components/OBJMTLLoader/index.js',
+      'bower_components/DDSLoader/index.js',
       'bower_components/OrbitControls/index.js',
       'bower_components/potree/build/js/potree.js',
       'bower_components/potree/build/js/laslaz.js',
@@ -79,7 +83,7 @@ module.exports = function(config) {
       // source files, that you wanna generate coverage for
       // do not include tests or libraries
       // (these files will be instrumented by Istanbul)
-      'app/scripts/**/*.js': ['coverage']
+      //'app/scripts/**/*.js': ['coverage']
     },
     reporters: ['dots', 'junit', 'coverage', 'html'],
     junitReporter: {

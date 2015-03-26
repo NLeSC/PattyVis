@@ -34,7 +34,7 @@
 
       for (var i = 0; i < sites.length; i++) {
         if (
-          'pointcloud' in sites[i] || 'footprint' in sites[i]
+          sites[i].pointcloud.length !== 0 || 'footprint' in sites[i]
         ) {
           var siteBox = me.createSiteBox(sites[i]);
           me.siteBoxList.push(siteBox);
@@ -230,7 +230,7 @@
       var boxGeometry = new THREE.BoxGeometry(boxSize[0], boxSize[1], boxSize[2]);
 
       var boxColor = this.colorWithPointcloud;
-      if (site.pointcloud === undefined) {
+      if (site.pointcloud.length === 0 ) {
         boxColor = this.colorWithoutPointcloud;
       }
 

@@ -278,12 +278,11 @@
     };
 
     this.loadSite = function(site) {
-      // load pointcloud
-      var pointcloudPath = site.pointcloud;
-
-      if (site.pointcloud === undefined) {
+      if (site.pointcloud.length === 0) {
         return;
       }
+      // load pointcloud
+      var pointcloudPath = site.pointcloud[0].dataLocation;
 
       this.removeSitePointcloud();
 
