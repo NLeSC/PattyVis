@@ -9,7 +9,39 @@
 
   angular.module('pattyApp.potree', [])
     .constant('Potree', Potree)
-    .constant('POCLoader', POCLoader);
+    .constant('POCLoader', POCLoader)
+    .run(function(Potree, THREE) {
+/*      Potree.TextSprite.prototype.setTextOriginal = Potree.TextSprite.prototype.setText;
+      // var originalPotreeTextSpritePrototype = Potree.TextSprite.prototype;
+      // originalPotreeTextSprite.prototype = originalPotreeTextSpritePrototype;
+      Potree.TextSprite.prototype.setText = function(text) {
+        console.log("jeuj");
+        Potree.TextSprite.prototype.setTextOriginal(text);
+      };
+      console.log(Potree.TextSprite.prototype.setText === Potree.TextSprite.prototype.setTextOriginal);
+      // Potree.TextSprite.prototype = originalPotreeTextSpritePrototype;
+*/
+      var textSprite = Potree.TextSprite;
+      var textSpritePrototype = Potree.TextSprite.prototype;
+      var setText = Potree.TextSprite.prototype.setText;
+      var setTextColor = Potree.TextSprite.prototype.setTextColor;
+      var setBorderColor = Potree.TextSprite.prototype.setBorderColor;
+      var setBackgroundColor = Potree.TextSprite.prototype.setBackgroundColor;
+      var update = Potree.TextSprite.prototype.update;
+      var roundRect = Potree.TextSprite.prototype.roundRect;
+      Potree.TextSprite = function(text) {
+        console.log('jeuj');
+        textSprite(text);
+      };
+      Potree.TextSprite.prototype = new THREE.Object3D();
+      Potree.TextSprite.prototype.setText = setText;
+      Potree.TextSprite.prototype.setTextColor = setTextColor;
+      Potree.TextSprite.prototype.setBorderColor = setBorderColor;
+      Potree.TextSprite.prototype.setBackgroundColor = setBackgroundColor;
+      Potree.TextSprite.prototype.update = update;
+      Potree.TextSprite.prototype.roundRect = roundRect;
+    })
+    ;
 
   /**
    * @ngdoc overview

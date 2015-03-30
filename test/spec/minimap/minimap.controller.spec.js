@@ -45,7 +45,6 @@ describe('minimap.controller', function() {
       expect(controller.map.getLayers().getArray()).toContain(CamFrustumService.layer);
     });
     it('should have a on click event on the map');
-    it('should have a on rightclick event on the map');
     it('should have subscribed "sitesChanged" on the Messagebus');
     it('should have subscribed "cameraMoved" on the Messagebus');
   });
@@ -78,17 +77,6 @@ describe('minimap.controller', function() {
       // var result = controller.map.getView().calculateExtent([290, 290]);
       // var expected = [1395808.0073149959, 5134899.1359227635, 1397193.4284526645, 5136284.557060432];
       // expect(result).toEqual(expected);
-    });
-  });
-
-  describe('onMapRightclick() function', function() {
-    it('should swallow event', function() {
-      var event = jasmine.createSpyObj('event', ['preventDefault']);
-
-      var result = controller.onMapRightclick(event);
-
-      expect(result).toBeFalsy();
-      expect(event.preventDefault).toHaveBeenCalled();
     });
   });
 

@@ -94,15 +94,6 @@
 
     Messagebus.subscribe('sitesChanged', this.sitesChangedListener);
 
-    this.onMapRightclick = function(event) {
-      console.log('right clicked on the map!');
-      event.preventDefault();
-
-      return false;
-    };
-
-    this.map.on('rightclick', this.onMapRightclick);
-
     // TODO set initial location for the map
     // TODO toggle map on/of
 
