@@ -34,23 +34,30 @@ body {
   max-height: 700px;
   overflow-y: scroll;
 }
+
 patty-minimap {
+  position: absolute;
+  top: 1%;
+  right: 1%;
   background-color: #fff;
   display: block;
-  height: 300px;
-  padding: 5px;
-  width: 300px;
+  padding: 2px;
+  width: 13%;
+  height: 25%;
+  min-width: 200px;
+  min-height: 200px;
 }
 
 .big-minimap {
-  height: 800px;
-  width: 800px;
+  height: 80%;
+  width: 50%;
 }
 
 .resize-minimap {
   bottom: .5em;
   left: .5em;
 }
+
 .ol-touch .resize-minimap {
   bottom: .5em;
 }
