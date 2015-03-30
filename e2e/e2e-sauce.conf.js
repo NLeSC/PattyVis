@@ -14,8 +14,8 @@ exports.config = {
     'browserName': 'chrome',
     'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
     'build': process.env.TRAVIS_BUILD_NUMBER,
-    'name': 'Chrome Linux v39',
-    'version': '39.0',
+    'name': 'Chrome Linux v41',
+    'version': '41.0',
     'platform': 'Linux'
   }],
 

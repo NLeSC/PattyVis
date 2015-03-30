@@ -9,15 +9,13 @@
     <div class="panel panel-default search-results scroll-panel" ng-show="sp.SitesService.query">
         <div ng-if="sp.SitesService.searched.length > 1" ng-cloak>
           <div class="search-result" ng-repeat="site in sp.SitesService.searched|startFrom:(sp.currentPage-1)*sp.pageSize|limitTo:sp.pageSize">
-            <div style="display: inline-block; vertical-align: top;">
-                <img class="site-thumb" ng-src="{{site.thumbnail ? site.thumbnail : 'http://placehold.it/120x80'}}" width="120">
+            <h3>Site {{ site.id }}</h3>
+            <div>
+              <img class="site-thumb" ng-src="{{ site.thumbnail ? site.thumbnail : 'http://placehold.it/120x80'}}" width="120" align="left">
+              <strong>{{ site.description_site }}</strong>
             </div>
-            <div style="display:inline-block;">
-                <strong>{{ site.description_site }}</strong>
-                <p>{{ site.site_interpretation }}</p>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="glyphicon glyphicon-eye-open" ng-click="sp.lookAtSite(site)" title="Look at site"></button>
+            <div class="form-group btn-group pull-right">
+              <label class="btn btn-primary" ng-click="sp.lookAtSite(site)">Go to site {{ site.id }}</label>
             </div>
           </div>
           <pager total-items="sp.SitesService.searched.length" items-per-page="sp.pageSize" ng-model="sp.currentPage" align="false"></pager>
@@ -31,7 +29,7 @@
           <div class="form-group btn-group" dropdown>
             <button class="btn btn-primary" ng-disabled="sp.disabledButtons.sitePc" ng-model="sp.toggleButtons.sitePc" btn-checkbox>Site point cloud</button>
             <label class="btn btn-primary" ng-model="sp.toggleButtons.driveMap" btn-checkbox>Drive map</label>
-            <label class="btn btn-primary" ng-disabled="sp.disabledButtons.siteMesh" ng-model="sp.toggleButtons.siteMesh" btn-checkbox>Site mesh</label>
+            <label class="btn btn-primary" ng-model="sp.toggleButtons.siteMesh" btn-checkbox>Site mesh</label>
             <button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle disabled>
               Reconstruction meshes <span class="caret"></span>
             </button>
@@ -40,7 +38,7 @@
             </ul>
           </div>
           <p>
-            <img ng-src="{{sp.currentSite.thumbnail ? sp.currentSite.thumbnail : 'http://placehold.it/120x80'}}" width="120" align="left">
+            <img class="site-thumb" ng-src="{{sp.currentSite.thumbnail ? sp.currentSite.thumbnail : 'http://placehold.it/120x80'}}" width="120" align="left">
             <strong>{{ sp.currentSite.description_site }}</strong>
           </p>
           <p>
@@ -49,7 +47,7 @@
           <p>
             Site context: {{ sp.currentSite.site_context }}
           </p>
-          <h2>Objects</h2>
+          <h4>Objects</h4>
           <ul>
             <li ng-repeat="obj in sp.currentSite.objects">{{ obj.description_object }}</li>
           </ul>

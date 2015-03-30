@@ -22,20 +22,89 @@
     });
 
     var vectorLayer = new ol.layer.Vector({
+      title: 'Sites',
       source: vectorSource,
       style: siteStyle
     });
 
-    var mapType = new ol.source.MapQuest({
-      layer: 'osm'
+    var transparentOverlays = new ol.layer.Group({
+      'title': 'Overlay maps',
+      layers: [
+        new ol.layer.Tile({
+          title: 'Canina Tavola XXXII',
+          visible: false,
+          opacity: 0.7,
+          source: new ol.source.TileWMS(({
+            url: 'http://54.228.203.57:6080/arcgis/services/VIA_APPIA/Historical_maps_Via_Appia/MapServer/WMSServer',
+            params: {'LAYERS': 0, 'TRANSPARENT' : true, 'TILED': true}
+          }))
+        }),
+        new ol.layer.Tile({
+          title: 'P1050526editCUT3',
+          visible: false,
+          opacity: 0.7,
+          source: new ol.source.TileWMS(({
+            url: 'http://54.228.203.57:6080/arcgis/services/VIA_APPIA/Historical_maps_Via_Appia/MapServer/WMSServer',
+            params: {'LAYERS': 2, 'TRANSPARENT' : true, 'TILED': true}
+          }))
+        }),
+        new ol.layer.Tile({
+          title: 'Pinza',
+          visible: false,
+          opacity: 0.7,
+          source: new ol.source.TileWMS(({
+            url: 'http://54.228.203.57:6080/arcgis/services/VIA_APPIA/Historical_maps_Via_Appia/MapServer/WMSServer',
+            params: {'LAYERS': 3, 'TRANSPARENT' : true, 'TILED': true}
+          }))
+        })
+      ]
     });
 
-    var rasterLayer = new ol.layer.Tile({
-      source: mapType
+    var baseLayers = new ol.layer.Group({
+      'title': 'Base maps',
+      layers: [
+        new ol.layer.Tile({
+          title: 'MapQuest',
+          type: 'base',
+          visible: true,
+          source: new ol.source.MapQuest({
+            layer: 'osm'
+          })
+        }),
+        new ol.layer.Tile({
+          title: 'Water color',
+          type: 'base',
+          visible: false,
+          source: new ol.source.Stamen({
+            layer: 'watercolor'
+          })
+        }),
+        new ol.layer.Tile({
+          title: 'OSM',
+          type: 'base',
+          visible: false,
+          source: new ol.source.OSM()
+        }),
+        new ol.layer.Tile({
+          title: 'Satellite',
+          type: 'base',
+          visible: false,
+          source: new ol.source.MapQuest({
+            layer: 'sat'
+          })
+        })
+      ]
+    });
+
+    var overlayLayers = new ol.layer.Group({
+      title: 'Overlays',
+      layers: [
+        vectorLayer, transparentOverlays
+      ]
     });
 
     this.map = new ol.Map({
-      layers: [rasterLayer, vectorLayer],
+      layers: [baseLayers, overlayLayers],
       view: new ol.View({
         center: ol.proj.transform([12.5469185, 41.8286509], 'EPSG:4326', 'EPSG:3857'),
         zoom: 17
@@ -188,6 +257,11 @@
     };
     this.setupResizeControl();
 
+    var layerSwitcher = new ol.control.LayerSwitcher({
+      tipLabel: 'Legend'
+    });
+    this.map.addControl(layerSwitcher);
+
     this.map.addLayer(CamFrustumService.layer);
 
     this.fitMapToExtent = function(extent) {
@@ -198,6 +272,9 @@
     // Possible improvement: http://stackoverflow.com/a/26381201
     this.fitMapToFrustrumAndSearchedSites = function(event, frustum) {
       CamFrustumService.onCameraMove(frustum);
+
+      //Disabled because the interaction was better without this -- Maarten
+      /*
       var frustumExtent = CamFrustumService.getExtent();
       if (SitesService.searched) { // searched sites exist
         var sitesExtent = vectorSource.getExtent();
@@ -210,6 +287,7 @@
       } else { // no searched sites
         me.fitMapToExtent(frustumExtent);
       }
+      */
     };
 
     Messagebus.subscribe('cameraMoved', this.fitMapToFrustrumAndSearchedSites);

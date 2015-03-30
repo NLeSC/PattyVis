@@ -31,20 +31,27 @@ describe('pattyApp', function() {
   describe('searched on "site:162"', function() {
     beforeEach(function() {
       element(by.model('sp.SitesService.query')).sendKeys('site:162');
+      // wait for search to complete
+      browser.sleep(600);
     });
 
-    it('should have one site details div', function() {
-      expect(element.all(by.css('.site-details')).count()).toBe(1);
+    it('should have details of site 162 displayed', function() {
+      var results = element(by.css('.site-details'));
+      expect(results.isDisplayed()).toBeTruthy();
+      expect(results.getText()).toContain('Inspect site');
     });
   });
 
   describe('search on "zzzz"', function() {
     beforeEach(function() {
       element(by.model('sp.SitesService.query')).sendKeys('zzzz');
+      // wait for search to complete
+      browser.sleep(600);
     });
 
-    it('should have zero search results', function() {
-      expect(element.all(by.css('.search-result')).count()).toBe(0);
+    it('should have no results', function() {
+      var results = element(by.css('.search-results'));
+      expect(results.getText()).toContain('No results');
     });
   });
 
