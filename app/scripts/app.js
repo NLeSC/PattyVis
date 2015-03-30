@@ -21,7 +21,9 @@
       console.log(Potree.TextSprite.prototype.setText === Potree.TextSprite.prototype.setTextOriginal);
       // Potree.TextSprite.prototype = originalPotreeTextSpritePrototype;
 */
-      var textSprite = Potree.TextSprite;
+
+    // WORKING ON ISSUE #50
+/*      var textSprite = Potree.TextSprite;
       var textSpritePrototype = Potree.TextSprite.prototype;
       var setText = Potree.TextSprite.prototype.setText;
       var setTextColor = Potree.TextSprite.prototype.setTextColor;
@@ -40,7 +42,7 @@
       Potree.TextSprite.prototype.setBackgroundColor = setBackgroundColor;
       Potree.TextSprite.prototype.update = update;
       Potree.TextSprite.prototype.roundRect = roundRect;
-    })
+*/    })
     ;
 
   /**
