@@ -224,10 +224,11 @@
     };
 
     this.createSiteBox = function(site) {
-      var siteCenter = SitesService.centerOfSite(site);
-      var boxSize = SitesService.getBoundingBoxSize(site);
+      var bBox;
 
-      var boxGeometry = new THREE.BoxGeometry(boxSize[0], boxSize[1], boxSize[2]);
+      var siteCenter = SitesService.centerOfSite(site);
+      //var boxSize = SitesService.getBoundingBoxSize(site);
+      //var siteFootprint = site.footprint;
 
       var boxColor = this.colorWithPointcloud;
       if (site.pointcloud.length === 0 ) {
@@ -236,14 +237,64 @@
 
       var boxMaterial = new THREE.MeshBasicMaterial({
         color: boxColor,
+        side: THREE.DoubleSide,
         transparent: true,
         wireframe: true,
         opacity: 1
         // overdraw: 0.5
       });
 
-      var bBox = new THREE.Mesh(boxGeometry, boxMaterial);
-      bBox.position.set(siteCenter[0], siteCenter[1], siteCenter[2]);
+      var geometry = new THREE.Geometry();
+
+      if (site.footprint !== undefined) {
+        site.footprint.forEach(function(polygon) {
+          polygon.forEach(function(ring) {
+            var point0, point1, counter = 0;
+            for (var i =0; i < ring.length-1; i++) {
+              point0 = ring[i];
+              point1 = ring[i+1];
+
+              geometry.vertices.push(new THREE.Vector3(point0[0]-siteCenter[0], point0[1]-siteCenter[1], 0));
+              geometry.vertices.push(new THREE.Vector3(point1[0]-siteCenter[0], point1[1]-siteCenter[1], 0));
+              geometry.vertices.push(new THREE.Vector3(point0[0]-siteCenter[0], point0[1]-siteCenter[1], 1));
+
+              geometry.faces.push( new THREE.Face3( counter++, counter++, counter++ ) );
+
+              geometry.vertices.push(new THREE.Vector3(point0[0]-siteCenter[0], point0[1]-siteCenter[1], 1));
+              geometry.vertices.push(new THREE.Vector3(point1[0]-siteCenter[0], point1[1]-siteCenter[1], 0));
+              geometry.vertices.push(new THREE.Vector3(point1[0]-siteCenter[0], point1[1]-siteCenter[1], 1));
+
+              geometry.faces.push( new THREE.Face3( counter++, counter++, counter++ ) );
+            }
+
+            point0 = ring[ring.length-1];
+            point1 = ring[0];
+
+            geometry.vertices.push(new THREE.Vector3(point0[0]-siteCenter[0], point0[1]-siteCenter[1], 0));
+            geometry.vertices.push(new THREE.Vector3(point1[0]-siteCenter[0], point1[1]-siteCenter[1], 0));
+            geometry.vertices.push(new THREE.Vector3(point0[0]-siteCenter[0], point0[1]-siteCenter[1], 1));
+
+            geometry.faces.push( new THREE.Face3( counter++, counter++, counter++ ) );
+
+            geometry.vertices.push(new THREE.Vector3(point0[0]-siteCenter[0], point0[1]-siteCenter[1], 1));
+            geometry.vertices.push(new THREE.Vector3(point1[0]-siteCenter[0], point1[1]-siteCenter[1], 0));
+            geometry.vertices.push(new THREE.Vector3(point1[0]-siteCenter[0], point1[1]-siteCenter[1], 1));
+
+            geometry.faces.push( new THREE.Face3( counter++, counter++, counter++ ) );
+          });
+        });
+      } else {
+        var boxSize = SitesService.getBoundingBoxSize(site);
+        geometry = new THREE.BoxGeometry(boxSize[0], boxSize[1], boxSize[2]);
+      }
+
+      bBox = new THREE.Mesh(geometry, boxMaterial);
+      if (site.footprint_altitude !== undefined) {
+        bBox.position.set(siteCenter[0], siteCenter[1], site.footprint_altitude[0]);
+      } else {
+        bBox.position.set(siteCenter[0], siteCenter[1], siteCenter[2]);
+      }
+
       // bBox.name = site.id;
       bBox.site = site;
 
