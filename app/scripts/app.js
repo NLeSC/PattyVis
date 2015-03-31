@@ -10,8 +10,9 @@
   angular.module('pattyApp.potree', [])
     .constant('Potree', Potree)
     .constant('POCLoader', POCLoader)
+    /*
     .run(function(Potree, THREE) {
-/*      Potree.TextSprite.prototype.setTextOriginal = Potree.TextSprite.prototype.setText;
+      Potree.TextSprite.prototype.setTextOriginal = Potree.TextSprite.prototype.setText;
       // var originalPotreeTextSpritePrototype = Potree.TextSprite.prototype;
       // originalPotreeTextSprite.prototype = originalPotreeTextSpritePrototype;
       Potree.TextSprite.prototype.setText = function(text) {
@@ -42,7 +43,8 @@
       Potree.TextSprite.prototype.setBackgroundColor = setBackgroundColor;
       Potree.TextSprite.prototype.update = update;
       Potree.TextSprite.prototype.roundRect = roundRect;
-*/    })
+    })
+    */
     ;
 
   /**

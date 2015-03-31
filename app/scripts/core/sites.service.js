@@ -206,9 +206,9 @@
           var re = new RegExp(query, 'i');
 
           this.filtered = this.searched = this.all.filter(function(site) {
-            var descriptionSite = site.description_site;
-            var siteInterpretation = site.site_interpretation;
-            var siteContext = site.site_context;
+            var descriptionSite = site.description_site; // jshint ignore:line
+            var siteInterpretation = site.site_interpretation; // jshint ignore:line
+            var siteContext = site.site_context; // jshint ignore:line
             var allText = descriptionSite +
               ' ' + siteInterpretation +
               ' ' + siteContext;
@@ -219,21 +219,21 @@
 
             for (var i = 0; i < site.objects.length; i++) {
               var object = site.objects[i];
-              allText += ' ' + object.description_restorations;
-              allText += ' ' + object.object_interpretation;
-              allText += ' ' + object.object_type;
-              allText += ' ' + object.description_object;
+              allText += ' ' + object.description_restorations; // jshint ignore:line
+              allText += ' ' + object.object_interpretation; // jshint ignore:line
+              allText += ' ' + object.object_type; // jshint ignore:line
+              allText += ' ' + object.description_object; // jshint ignore:line
 
-              allTimeText += ' ' + object.date_specific;
+              allTimeText += ' ' + object.date_specific; // jshint ignore:line
               allTimeText += ' ' + object.period;
 
               allConditionText += ' ' + object.condition;
 
-              for (var j = 0; j < object.object_material.length; j++) {
-                var objectMaterial = object.object_material[j];
-                allMaterialText += ' ' + objectMaterial.material_subtype;
-                allMaterialText += ' ' + objectMaterial.material_type;
-                allMaterialText += ' ' + objectMaterial.material_technique;
+              for (var j = 0; j < object.object_material.length; j++) { // jshint ignore:line
+                var objectMaterial = object.object_material[j]; // jshint ignore:line
+                allMaterialText += ' ' + objectMaterial.material_subtype; // jshint ignore:line
+                allMaterialText += ' ' + objectMaterial.material_type; // jshint ignore:line
+                allMaterialText += ' ' + objectMaterial.material_technique; // jshint ignore:line
               }
             }
             allText += ' ' + allMaterialText;
@@ -254,27 +254,27 @@
             var timeMatched = false;
             if (queryLowCase.indexOf('time:') !== -1) {
               var timeSearches = queryLowCase.split('time:').slice(1);
-              timeMatched = timeSearches.some(function(timeSearch, i, timeSearches) {
+              timeMatched = timeSearches.some(function(timeSearch) {
                 var taggedWord = timeSearch.trim().split(' ')[0];
-                return allTimeText.toLowerCase().includes(taggedWord);
+                return allTimeText.toLowerCase().indexOf(taggedWord) !== -1;
               });
             }
 
             var materialMatched = false;
             if (query.toLowerCase().indexOf('material:') !== -1) {
               var materialSearches = queryLowCase.split('material:').slice(1);
-              materialMatched = materialSearches.some(function(materialSearch, i, materialSearches) {
+              materialMatched = materialSearches.some(function(materialSearch) {
                 var taggedWord = materialSearch.trim().split(' ')[0];
-                return allMaterialText.toLowerCase().includes(taggedWord);
+                return allMaterialText.toLowerCase().indexOf(taggedWord) !== -1;
               });
             }
 
             var conditionMatched = false;
             if (query.toLowerCase().indexOf('condition:') !== -1) {
               var conditionSearches = queryLowCase.split('condition:').slice(1);
-              conditionMatched = conditionSearches.some(function(conditionSearch, i, conditionSearches) {
+              conditionMatched = conditionSearches.some(function(conditionSearch) {
                 var taggedWord = conditionSearch.trim().split(' ')[0];
-                return allConditionText.toLowerCase().includes(taggedWord);
+                return allConditionText.toLowerCase().indexOf(taggedWord) !== -1;
               });
             }
 

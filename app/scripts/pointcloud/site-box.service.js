@@ -289,8 +289,8 @@
       }
 
       bBox = new THREE.Mesh(geometry, boxMaterial);
-      if (site.footprint_altitude !== undefined) {
-        bBox.position.set(siteCenter[0], siteCenter[1], site.footprint_altitude[0]);
+      if (site.footprint_altitude !== undefined) { // jshint ignore:line
+        bBox.position.set(siteCenter[0], siteCenter[1], site.footprint_altitude[0]); // jshint ignore:line
       } else {
         bBox.position.set(siteCenter[0], siteCenter[1], siteCenter[2]);
       }

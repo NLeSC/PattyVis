@@ -307,9 +307,9 @@
         return;
       }
       console.log('Loading mesh for site : ' + site.id);
-      var meshPath = site.mesh.data_location;
-      var meshMtlPath = site.mesh.mtl_location;
-      var meshPosition = site.mesh.osg_position;
+      var meshPath = site.mesh.data_location; // jshint ignore:line
+      var meshMtlPath = site.mesh.mtl_location; // jshint ignore:line
+      var meshPosition = site.mesh.osg_position; // jshint ignore:line
 
       console.log('mesh data location: ' + meshPath);
       console.log('mesh mtl  location: ' + meshMtlPath);

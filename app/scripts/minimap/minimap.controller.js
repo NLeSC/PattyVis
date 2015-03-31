@@ -183,34 +183,36 @@
     };
     this.setupSiteClick();
 
+    this.onSiteHover = function(feature) {
+      var text = feature.getId().toString();
+      var siteHightlightedStyle = new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: '#276BE7',
+          width: 10
+        }),
+        fill: new ol.style.Fill({
+          color: 'rgba(255, 255, 0, 0.1)'
+        }),
+        text: new ol.style.Text({
+          font: '12px Calibri,sans-serif',
+          text: text,
+          fill: new ol.style.Fill({
+            color: '#ccc'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#276BE7',
+            width: 3
+          })
+        })
+      });
+      return [siteHightlightedStyle];
+    };
+
     this.setupSiteHover = function() {
       var siteHover = new ol.interaction.Select({
         condition: ol.events.condition.pointerMove,
         layers: [vectorLayer],
-        style: function(feature) {
-          var text = feature.getId();
-          var siteHightlightedStyle = new ol.style.Style({
-            stroke: new ol.style.Stroke({
-              color: '#276BE7',
-              width: 10
-            }),
-            fill: new ol.style.Fill({
-              color: 'rgba(255, 255, 0, 0.1)'
-            }),
-            text: new ol.style.Text({
-              font: '12px Calibri,sans-serif',
-              text: text,
-              fill: new ol.style.Fill({
-                color: '#ccc'
-              }),
-              stroke: new ol.style.Stroke({
-                color: '#276BE7',
-                width: 3
-              })
-            })
-          });
-          return [siteHightlightedStyle];
-        }
+        style: this.onSiteHover
       });
       this.map.addInteraction(siteHover);
     };

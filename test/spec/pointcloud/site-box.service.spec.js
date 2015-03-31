@@ -73,7 +73,7 @@ describe('site-box.service', function() {
 
     it('should create a sitebox (createSiteBox function)', function() {
       var center = SitesService.centerOfSite(site162);
-      var position = new THREE.Vector3(center[0], center[1], site162.footprint_altitude[0]);
+      var position = new THREE.Vector3(center[0], center[1], site162.footprint_altitude[0]); // jshint ignore:line
       //var size = SitesService.getBoundingBoxSize(site162);
 
       // position

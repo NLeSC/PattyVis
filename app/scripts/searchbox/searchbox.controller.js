@@ -79,8 +79,6 @@
       }
     });
 
-    this.reconstruction_mesh = 0;
-
     Messagebus.subscribe('singleSite', function(event, site){
         this.currentSite = site;
         this.disabledButtons.sitePc = !('pointcloud' in site);
