@@ -8,6 +8,27 @@ PattyVis
 [![devDependency Status](https://david-dm.org/NLeSC/PattyVis/dev-status.svg)](https://david-dm.org/NLeSC/PattyVis#info=devDependencies)
 [![Codacy Badge](https://www.codacy.com/project/badge/a2ebd9977fe04aa1af6e5c47dc8d6927)](https://www.codacy.com/public/sverhoeven/PattyVis)
 
+Webgl pointcloud visualization of the Via Appia based on http://potree.org
+--------------------------------------------------------------------------
+![logo](DOCS/pattyvis_fp_ss4.png "A beautiful vista")
+
+A big step towards a 3D GIS Application.  
+![logo](DOCS/pattyvis_fp_ss2.png "A big step towards a 3D GIS Application")
+With 3D footprints of grave monuments based on GPS coordinates.  
+![logo](DOCS/pattyvis_fp_ss1.png "With 3D footprints based on GPS coordinates")
+A 'background' or reference frame was made with Fugro's drive-map technology http://www.drive-map.eu/  
+![logo](DOCS/pattyvis_fp_ss9.png "The drive map visualized")
+Several monuments have been photographed extensively and made into seperate pointclouds. This is an ongoing process.  
+![logo](DOCS/pattyvis_fp_ss5.png "Here you can see the drive-map and the site-specific photography based pointcloud next to eachother")
+![logo](DOCS/pattyvis_fp_ss3.png "A particularly well-captured monument.")
+Measurements can be made in the 3D environment.  
+![logo](DOCS/pattyvis_fp_ss8.png "Measurements can be made in the 3D environment.")
+Historical maps can give extra information on the site's history.  
+![logo](DOCS/pattyvis_fp_ss6.png "Historical maps can give extra information on the site's history.")
+Searching options like the material used in the site can give extra insight.  
+![logo](DOCS/pattyvis_fp_ss7.png "Historical maps can give extra information on the site's history.")
+
+
 Getting started (windows, from scratch)
 ---------------------------------------
 
