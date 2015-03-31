@@ -202,9 +202,9 @@
       var sprite = new THREE.Sprite(spriteMaterial);
 
       // set scale based on sitebox size (add a certain minimum perhaps?)
-      var depth = siteBox.geometry.parameters.depth;
-      var height = siteBox.geometry.parameters.height;
-      var width = siteBox.geometry.parameters.width;
+      var depth = SitesService.getBoundingBoxSize(siteBox.site)[0];
+      var height = SitesService.getBoundingBoxSize(siteBox.site)[1];
+      var width = SitesService.getBoundingBoxSize(siteBox.site)[2];
       var radius = Math.sqrt(depth * depth + height * height + width * width);
       // stretch sprite scale equally in both directions (otherwise canvas
       // gets distorted)
