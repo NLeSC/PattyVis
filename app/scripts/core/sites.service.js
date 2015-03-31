@@ -252,7 +252,7 @@
             var queryLowCase = query.toLowerCase();
 
             var timeMatched = false;
-            if (queryLowCase.includes('time:')) {
+            if (queryLowCase.indexOf('time:') !== -1) {
               var timeSearches = queryLowCase.split('time:').slice(1);
               timeMatched = timeSearches.some(function(timeSearch, i, timeSearches) {
                 var taggedWord = timeSearch.trim().split(' ')[0];
@@ -261,7 +261,7 @@
             }
 
             var materialMatched = false;
-            if (query.toLowerCase().includes('material:')) {
+            if (query.toLowerCase().indexOf('material:') !== -1) {
               var materialSearches = queryLowCase.split('material:').slice(1);
               materialMatched = materialSearches.some(function(materialSearch, i, materialSearches) {
                 var taggedWord = materialSearch.trim().split(' ')[0];
@@ -270,7 +270,7 @@
             }
 
             var conditionMatched = false;
-            if (query.toLowerCase().includes('condition:')) {
+            if (query.toLowerCase().indexOf('condition:') !== -1) {
               var conditionSearches = queryLowCase.split('condition:').slice(1);
               conditionMatched = conditionSearches.some(function(conditionSearch, i, conditionSearches) {
                 var taggedWord = conditionSearch.trim().split(' ')[0];

@@ -12,14 +12,20 @@ body {
   padding: 0;
   overflow: hidden;
 }
-.container-fluid {
-  margin-top: 15px;
-  position: absolute;
-  pointer-events: none;
-}
+
 .clickable {
   pointer-events: all;
 }
+
+patty-search-panel {
+  left: 1%;
+  min-width: 200px;
+  padding: 2px;
+  position: absolute;
+  top: 1%;
+  width: 30%;
+}
+
 .search-results {
   padding: 10px;
   background-color: #fff;
@@ -27,9 +33,7 @@ body {
   filter:alpha(opacity=90);
   /* For IE8 and earlier */
 }
-.search-result {
 
-}
 .scroll-panel {
   max-height: 700px;
   overflow-y: scroll;
