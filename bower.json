@@ -29,8 +29,6 @@
     "DDSLoader": "https://raw.github.com/mrdoob/three.js/r69/examples/js/loaders/DDSLoader.js",
     "MTLLoader": "https://raw.github.com/mrdoob/three.js/r69/examples/js/loaders/MTLLoader.js",
     "OBJMTLLoader": "https://raw.github.com/mrdoob/three.js/r69/examples/js/loaders/OBJMTLLoader.js",
-    "oculus-bridge": "https://github.com/Instrument/oculus-bridge.git",
-    "OculusRiftEffect": "https://raw.githubusercontent.com/troffmo5/OculusStreetView/master/js/OculusRiftEffect.js",
     "potree": "https://github.com/potree/potree.git",
     "bluebird": "1.0.8",
     "angular-bootstrap": "~0.12.0",

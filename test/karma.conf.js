@@ -40,8 +40,6 @@ module.exports = function(config) {
       'bower_components/potree/build/js/laslaz.js',
       'bower_components/openlayers3/build/ol.js',
       'bower_components/ol3-layerswitcher/src/ol3-layerswitcher.js',
-      'bower_components/oculus-bridge/web/build/OculusBridge.min.js',
-      'bower_components/OculusRiftEffect/index.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'app/scripts/**/*.js',
       // test for directives need the templates, inside test load pattyApp.templates module to get templates
