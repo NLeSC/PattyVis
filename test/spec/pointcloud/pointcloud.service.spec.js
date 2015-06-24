@@ -58,7 +58,7 @@ describe('pointcloud.service', function() {
     }));
 
     beforeEach(inject(function(PathControls, CameraService, defaultCameraPathThree, defaultLookPathThree, THREE) {
-      canvasElement = jasmine.createSpyObj('element', ['addEventListener', 'removeEventListener']);
+      canvasElement = jasmine.createSpyObj('element', ['addEventListener', 'removeEventListener', 'setAttribute']);
       PathControls.init(CameraService.camera, defaultCameraPathThree, defaultLookPathThree, canvasElement);
       PointcloudService.elRenderArea = canvasElement;
       PointcloudService.orbitControls = new THREE.OrbitControls(CameraService.camera, canvasElement);
