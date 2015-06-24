@@ -11,6 +11,7 @@
   <!-- bower:css -->
   <link rel="stylesheet" href="bower_components/openlayers3/css/ol.css" />
   <link rel="stylesheet" href="bower_components/ol3-layerswitcher/src/ol3-layerswitcher.css" />
+  <link rel="stylesheet" href="bower_components/3dhop/stylesheet/3dhop.css" />
   <!-- endbower -->
   <!-- endbuild -->
   <!-- build:css(.tmp) styles/main.css -->
@@ -35,6 +36,7 @@
   <patty-camera-modes></patty-camera-modes>
   <measuring-directive class="clickable"></measuring-directive>
   <logo-box-directive></logo-box-directive>
+  <nexus-panel></nexus-panel>
 
   <!-- build:js(.) scripts/oldieshim.js -->
   <!--[if lt IE 9]>
@@ -69,6 +71,13 @@
   <script src="bower_components/bluebird/js/browser/bluebird.js"></script>
   <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <script src="bower_components/ol3-layerswitcher/src/ol3-layerswitcher.js"></script>
+  <script src="bower_components/3dhop/js/spidergl.js"></script>
+  <script src="bower_components/3dhop/js/presenter.js"></script>
+  <script src="bower_components/3dhop/js/nexus.js"></script>
+  <script src="bower_components/3dhop/js/ply.js"></script>
+  <script src="bower_components/3dhop/js/trackball_sphere.js"></script>
+  <script src="bower_components/3dhop/js/trackball_turntable.js"></script>
+  <script src="bower_components/3dhop/js/trackball_pantilt.js"></script>
   <!-- endbower -->
   <!-- endbuild -->
 
@@ -80,6 +89,10 @@
   <script src="scripts/core/sites.service.js"></script>
   <script src="scripts/core/drivemap.service.js"></script>
   <script src="scripts/logos/logos.directive.js"></script>
+  <script src="scripts/nexus/constants.js"></script>
+  <script src="scripts/nexus/nexus.service.js"></script>
+  <script src="scripts/nexus/nexus.controller.js"></script>
+  <script src="scripts/nexus/nexus-panel.directive.js"></script>
   <script src="scripts/searchbox/searchbox.directive.js"></script>
   <script src="scripts/searchbox/searchbox.controller.js"></script>
   <script src="scripts/settings/settings.directive.js"></script>

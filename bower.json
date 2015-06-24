@@ -32,7 +32,8 @@
     "potree": "https://github.com/potree/potree.git",
     "bluebird": "1.0.8",
     "angular-bootstrap": "~0.12.0",
-    "ol3-layerswitcher": "~1.0.1"
+    "ol3-layerswitcher": "~1.0.1",
+    "3dhop": "potenziani/3DHOP-Essential"
   },
   "overrides": {
     "openlayers3": {
@@ -54,6 +55,18 @@
     },
     "stats.js": {
       "main": "build/stats.min.js"
+    },
+    "3dhop": {
+      "main": [
+        "stylesheet/3dhop.css",
+        "js/spidergl.js",
+        "js/presenter.js",
+        "js/nexus.js",
+        "js/ply.js",
+        "js/trackball_sphere.js",
+        "js/trackball_turntable.js",
+        "js/trackball_pantilt.js"
+      ]
     }
   },
   "resolutions": {
