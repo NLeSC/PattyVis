@@ -70,7 +70,7 @@
         return color;
       },
       set: function(enabled) {
-        service.presenter.setInstanceSolidColorByName('site', enabled);
+        service.presenter.setInstanceSolidColorByName('site', !enabled, [0.7, 0.7, 0.7]);
         color = enabled;
       },
       enumerable: true,
