@@ -40,6 +40,29 @@
       this.presenter.setScene({});
       this.siteShown = false;
     };
+
+    service.zoomIn = function() {
+      this.presenter.zoomIn();
+    };
+
+    service.zoomOut = function() {
+      this.presenter.zoomOut();
+    };
+
+    service.reset = function() {
+      this.presenter.resetTrackball();
+    };
+
+    Object.defineProperty(service, 'trackLight', {
+      get: function() {
+        return service.presenter.isLightTrackballEnabled();
+      },
+      set: function(enabled) {
+        service.presenter.enableLightTrackball(enabled);
+      },
+      enumerable: true,
+      configurable: true
+    });
     return service;
   }
 
