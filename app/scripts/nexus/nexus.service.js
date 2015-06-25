@@ -63,6 +63,20 @@
       enumerable: true,
       configurable: true
     });
+
+    var color = true;
+    Object.defineProperty(service, 'color', {
+      get: function() {
+        return color;
+      },
+      set: function(enabled) {
+        service.presenter.setInstanceSolidColorByName('site', enabled);
+        color = enabled;
+      },
+      enumerable: true,
+      configurable: true
+    });
+
     return service;
   }
 
