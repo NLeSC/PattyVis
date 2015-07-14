@@ -64,9 +64,9 @@ describe('pointcloud.service', function() {
       PointcloudService.orbitControls = new THREE.OrbitControls(CameraService.camera, canvasElement);
     }));
 
-    beforeEach(inject(function(POCLoader) {
-      spyOn(POCLoader, 'load');
-    }));
+    beforeEach(function() {
+      spyOn(Potree.POCLoader, 'load');
+    });
 
     describe('enterOrbitMode() function', function() {
       beforeEach(function() {
