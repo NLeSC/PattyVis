@@ -1,0 +1,10 @@
+<div collapse='!vm.service.siteShown' class="panel panel-default nexus-panel">
+  <canvas class="canvas-3dhop" width="800" height="800"></canvas>
+  <div class="btn-group" role="group" aria-label="...">
+    <button type="button" class="btn btn-default btn-sm" ng-click="vm.service.reset()"><span class="glyphicon glyphicon-home"></span> Home</button>
+    <button type="button" class="btn btn-default btn-sm" ng-click="vm.service.zoomIn()"><span class="glyphicon glyphicon-zoom-in"></span> Zoom in</button>
+    <button type="button" class="btn btn-default btn-sm" ng-click="vm.service.zoomOut()"><span class="glyphicon glyphicon-zoom-out"></span> Zoom out</button>
+    <button type="button" class="btn btn-default btn-sm" ng-model="vm.service.trackLight" btn-checkbox><span class="glyphicon glyphicon-volume-up"></span> Change light position</button>
+    <button type="button" class="btn btn-default btn-sm" ng-model="vm.service.color" btn-checkbox><span class="glyphicon glyphicon-eye-close"></span> <span ng-show="vm.service.color">Color</span><span ng-hide="vm.service.color">Grayscale</span></button>
+  </div>
+</div>

@@ -4,8 +4,6 @@
  * During testing with headless or webgl-less browser the tests can't run.
  */
 (function() {
-  'use strict';
-
   var ftCanvas = document.createElement('canvas');
   if (ftCanvas.getContext('webgl') || ftCanvas.getContext('experimental-webgl')) {
     // no need to fill
@@ -13,6 +11,7 @@
     document.createElementOrig = document.createElement;
     document.createElement = function(tagName) {
       if (tagName === 'canvas') {
+        WebGLRenderingContext = {};
         return {
           getContext: function(context) {
             if (context === 'webgl') {

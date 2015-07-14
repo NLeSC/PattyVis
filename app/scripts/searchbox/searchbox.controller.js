@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function SearchPanelController(SitesService, PointcloudService, Messagebus) {
+  function SearchPanelController(SitesService, PointcloudService, NexusService, Messagebus) {
     this.pageSize = 2;
     this.currentPage = 1;
     this.SitesService = SitesService;
@@ -69,9 +69,9 @@
         set: function(bool) {
           this._siteMesh = bool;
           if(bool){
-            PointcloudService.enableSiteMesh();
+            NexusService.showSite(_currentSite);
           } else {
-            PointcloudService.disableSiteMesh();
+            NexusService.close();
           }
         },
         enumerable: true,
@@ -82,7 +82,7 @@
     Messagebus.subscribe('singleSite', function(event, site){
         this.currentSite = site;
         this.disabledButtons.sitePc = !('pointcloud' in site);
-        //this.disabledButtons.siteMesh = !('mesh' in site);
+        this.disabledButtons.siteMesh = !('mesh' in site && site.mesh.length > 0);
     }.bind(this));
 
     this.lookAtSite = function(site) {

@@ -67,7 +67,8 @@
       'pattyApp.settings',
       'pattyApp.help',
       'pattyApp.cameramodes',
-      'pattyApp.pointcloud'
+      'pattyApp.pointcloud',
+      'pattyApp.nexus'
     ])
     .run(function(SitesService, DrivemapService) {
       DrivemapService.load();
@@ -84,5 +85,7 @@
   angular.module('pattyApp.settings', ['pattyApp.pointcloud']);
   angular.module('pattyApp.help', ['pattyApp.templates']);
   angular.module('pattyApp.cameramodes', ['pattyApp.pointcloud']);
-  angular.module('pattyApp.searchbox', ['pattyApp.core', 'pattyApp.pointcloud']);
+  angular.module('pattyApp.nexus', []);
+  angular.module('pattyApp.searchbox', ['pattyApp.core', 'pattyApp.pointcloud', 'pattyApp.nexus']);
+
 })();

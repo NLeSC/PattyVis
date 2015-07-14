@@ -302,3 +302,19 @@ patty-pointcloud-stats {
 .logo-custom-nlesc {
   max-width:100%;
 }
+
+.nexus-panel {
+  position: absolute;
+  left: 600px;
+  top: 1%;
+  width: 800px;
+}
+
+.nexus-panel canvas {
+  // background:transparent;
+  background-repeat:no-repeat;
+  background-position:center top;
+  background-size:cover;
+  outline:none;
+  background-image: url("../bower_components/3dhop/minimal/skins/backgrounds/dark.jpg");
+}
