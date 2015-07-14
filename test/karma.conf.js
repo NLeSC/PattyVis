@@ -21,6 +21,7 @@ module.exports = function(config) {
       // PhantomJS has no function() {}.bind(this) functionality, so polyfill it
       'node_modules/phantomjs-polyfill/bind-polyfill.js',
       'test/polyfills/string.includes.js',
+      'test/polyfills/canvas.webgl.js',
       'bower_components/angular/angular.js',
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/angular-animate/angular-animate.js',
@@ -81,7 +82,7 @@ module.exports = function(config) {
       // source files, that you wanna generate coverage for
       // do not include tests or libraries
       // (these files will be instrumented by Istanbul)
-      'app/scripts/**/*.js': ['coverage']
+      // 'app/scripts/**/*.js': ['coverage']
     },
     reporters: ['dots', 'junit', 'coverage', 'html'],
     junitReporter: {
