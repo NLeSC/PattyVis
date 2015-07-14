@@ -11,7 +11,6 @@
   <!-- bower:css -->
   <link rel="stylesheet" href="bower_components/openlayers3/css/ol.css" />
   <link rel="stylesheet" href="bower_components/ol3-layerswitcher/src/ol3-layerswitcher.css" />
-  <link rel="stylesheet" href="bower_components/3dhop/stylesheet/3dhop.css" />
   <!-- endbower -->
   <!-- endbuild -->
   <!-- build:css(.tmp) styles/main.css -->
@@ -71,15 +70,18 @@
   <script src="bower_components/bluebird/js/browser/bluebird.js"></script>
   <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <script src="bower_components/ol3-layerswitcher/src/ol3-layerswitcher.js"></script>
-  <script src="bower_components/3dhop/js/spidergl.js"></script>
-  <script src="bower_components/3dhop/js/presenter.js"></script>
-  <script src="bower_components/3dhop/js/nexus.js"></script>
-  <script src="bower_components/3dhop/js/ply.js"></script>
-  <script src="bower_components/3dhop/js/trackball_sphere.js"></script>
-  <script src="bower_components/3dhop/js/trackball_turntable.js"></script>
-  <script src="bower_components/3dhop/js/trackball_pantilt.js"></script>
+  <script src="bower_components/3dhop/minimal/js/spidergl.js"></script>
+  <script src="bower_components/3dhop/minimal/js/presenter.js"></script>
+  <script src="bower_components/3dhop/minimal/js/ply.js"></script>
+  <script src="bower_components/3dhop/minimal/js/trackball_sphere.js"></script>
+  <script src="bower_components/3dhop/minimal/js/trackball_turntable.js"></script>
+  <script src="bower_components/3dhop/minimal/js/trackball_pantilt.js"></script>
   <!-- endbower -->
   <!-- endbuild -->
+
+  <!-- 3dhop finds it web worker by finding the nexus.js script tag and replacing the filename, so hardcode instead of using wiredep  -->
+  <script src="bower_components/3dhop/minimal/js/nexus.js"></script>
+  <script src="bower_components/3dhop/minimal/js/meshcoder_worker.js"></script>
 
   <!-- build:js({.tmp,app}) scripts/scripts.js -->
   <script src="scripts/app.js"></script>

@@ -13,10 +13,7 @@
     service.showSite = function(site) {
       this.siteShown = true;
 
-      var url = 'data/sites/SITE_35.nxs';
-      if (site.id % 2 === 0) {
-        url = 'data/SHOU_LAO.nxs';
-      }
+      var url = site.mesh[0].data_location;
 
       this.presenter.setScene({
         meshes: {

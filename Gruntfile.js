@@ -209,7 +209,8 @@ module.exports = function(grunt) {
           '<%= yeoman.dist %>/scripts/{,*/}*.js',
           '<%= yeoman.dist %>/styles/{,*/}*.css',
           '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-          '<%= yeoman.dist %>/styles/fonts/*'
+          '<%= yeoman.dist %>/styles/fonts/*',
+          '!<%= yeoman.dist %>/images/ESCIENCE_logo.png'
         ]
       }
     },
@@ -372,6 +373,11 @@ module.exports = function(grunt) {
           src: [
             'bower_components/potree/resources/textures/skybox/*.jpg'
           ]
+        }, {
+          expand: true,
+          cwd: 'bower_components/3dhop/minimal',
+          src: ['js/nexus.js', 'js/meshcoder_worker.js', 'skins/backgrounds/dark.jpg'],
+          dest: '<%= yeoman.dist %>/bower_components/3dhop/minimal'
         }]
       },
       styles: {

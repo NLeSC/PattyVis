@@ -82,7 +82,7 @@
     Messagebus.subscribe('singleSite', function(event, site){
         this.currentSite = site;
         this.disabledButtons.sitePc = !('pointcloud' in site);
-        //this.disabledButtons.siteMesh = !('mesh' in site);
+        this.disabledButtons.siteMesh = !('mesh' in site && site.mesh.length > 0);
     }.bind(this));
 
     this.lookAtSite = function(site) {
