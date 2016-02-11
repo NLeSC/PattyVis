@@ -7,6 +7,7 @@ PattyVis
 [![Sauce Test Status](https://saucelabs.com/buildstatus/patty-vis)](https://saucelabs.com/u/patty-vis)
 [![devDependency Status](https://david-dm.org/NLeSC/PattyVis/dev-status.svg)](https://david-dm.org/NLeSC/PattyVis#info=devDependencies)
 [![Codacy Badge](https://www.codacy.com/project/badge/a2ebd9977fe04aa1af6e5c47dc8d6927)](https://www.codacy.com/public/sverhoeven/PattyVis)
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.45923.svg)](http://dx.doi.org/10.5281/zenodo.45923)
 
 Webgl pointcloud visualization of the Via Appia based on http://potree.org
 --------------------------------------------------------------------------
