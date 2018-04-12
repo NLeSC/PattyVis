@@ -59,6 +59,7 @@ Prerequisites
 2. bower, http://bower.io
 3. compass, http://compass-style.org
 4. Java Development Kit, https://www.java.com/
+5. PhantomJS v1 https://bitbucket.org/ariya/phantomjs/downloads/
 
 Installation
 ------------
