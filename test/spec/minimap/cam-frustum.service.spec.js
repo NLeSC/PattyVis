@@ -49,7 +49,14 @@ describe('minimap.CamFrustumService', function() {
       service.onCameraMove(mockFrustum);
       var expectedCoordinates = service.camFrustum.getCoordinates();
 
-      expect(expectedCoordinates).toEqual(mockCamFrustumCoordinates);
+      expect(expectedCoordinates[0][0]).toBeCloseTo(mockCamFrustumCoordinates[0][0], 3);
+      expect(expectedCoordinates[0][1]).toBeCloseTo(mockCamFrustumCoordinates[0][1], 3);
+      expect(expectedCoordinates[1][0]).toBeCloseTo(mockCamFrustumCoordinates[1][0], 3);
+      expect(expectedCoordinates[1][1]).toBeCloseTo(mockCamFrustumCoordinates[1][1], 3);
+      expect(expectedCoordinates[2][0]).toBeCloseTo(mockCamFrustumCoordinates[2][0], 3);
+      expect(expectedCoordinates[2][1]).toBeCloseTo(mockCamFrustumCoordinates[2][1], 3);
+      expect(expectedCoordinates[3][0]).toBeCloseTo(mockCamFrustumCoordinates[3][0], 3);
+      expect(expectedCoordinates[3][1]).toBeCloseTo(mockCamFrustumCoordinates[3][1], 3);
     });
   });
 
@@ -60,7 +67,10 @@ describe('minimap.CamFrustumService', function() {
       var extent = service.getExtent();
       var expected = [1397771.4318921762, 5133621.6601744285, 1398250.8778260758, 5134117.448713819];
 
-      expect(extent).toEqual(expected);
+      expect(extent[0]).toBeCloseTo(expected[0], 3);
+      expect(extent[1]).toBeCloseTo(expected[1], 3);
+      expect(extent[2]).toBeCloseTo(expected[2], 3);
+      expect(extent[3]).toBeCloseTo(expected[3], 3);
     });
   });
 

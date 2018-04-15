@@ -40,7 +40,7 @@ module.exports = function(config) {
       'bower_components/potree/build/js/potree.js',
       'bower_components/potree/build/js/laslaz.js',
       'bower_components/openlayers3/build/ol.js',
-      'bower_components/ol3-layerswitcher/src/ol3-layerswitcher.js',
+      'bower_components/ol-layerswitcher/src/ol3-layerswitcher.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'bower_components/3dhop/minimal/js/spidergl.js',
       'bower_components/3dhop/minimal/js/presenter.js',
