@@ -1,16 +1,18 @@
 language: node_js
 node_js:
-  - '0.10'
+  - '8'
 addons:
   sauce_connect: true
   code_climate:
     repo_token: 72207598c2d5d4f105a0a3edb1d02c21e85b9c64748d40fc62f37620df932e0f
 before_install:
   - gem install compass
+  - curl https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2 | tar -jxf phantomjs-1.9.8-linux-x86_64/bin/phantomjs
+  - mv phantomjs-1.9.8-linux-x86_64/bin/phantomjs node_modules/.bin/
 install:
   - 'npm install -g npm@2'
   - 'npm install'
-  - 'npm install -g bower grunt-cli'
+  - 'npm install -g bower grunt-cli karma-cli'
   - 'bower install'
 script:
   - 'grunt test'
