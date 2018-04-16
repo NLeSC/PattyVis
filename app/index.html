@@ -10,7 +10,7 @@
   <!-- build:css(.) styles/vendor.css -->
   <!-- bower:css -->
   <link rel="stylesheet" href="bower_components/openlayers3/css/ol.css" />
-  <link rel="stylesheet" href="bower_components/ol3-layerswitcher/src/ol3-layerswitcher.css" />
+  <link rel="stylesheet" href="bower_components/ol-layerswitcher/src/ol3-layerswitcher.css" />
   <!-- endbower -->
   <!-- endbuild -->
   <!-- build:css(.tmp) styles/main.css -->
@@ -32,9 +32,20 @@
     <patty-settings></patty-settings>
     <patty-help></patty-help>
   </div>
-  <patty-camera-modes></patty-camera-modes>
+  <div class="interface-visible logobox2">
+          <img style="width: 200px" class="" src="images/Parco Archeologico dell'Appia Antica.png"/>
+          <img style="width: 200px" class="" src="images/Radboud University (white).png"/>
+    </div>
+    <patty-camera-modes></patty-camera-modes>
   <measuring-directive class="clickable"></measuring-directive>
-  <logo-box-directive></logo-box-directive>
+  <div class="interface-visible interface-clickable logobox">
+      <a href="">
+        <img style="height: 60px" class="logo-custom-nlesc" src="images/Vrije Universiteit Amsterdam (white).png"/>
+      </a>
+      <a href="http://www.esciencecenter.nl">
+          <img class="logo-custom-nlesc" src="images/ESCIENCE_logo.png" />
+      </a>
+    </div>
   <nexus-panel></nexus-panel>
 
   <!-- build:js(.) scripts/oldieshim.js -->
@@ -69,7 +80,7 @@
   <script src="bower_components/potree/build/workers/lasdecoder-worker.js"></script>
   <script src="bower_components/bluebird/js/browser/bluebird.js"></script>
   <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-  <script src="bower_components/ol3-layerswitcher/src/ol3-layerswitcher.js"></script>
+  <script src="bower_components/ol-layerswitcher/src/ol3-layerswitcher.js"></script>
   <script src="bower_components/3dhop/minimal/js/spidergl.js"></script>
   <script src="bower_components/3dhop/minimal/js/presenter.js"></script>
   <script src="bower_components/3dhop/minimal/js/ply.js"></script>
@@ -90,7 +101,6 @@
   <script src="scripts/core/constants.js"></script>
   <script src="scripts/core/sites.service.js"></script>
   <script src="scripts/core/drivemap.service.js"></script>
-  <script src="scripts/logos/logos.directive.js"></script>
   <script src="scripts/nexus/constants.js"></script>
   <script src="scripts/nexus/nexus.service.js"></script>
   <script src="scripts/nexus/nexus.controller.js"></script>

@@ -59,6 +59,7 @@ Prerequisites
 2. bower, http://bower.io
 3. compass, http://compass-style.org
 4. Java Development Kit, https://www.java.com/
+5. PhantomJS v1 https://bitbucket.org/ariya/phantomjs/downloads/
 
 Installation
 ------------
@@ -69,9 +70,10 @@ Follow instructions at joyents github website:
 https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#debian-and-ubuntu-based-linux-distributions
 
 ### Install nodejs modules
-Install bower and grunt-cli globally
+Install bower, karma-cli and grunt-cli globally
 ```
-sudo npm install -g bower grunt-cli
+sudo npm install -g bower grunt-cli karma-cli
+
 ```
 
 ### Install compass

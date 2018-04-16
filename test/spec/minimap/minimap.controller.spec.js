@@ -58,7 +58,10 @@ describe('minimap.controller', function() {
       controller.onSitesChanged(defaultSitesJSON);
       var result = controller.map.getView().calculateExtent(controller.map.getSize());
       var expected = [1396623.9840759311, 5135377.928591345, 1396710.5728970354, 5135464.517412449];
-      expect(result).toEqual(expected);
+      expect(result[0]).toBeCloseTo(expected[0], 3);
+      expect(result[1]).toBeCloseTo(expected[1], 3);
+      expect(result[2]).toBeCloseTo(expected[2], 3);
+      expect(result[3]).toBeCloseTo(expected[3], 3);
     }));
   });
 

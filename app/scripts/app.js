@@ -60,7 +60,6 @@
       'ngSanitize',
       'ngTouch',
       'ui.bootstrap',
-      'pattyApp.logos',
       'pattyApp.searchbox',
       'pattyApp.minimap',
       'pattyApp.measuring',
@@ -76,7 +75,6 @@
     });
 
   angular.module('pattyApp.templates', []);
-  angular.module('pattyApp.logos', []);
   angular.module('pattyApp.utils', ['pattyApp.templates']);
   angular.module('pattyApp.core', ['pattyApp.utils']);
   angular.module('pattyApp.minimap', ['pattyApp.core']);

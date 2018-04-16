@@ -83,8 +83,8 @@
 
     this.init = function(renderer, scene, camera) {
       this.tools.distance = new Potree.MeasuringTool(scene, camera, renderer);
-      this.tools.angle = new Potree.AngleTool(scene, camera, renderer);
-      this.tools.area = new Potree.AreaTool(scene, camera, renderer);
+      this.tools.angle = new Potree.MeasuringTool(scene, camera, renderer);
+      this.tools.area = new Potree.MeasuringTool(scene, camera, renderer);
       this.tools.volume = new Potree.VolumeTool(scene, camera, renderer);
       this.tools.heightprofile = new Potree.ProfileTool(scene, camera, renderer);
       this.tools.transformation = new Potree.TransformationTool(scene, camera, renderer);
