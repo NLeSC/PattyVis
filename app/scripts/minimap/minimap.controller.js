@@ -64,14 +64,6 @@
       'title': 'Base maps',
       layers: [
         new ol.layer.Tile({
-          title: 'MapQuest',
-          type: 'base',
-          visible: true,
-          source: new ol.source.MapQuest({
-            layer: 'osm'
-          })
-        }),
-        new ol.layer.Tile({
           title: 'Water color',
           type: 'base',
           visible: false,
@@ -82,16 +74,8 @@
         new ol.layer.Tile({
           title: 'OSM',
           type: 'base',
-          visible: false,
+          visible: true,
           source: new ol.source.OSM()
-        }),
-        new ol.layer.Tile({
-          title: 'Satellite',
-          type: 'base',
-          visible: false,
-          source: new ol.source.MapQuest({
-            layer: 'sat'
-          })
         })
       ]
     });
