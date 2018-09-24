@@ -1,6 +1,8 @@
 // The app
 /* global THREE:false, POCLoader:false, Potree:false  */
 
+Potree.scriptPath = '/bower_components/potree/src';
+
 (function() {
   'use strict';
 

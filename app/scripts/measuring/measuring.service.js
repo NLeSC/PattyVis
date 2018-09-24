@@ -82,6 +82,7 @@
     };
 
     this.init = function(renderer, scene, camera) {
+      return;
       this.tools.distance = new Potree.MeasuringTool(scene, camera, renderer);
       this.tools.angle = new Potree.MeasuringTool(scene, camera, renderer);
       this.tools.area = new Potree.MeasuringTool(scene, camera, renderer);

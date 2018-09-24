@@ -19,115 +19,117 @@
 </head>
 
 <body ng-app="pattyApp">
-  <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
+<!--[if lt IE 7]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
 
-  <!-- Add your site or application content here -->
-  <patty-search-panel class="clickable"></patty-search-panel>
-  <patty-minimap class="clickable"></patty-minimap>
-  <patty-pointcloud-canvas></patty-pointcloud-canvas>
-  <patty-pointcloud-stats></patty-pointcloud-stats>
-  <div class="controls">
-    <patty-settings></patty-settings>
-    <patty-help></patty-help>
-  </div>
-  <div class="interface-visible logobox2">
-          <img style="width: 200px" class="" src="images/Parco Archeologico dell'Appia Antica.png"/>
-          <img style="width: 200px" class="" src="images/Radboud University (white).png"/>
-    </div>
-    <patty-camera-modes></patty-camera-modes>
-  <measuring-directive class="clickable"></measuring-directive>
-  <div class="interface-visible interface-clickable logobox">
-      <a href="">
-        <img style="height: 60px" class="logo-custom-nlesc" src="images/Vrije Universiteit Amsterdam (white).png"/>
-      </a>
-      <a href="http://www.esciencecenter.nl">
-          <img class="logo-custom-nlesc" src="images/ESCIENCE_logo.png" />
-      </a>
-    </div>
-  <nexus-panel></nexus-panel>
+<!-- Add your site or application content here -->
+<patty-search-panel class="clickable"></patty-search-panel>
+<patty-minimap class="clickable"></patty-minimap>
+<patty-pointcloud-canvas></patty-pointcloud-canvas>
+<patty-pointcloud-stats></patty-pointcloud-stats>
+<div class="controls">
+  <patty-settings></patty-settings>
+  <patty-help></patty-help>
+</div>
+<div class="interface-visible logobox2">
+  <img style="width: 200px" class="" src="images/Parco Archeologico dell'Appia Antica.png"/>
+  <img style="width: 200px" class="" src="images/Radboud University (white).png"/>
+</div>
+<patty-camera-modes></patty-camera-modes>
+<measuring-directive class="clickable"></measuring-directive>
+<div class="interface-visible interface-clickable logobox">
+  <a href="">
+    <img style="height: 60px" class="logo-custom-nlesc" src="images/Vrije Universiteit Amsterdam (white).png"/>
+  </a>
+  <a href="http://www.esciencecenter.nl">
+    <img class="logo-custom-nlesc" src="images/ESCIENCE_logo.png" />
+  </a>
+</div>
+<nexus-panel></nexus-panel>
 
-  <!-- build:js(.) scripts/oldieshim.js -->
-  <!--[if lt IE 9]>
-    <script src="bower_components/es5-shim/es5-shim.js"></script>
-    <script src="bower_components/json3/lib/json3.js"></script>
-    <![endif]-->
-  <!-- endbuild -->
+<!-- build:js(.) scripts/oldieshim.js -->
+<!--[if lt IE 9]>
+<script src="bower_components/es5-shim/es5-shim.js"></script>
+<script src="bower_components/json3/lib/json3.js"></script>
+<![endif]-->
+<!-- endbuild -->
 
-  <!-- build:js(.) scripts/vendor.js -->
-  <!-- bower:js -->
-  <script src="bower_components/jquery/dist/jquery.js"></script>
-  <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
-  <script src="bower_components/angular-animate/angular-animate.js"></script>
-  <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-  <script src="bower_components/angular-resource/angular-resource.js"></script>
-  <script src="bower_components/angular-route/angular-route.js"></script>
-  <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-  <script src="bower_components/angular-touch/angular-touch.js"></script>
-  <script src="bower_components/openlayers3/build/ol.js"></script>
-  <script src="bower_components/proj4/dist/proj4.js"></script>
-  <script src="bower_components/threejs/build/three.js"></script>
-  <script src="bower_components/OrbitControls/index.js"></script>
-  <script src="bower_components/OBJLoader/index.js"></script>
-  <script src="bower_components/DDSLoader/index.js"></script>
-  <script src="bower_components/MTLLoader/index.js"></script>
-  <script src="bower_components/potree/build/potree/potree.js"></script>
-  <script src="bower_components/potree/libs/plasio/js/laslaz.js"></script>
-  <script src="bower_components/bluebird/js/browser/bluebird.js"></script>
-  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-  <script src="bower_components/ol-layerswitcher/src/ol3-layerswitcher.js"></script>
-  <script src="bower_components/3dhop/minimal/js/spidergl.js"></script>
-  <script src="bower_components/3dhop/minimal/js/presenter.js"></script>
-  <script src="bower_components/3dhop/minimal/js/ply.js"></script>
-  <script src="bower_components/3dhop/minimal/js/trackball_sphere.js"></script>
-  <script src="bower_components/3dhop/minimal/js/trackball_turntable.js"></script>
-  <script src="bower_components/3dhop/minimal/js/trackball_pantilt.js"></script>
-  <!-- endbower -->
-  <!-- endbuild -->
+<!-- build:js(.) scripts/vendor.js -->
+<!-- bower:js -->
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+<script src="bower_components/angular-cookies/angular-cookies.js"></script>
+<script src="bower_components/angular-resource/angular-resource.js"></script>
+<script src="bower_components/angular-route/angular-route.js"></script>
+<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="bower_components/angular-touch/angular-touch.js"></script>
+<script src="bower_components/openlayers3/build/ol.js"></script>
+<script src="bower_components/proj4/dist/proj4.js"></script>
+<script src="bower_components/threejs/build/three.js"></script>
+<script src="bower_components/OrbitControls/index.js"></script>
+<script src="bower_components/OBJLoader/index.js"></script>
+<script src="bower_components/DDSLoader/index.js"></script>
+<script src="bower_components/MTLLoader/index.js"></script>
+<script src="bower_components/potree/build/potree/potree.js"></script>
+<script src="bower_components/potree/libs/other/BinaryHeap.js"></script>
+<script src="bower_components/potree/libs/plasio/js/laslaz.js"></script>
+<script src="bower_components/potree/src/workers/LASDecoderWorker.js"></script>
+<script src="bower_components/bluebird/js/browser/bluebird.js"></script>
+<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+<script src="bower_components/ol-layerswitcher/src/ol3-layerswitcher.js"></script>
+<script src="bower_components/3dhop/minimal/js/spidergl.js"></script>
+<script src="bower_components/3dhop/minimal/js/presenter.js"></script>
+<script src="bower_components/3dhop/minimal/js/ply.js"></script>
+<script src="bower_components/3dhop/minimal/js/trackball_sphere.js"></script>
+<script src="bower_components/3dhop/minimal/js/trackball_turntable.js"></script>
+<script src="bower_components/3dhop/minimal/js/trackball_pantilt.js"></script>
+<!-- endbower -->
+<!-- endbuild -->
 
-  <!-- 3dhop finds it web worker by finding the nexus.js script tag and replacing the filename, so hardcode instead of using wiredep  -->
-  <script src="bower_components/3dhop/minimal/js/nexus.js"></script>
-  <script src="bower_components/3dhop/minimal/js/meshcoder_worker.js"></script>
+<!-- 3dhop finds it web worker by finding the nexus.js script tag and replacing the filename, so hardcode instead of using wiredep  -->
+<script src="bower_components/3dhop/minimal/js/nexus.js"></script>
+<script src="bower_components/3dhop/minimal/js/meshcoder_worker.js"></script>
 
-  <!-- build:js({.tmp,app}) scripts/scripts.js -->
-  <script src="scripts/app.js"></script>
-  <script src="scripts/utils/messagebus.service.js"></script>
-  <script src="scripts/utils/startfrom.filter.js"></script>
-  <script src="scripts/core/constants.js"></script>
-  <script src="scripts/core/sites.service.js"></script>
-  <script src="scripts/core/drivemap.service.js"></script>
-  <script src="scripts/nexus/constants.js"></script>
-  <script src="scripts/nexus/nexus.service.js"></script>
-  <script src="scripts/nexus/nexus.controller.js"></script>
-  <script src="scripts/nexus/nexus-panel.directive.js"></script>
-  <script src="scripts/searchbox/searchbox.directive.js"></script>
-  <script src="scripts/searchbox/searchbox.controller.js"></script>
-  <script src="scripts/settings/settings.directive.js"></script>
-  <script src="scripts/settings/settings.controller.js"></script>
-  <script src="scripts/help/help.directive.js"></script>
-  <script src="scripts/help/help.controller.js"></script>
-  <script src="scripts/minimap/constants.js"></script>
-  <script src="scripts/minimap/cam-frustum.service.js"></script>
-  <script src="scripts/minimap/minimap.directive.js"></script>
-  <script src="scripts/minimap/minimap.controller.js"></script>
-  <script src="scripts/pointcloud/pointcloud.service.js"></script>
-  <script src="scripts/pointcloud/scene.service.js"></script>
-  <script src="scripts/pointcloud/camera.service.js"></script>
-  <script src="scripts/pointcloud/path.controls.js"></script>
-  <script src="scripts/pointcloud/pointcloud-canvas.directive.js"></script>
-  <script src="scripts/pointcloud/pointcloud-canvas.controller.js"></script>
-  <script src="scripts/cameramodes/cameramodes.directive.js"></script>
-  <script src="scripts/cameramodes/cameramodes.controller.js"></script>
-  <script src="scripts/pointcloud/pointcloud-stats.directive.js"></script>
-  <script src="scripts/pointcloud/pointcloud-stats.controller.js"></script>
-  <script src="scripts/pointcloud/site-box.service.js"></script>
-  <script src="scripts/measuring/measuring.service.js"></script>
-  <script src="scripts/measuring/measuring.directive.js"></script>
-  <script src="scripts/measuring/measuring.controller.js"></script>
+<!-- build:js({.tmp,app}) scripts/scripts.js -->
+<script src="scripts/app.js"></script>
+<script src="scripts/utils/messagebus.service.js"></script>
+<script src="scripts/utils/startfrom.filter.js"></script>
+<script src="scripts/core/constants.js"></script>
+<script src="scripts/core/sites.service.js"></script>
+<script src="scripts/core/drivemap.service.js"></script>
+<script src="scripts/nexus/constants.js"></script>
+<script src="scripts/nexus/nexus.service.js"></script>
+<script src="scripts/nexus/nexus.controller.js"></script>
+<script src="scripts/nexus/nexus-panel.directive.js"></script>
+<script src="scripts/searchbox/searchbox.directive.js"></script>
+<script src="scripts/searchbox/searchbox.controller.js"></script>
+<script src="scripts/settings/settings.directive.js"></script>
+<script src="scripts/settings/settings.controller.js"></script>
+<script src="scripts/help/help.directive.js"></script>
+<script src="scripts/help/help.controller.js"></script>
+<script src="scripts/minimap/constants.js"></script>
+<script src="scripts/minimap/cam-frustum.service.js"></script>
+<script src="scripts/minimap/minimap.directive.js"></script>
+<script src="scripts/minimap/minimap.controller.js"></script>
+<script src="scripts/pointcloud/pointcloud.service.js"></script>
+<script src="scripts/pointcloud/scene.service.js"></script>
+<script src="scripts/pointcloud/camera.service.js"></script>
+<script src="scripts/pointcloud/path.controls.js"></script>
+<script src="scripts/pointcloud/pointcloud-canvas.directive.js"></script>
+<script src="scripts/pointcloud/pointcloud-canvas.controller.js"></script>
+<script src="scripts/cameramodes/cameramodes.directive.js"></script>
+<script src="scripts/cameramodes/cameramodes.controller.js"></script>
+<script src="scripts/pointcloud/pointcloud-stats.directive.js"></script>
+<script src="scripts/pointcloud/pointcloud-stats.controller.js"></script>
+<script src="scripts/pointcloud/site-box.service.js"></script>
+<script src="scripts/measuring/measuring.service.js"></script>
+<script src="scripts/measuring/measuring.directive.js"></script>
+<script src="scripts/measuring/measuring.controller.js"></script>
 
-  <!-- endbuild -->
+<!-- endbuild -->
 </body>
 
 </html>

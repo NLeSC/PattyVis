@@ -84,6 +84,8 @@
     var siteMaterial = new Potree.PointCloudMaterial();
 
     // var objmtlLoader = new THREE.OBJMTLLoader();
+    var mtlLoader = new THREE.MTLLoader()
+
 
     function loadSkybox(path) {
       var camera = new THREE.PerspectiveCamera(75, $window.innerWidth / $window.innerHeight, 1, 100000);
@@ -96,7 +98,7 @@
         path + 'pz' + format, path + 'nz' + format
       ];
 
-      var textureCube = THREE.ImageUtils.loadTextureCube(urls, new THREE.CubeRefractionMapping());
+      var textureCube = THREE.ImageUtils.loadTextureCube(urls, THREE.CubeRefractionMapping);
 
       var shader = THREE.ShaderLib.cube;
       shader.uniforms.tCube.value = textureCube;
@@ -220,54 +222,71 @@
     this.loadPointcloud = function() {
       // load pointcloud
       var pointcloudPath = DrivemapService.getPointcloudUrl();
-      me.stats.lasCoordinates.crs = DrivemapService.getCrs();
-
-      Potree.POCLoader.load(pointcloudPath, function(geometry) {
-        pointcloud = new Potree.PointCloudOctree(geometry, drivemapMaterial);
-
-        pointcloud.material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
-        pointcloud.material.size = me.settings.pointSize;
-        pointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
-
-        referenceFrame.add(pointcloud);
-        referenceFrame.updateMatrixWorld(true); // doesn't seem to do anything
-        // reference frame position to pointcloud position:
-        referenceFrame.position.set(-pointcloud.position.x, -pointcloud.position.y, 0);
-        // rotates to some unknown orientation:
-        referenceFrame.updateMatrixWorld(true);
-        // rotates point cloud to align with horizon
-        referenceFrame.applyMatrix(new THREE.Matrix4().set(
-          1, 0, 0, 0,
-          0, 0, 1, 0,
-          0, -1, 0, 0,
-          0, 0, 0, 1
-        ));
-        referenceFrame.updateMatrixWorld(true);
-
-        var cameraPath = DrivemapService.getCameraPath().map(
-          function(coord) {
-            return SceneService.toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
-          }
-        );
-
-        var lookPath = DrivemapService.getLookPath().map(
-          function(coord) {
-            return SceneService.toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
-          }
-        );
 
 
-        //PathControls.init(camera, myPath, lookPath, me.renderer.domElement);
-        PathControls.init(camera, cameraPath, lookPath, me.elRenderArea);
+      Potree.loadPointCloud(pointcloudPath, "lion", function(e){
+        scene.addPointCloud(e.pointcloud);
 
+        let material = e.pointcloud.material;
+        material.size = 1;
+        material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
 
-
-        me.pathMesh = PathControls.createPath();
-        scene.add(me.pathMesh);
-        me.pathMesh.visible = false; // disabled by default
-        MeasuringService.setPointcloud(pointcloud);
+        // viewer.fitToScreen();
       });
+
+
+
+
+      // me.stats.lasCoordinates.crs = DrivemapService.getCrs();
+
+    //   Potree.POCLoader.load(pointcloudPath, function(geometry) {
+    //     pointcloud = new Potree.PointCloudOctree(geometry, drivemapMaterial);
+    //
+    //     pointcloud.material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
+    //     pointcloud.material.size = me.settings.pointSize;
+    //     pointcloud.visiblePointsTarget = me.settings.pointCountTarget * 1000 * 1000;
+    //
+    //     referenceFrame.add(pointcloud);
+    //     referenceFrame.updateMatrixWorld(true); // doesn't seem to do anything
+    //     // reference frame position to pointcloud position:
+    //     referenceFrame.position.set(-pointcloud.position.x, -pointcloud.position.y, 0);
+    //     // rotates to some unknown orientation:
+    //     referenceFrame.updateMatrixWorld(true);
+    //     // rotates point cloud to align with horizon
+    //     referenceFrame.applyMatrix(new THREE.Matrix4().set(
+    //       1, 0, 0, 0,
+    //       0, 0, 1, 0,
+    //       0, -1, 0, 0,
+    //       0, 0, 0, 1
+    //     ));
+    //     referenceFrame.updateMatrixWorld(true);
+    //
+    //     var cameraPath = DrivemapService.getCameraPath().map(
+    //       function(coord) {
+    //         return SceneService.toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
+    //       }
+    //     );
+    //
+    //     var lookPath = DrivemapService.getLookPath().map(
+    //       function(coord) {
+    //         return SceneService.toLocal(new THREE.Vector3(coord[0], coord[1], coord[2]));
+    //       }
+    //     );
+    //
+    //
+    //     //PathControls.init(camera, myPath, lookPath, me.renderer.domElement);
+    //     PathControls.init(camera, cameraPath, lookPath, me.elRenderArea);
+    //
+    //
+    //
+    //     me.pathMesh = PathControls.createPath();
+    //     scene.add(me.pathMesh);
+    //     me.pathMesh.visible = false; // disabled by default
+    //     MeasuringService.setPointcloud(pointcloud);
+    //   });
     };
+
+
 
     this.disableDrivemap = function() {
       referenceFrame.remove(pointcloud);
@@ -297,7 +316,7 @@
         MeasuringService.setSitePointcloud(sitePointcloud);
       });
 
-      //this.loadSiteMesh(site);
+      this.loadSiteMesh(site);
 
       this.sitePointcloudId = site.id;
     };
@@ -315,16 +334,23 @@
       console.log('mesh mtl  location: ' + meshMtlPath);
       console.log('mesh osg position : ' + meshPosition);
 
-    //   objmtlLoader.load(meshPath, meshMtlPath, function(object) {
-    //     siteMesh = object;
-    //     siteMesh.position.x = meshPosition.x;
-    //     siteMesh.position.y = meshPosition.z;
-    //     siteMesh.position.z = meshPosition.y;
-    //   }, function(){
-    //     return 1;
-    //   }, function() {
-    //     console.log('Error while loading mesh for site');
-    //   });
+      mtlLoader.load(meshMtlPath, function ( materials ) {
+        materials.preload();
+        new THREE.OBJLoader()
+          .setMaterials( materials )
+          // .setPath( 'models/obj/male02/' )
+          .load( meshPath, function ( object ) {
+            siteMesh = object;
+            siteMesh.position.x = meshPosition.x;
+            siteMesh.position.y = meshPosition.z;
+            siteMesh.position.z = meshPosition.y;
+          }, function(){
+            return 1;
+          }, function() {
+            console.log('Error while loading mesh for site');
+          });
+
+          } );
     };
 
     this.enableSiteMesh = function() {
@@ -495,7 +521,22 @@
         pointcloud.material.intensityMin = 0;
         pointcloud.material.intensityMax = 65000;
 
-        pointcloud.update(camera, me.renderer);
+
+
+        Potree.updateVisibility([pointcloud], camera, me.renderer);
+        // pointcloud.updateVisibilityTexture(camera, me.renderer);
+        pointcloud.updateMaterial(pointcloud.material, pointcloud.visibleNodes, camera, me.renderer);
+        pointcloud.updateVisibleBounds();
+
+        // Potree.PointCloudOctree.lru.freeMemory();
+
+        // TODO bounds
+          // TODO free memory
+
+
+
+
+        // pointcloud.update(camera, me.renderer);
 
       }
 
