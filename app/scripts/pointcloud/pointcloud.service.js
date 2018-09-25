@@ -83,7 +83,7 @@
     var drivemapMaterial = new Potree.PointCloudMaterial();
     var siteMaterial = new Potree.PointCloudMaterial();
 
-    // var objmtlLoader = new THREE.OBJMTLLoader();
+    var objmtlLoader = new THREE.OBJMTLLoader();
 
     function loadSkybox(path) {
       var camera = new THREE.PerspectiveCamera(75, $window.innerWidth / $window.innerHeight, 1, 100000);
@@ -315,16 +315,16 @@
       console.log('mesh mtl  location: ' + meshMtlPath);
       console.log('mesh osg position : ' + meshPosition);
 
-    //   objmtlLoader.load(meshPath, meshMtlPath, function(object) {
-    //     siteMesh = object;
-    //     siteMesh.position.x = meshPosition.x;
-    //     siteMesh.position.y = meshPosition.z;
-    //     siteMesh.position.z = meshPosition.y;
-    //   }, function(){
-    //     return 1;
-    //   }, function() {
-    //     console.log('Error while loading mesh for site');
-    //   });
+      objmtlLoader.load(meshPath, meshMtlPath, function(object) {
+        siteMesh = object;
+        siteMesh.position.x = meshPosition.x;
+        siteMesh.position.y = meshPosition.z;
+        siteMesh.position.z = meshPosition.y;
+      }, function(){
+        return 1;
+      }, function() {
+        console.log('Error while loading mesh for site');
+      });
     };
 
     this.enableSiteMesh = function() {
