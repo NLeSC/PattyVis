@@ -106,7 +106,7 @@
     this.startDistance = function() {
       if (this.tools.distance) {
         //TODO Fix Rendering.
-        this.tools.distance.setEnabled(true);
+        this.tools.distance.startInsertion();
       }
     };
 
