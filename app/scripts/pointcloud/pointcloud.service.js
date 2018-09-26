@@ -277,6 +277,10 @@
       referenceFrame.add(pointcloud);
     };
 
+    this.isDriveMapEnabled = function() {
+      return referenceFrame.children.indexOf(pointcloud) !== -1;
+    };
+
     this.loadSite = function(site) {
       if (site.pointcloud.length === 0) {
         return;
@@ -457,6 +461,7 @@
 
     this.exitOrbitMode = function() {
       this.removeSitePointcloud();
+      this.enableDrivemap();
 
       me.orbitControls.enabled = false;
       me.isInOrbitMode = false;

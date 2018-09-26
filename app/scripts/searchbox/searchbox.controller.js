@@ -27,7 +27,6 @@
 
     this.toggleButtons = {
       _sitePc: false,
-      _driveMap: true,
       _siteMesh: false
     };
 
@@ -49,10 +48,9 @@
       },
       driveMap: {
         get: function() {
-          return this._driveMap;
+          return PointcloudService.isDriveMapEnabled();
         },
         set: function(bool) {
-          this._driveMap = bool;
           if(bool){
             PointcloudService.enableDrivemap();
           } else {
