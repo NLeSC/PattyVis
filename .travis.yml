@@ -16,6 +16,7 @@ install:
   - 'npm install'
   - 'npm install -g bower grunt-cli karma-cli'
   - 'bower install'
+  - "git checkout app/index.html"
 script:
   - 'grunt test'
   - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && grunt e2e-sauce || false'
