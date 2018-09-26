@@ -37,7 +37,7 @@
 	var zoom = 45;
 	var maxZoom = 45;
 	var positionOnRoad = 0.0;
-	var looptime = 240;
+	var looptime = 30;
 	var THREE;
 
 	var PathControls = function($window) {
@@ -112,10 +112,10 @@
 
 	PathControls.prototype.init = function(cam, cameraPath, lookPath, element) {
 		var defLookPath = new THREE.SplineCurve3(lookPath);
-		lookatPath = new THREE.SplineCurve3(defLookPath.getSpacedPoints(100));
+		lookatPath = defLookPath;//new THREE.SplineCurve3(defLookPath.getSpacedPoints(100));
 
 		var definedPath = new THREE.SplineCurve3(cameraPath);
-		path = new THREE.SplineCurve3(definedPath.getSpacedPoints(100));
+		path = definedPath; //new THREE.SplineCurve3(definedPath.getSpacedPoints(100));
 
         this.initCamera(cam, path.getPointAt(0));
 
@@ -340,8 +340,11 @@
 	}
 
 	PathControls.prototype.updateDemoMode = function(delta) {
-		positionOnRoad += delta;
-		positionOnRoad = positionOnRoad % looptime;
+    positionOnRoad += delta;
+    if (positionOnRoad > looptime) {
+      positionOnRoad = looptime;
+    }
+		// positionOnRoad = positionOnRoad % looptime;
 		//javascript modulus operator allows negative numbers, correct for that
 		if (positionOnRoad < 0) {
 			positionOnRoad = looptime + positionOnRoad;
