@@ -83,8 +83,10 @@
 
     this.init = function(renderer, scene, camera) {
       this.tools.distance = new Potree.MeasuringTool(scene, camera, renderer);
+
       this.tools.angle = new Potree.MeasuringTool(scene, camera, renderer);
       this.tools.area = new Potree.MeasuringTool(scene, camera, renderer);
+
       this.tools.volume = new Potree.VolumeTool(scene, camera, renderer);
       this.tools.heightprofile = new Potree.ProfileTool(scene, camera, renderer);
       this.tools.transformation = new Potree.TransformationTool(scene, camera, renderer);
@@ -113,14 +115,14 @@
     this.startAngle = function() {
       if (this.tools.angle) {
         //TODO Fix Rendering.
-        this.tools.angle.startInsertion();
+        this.tools.angle.startInsertion({showAngles: true, showDistances: false, closed:true});
       }
     };
 
     this.startArea = function() {
       if (this.tools.area) {
         //TODO Fix Rendering.
-        this.tools.area.startInsertion();
+        this.tools.area.startInsertion({showArea:true, closed:true});
       }
     };
 
