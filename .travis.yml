@@ -12,7 +12,6 @@ before_install:
   - mkdir -p node_modules/.bin/
   - mv phantomjs-1.9.8-linux-x86_64/bin/phantomjs node_modules/.bin/
 install:
-  - 'npm install -g npm@2'
   - 'npm install'
   - 'npm install -g bower grunt-cli karma-cli'
   - 'bower install'
