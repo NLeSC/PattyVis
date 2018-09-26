@@ -220,6 +220,13 @@ patty-pointcloud-stats {
 .scale-icon.active {
   background-image: url("../images/icons/toolbox_scale_icon_green_30px.png");
 }
+.crop-icon {
+  background-image: url("../images/icons/toolbox_crop_icon_30px.png");
+}
+.crop-icon.active {
+  background-image: url("../images/icons/toolbox_crop_icon_green_30px.png");
+}
+
 .icon-small {
   width: 50px;
   height: 50px;

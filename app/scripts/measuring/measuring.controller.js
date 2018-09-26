@@ -57,6 +57,30 @@
       return result;
     };
 
+    this.showTransform = function() {
+      var result = false;
+      if (this.volumeActive || this.clipVolumeActive) {
+        result = true;
+      }
+      return result;
+    };
+
+    this.showClipping = function() {
+      var result = false;
+      if (this.heightProfileActive || this.clipVolumeActive) {
+        result = true;
+      }
+      return result;
+    };
+
+    this.isClipping = function() {
+      var result = false;
+      if (this.clipVolumeActive) {
+        result = true;
+      }
+      return result;
+    };
+
     this.startDistance = function() {
       this.resetState();
       this.distanceActive = true;
@@ -92,6 +116,7 @@
     this.startHeightProfile = function() {
       this.resetState();
       this.heightProfileActive = true;
+      this.showTransformationToolboxTray = true;
       this.measuringService.startHeightProfile();
     };
 
@@ -121,6 +146,10 @@
       this.resetState();
       this.showTransformationToolboxTray = true;
       this.measuringService.tools.transformation.scale();
+    };
+
+    this.toggleClipping = function() {
+      //TODO
     };
   }
 

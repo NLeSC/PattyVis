@@ -113,14 +113,14 @@
     this.startAngle = function() {
       if (this.tools.angle) {
         //TODO Fix Rendering.
-        this.tools.angle.setEnabled(true);
+        this.tools.angle.startInsertion();
       }
     };
 
     this.startArea = function() {
       if (this.tools.area) {
         //TODO Fix Rendering.
-        this.tools.area.setEnabled(true);
+        this.tools.area.startInsertion();
       }
     };
 
@@ -131,7 +131,7 @@
       }
     };
 
-    this.startHeighProfile = function() {
+    this.startHeightProfile = function() {
       if (this.tools.heightprofile) {
         //TODO Fix Rendering.
         this.tools.heightprofile.startInsertion({
@@ -148,6 +148,12 @@
         });
       }
     };
+
+    this.toggleClipping = function() {
+      if (this.tools.volume) {
+        this.tools.volume.clip
+      }
+    }
 
     this.render = function() {
       if (this.initialized) {
