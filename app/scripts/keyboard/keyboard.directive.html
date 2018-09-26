@@ -1,0 +1,31 @@
+<div class="top"></div>
+  <button class="keyboard_up-icon"
+          ng-class="{'active': kc.up}"
+          ng-mousedown="kc.onMouse('up', true)"
+          ng-mouseup="kc.onMouse('up', false)"
+          ng-mouseleave="kc.onMouse('up', false)"
+          title="Up"
+  ></button>
+<div class="bottom">
+  <button class="keyboard_left-icon"
+          ng-class="{'active': kc.left}"
+          ng-mousedown="kc.onMouse('left', true)"
+          ng-mouseup="kc.onMouse('left', false)"
+          ng-mouseleave="kc.onMouse('left', false)"
+          title="left"
+  ></button>
+  <button class="keyboard_down-icon"
+          ng-class="{'active': kc.down}"
+          ng-mousedown="kc.onMouse('down', true)"
+          ng-mouseup="kc.onMouse('down', false)"
+          ng-mouseleave="kc.onMouse('down', false)"
+          title="down"
+  ></button>
+  <button class="keyboard_right-icon"
+          ng-class="{'active': kc.right}"
+          ng-mousedown="kc.onMouse('right', true)"
+          ng-mouseup="kc.onMouse('right', false)"
+          ng-mouseleave="kc.onMouse('right', false)"
+          title="right"
+  ></button>
+</div>

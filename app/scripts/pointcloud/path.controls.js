@@ -81,8 +81,8 @@
 		el = element;
 		element.setAttribute('tabindex', 1);
 
-		element.addEventListener('keydown', onKeyDown, false);
-		element.addEventListener('keyup', onKeyUp, false);
+		document.addEventListener('keydown', onKeyDown, false);
+		document.addEventListener('keyup', onKeyUp, false);
 
 		element.addEventListener('mouseleave', onBlur, false);
 		element.addEventListener('mouseout', onBlur, false);
@@ -96,8 +96,8 @@
 	};
 
 	PathControls.prototype.disableListeners = function(element) {
-		element.removeEventListener('keydown', onKeyDown, false);
-		element.removeEventListener('keyup', onKeyUp, false);
+    document.removeEventListener('keydown', onKeyDown, false);
+    document.removeEventListener('keyup', onKeyUp, false);
 
 		element.removeEventListener('mouseleave', onBlur, false);
 		element.removeEventListener('mouseout', onBlur, false);
@@ -405,15 +405,19 @@
 	};
 
 	function onKeyDown(event) {
-		keys[event.keyCode] = true;
+	  if (event.target.tagName !== "INPUT") {
+      keys[event.keyCode] = true;
 
-		if (event.keyCode === 32) {
-			event.preventDefault();
-		}
+      if (event.keyCode === 32) {
+        event.preventDefault();
+      }
+    }
 	}
 
 	function onKeyUp(event) {
-		keys[event.keyCode] = false;
+    if (event.target.tagName !== "INPUT") {
+      keys[event.keyCode] = false;
+    }
 	}
 
 	//a blur event is fired when we lose focus

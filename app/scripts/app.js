@@ -64,6 +64,7 @@
       'pattyApp.minimap',
       'pattyApp.measuring',
       'pattyApp.settings',
+      'pattyApp.keyboard',
       'pattyApp.help',
       'pattyApp.cameramodes',
       'pattyApp.pointcloud',
@@ -81,6 +82,7 @@
   angular.module('pattyApp.measuring', ['pattyApp.potree', 'pattyApp.three']);
   angular.module('pattyApp.pointcloud', ['pattyApp.core', 'pattyApp.potree', 'pattyApp.three', 'pattyApp.measuring']);
   angular.module('pattyApp.settings', ['pattyApp.pointcloud']);
+  angular.module('pattyApp.keyboard', ['pattyApp.pointcloud']);
   angular.module('pattyApp.help', ['pattyApp.templates']);
   angular.module('pattyApp.cameramodes', ['pattyApp.pointcloud']);
   angular.module('pattyApp.nexus', []);

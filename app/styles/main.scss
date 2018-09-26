@@ -226,6 +226,30 @@ patty-pointcloud-stats {
 .crop-icon.active {
   background-image: url("../images/icons/toolbox_crop_icon_green_30px.png");
 }
+.keyboard_up-icon {
+  background-image: url("../images/icons/kb_up_80px.png");
+}
+.keyboard_up-icon.active {
+  background-image: url("../images/icons/kb_up_green_80px.png");
+}
+.keyboard_down-icon {
+  background-image: url("../images/icons/kb_down_80px.png");
+}
+.keyboard_down-icon.active {
+  background-image: url("../images/icons/kb_down_green_80px.png");
+}
+.keyboard_left-icon {
+  background-image: url("../images/icons/kb_left_80px.png");
+}
+.keyboard_left-icon.active {
+  background-image: url("../images/icons/kb_left_green_80px.png");
+}
+.keyboard_right-icon {
+  background-image: url("../images/icons/kb_right_80px.png");
+}
+.keyboard_right-icon.active {
+  background-image: url("../images/icons/kb_right_green_80px.png");
+}
 
 .icon-small {
   width: 50px;
@@ -332,4 +356,27 @@ patty-pointcloud-stats {
   background-size:cover;
   outline:none;
   background-image: url("../bower_components/3dhop/minimal/skins/backgrounds/dark.jpg");
+}
+
+patty-keyboard {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: top;
+
+  button {
+    border: 0 !important;
+    height: 40px;
+    width: 40px;
+    background-size: cover;
+    background-color: transparent;
+    outline: none !important;
+  }
+
+  .top {
+    flex: 1;
+  }
+  .bottom {
+    flex: 1;
+  }
 }
