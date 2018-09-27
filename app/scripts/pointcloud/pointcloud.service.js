@@ -12,7 +12,7 @@
     this.elRenderArea = null;
 
     me.settings = {
-      pointCountTarget: 2.0,
+      pointCountTarget: 4.0,
       pointSize: 0.15,
       opacity: 1,
       showSkybox: true,
@@ -29,8 +29,8 @@
     };
 
     me.siteSettings = {
-      pointCountTarget: 2.0,
-      pointSize: 0.02,
+      pointCountTarget: 4.0,
+      pointSize: 0.05,
       opacity: 1,
       interpolate: false,
       pointSizeType: Potree.PointSizeType.ATTENUATED,

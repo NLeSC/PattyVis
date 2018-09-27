@@ -55,6 +55,7 @@ patty-minimap {
 .big-minimap {
   height: 80%;
   width: 50%;
+  z-index: 1;
 }
 
 .resize-minimap {
@@ -319,28 +320,32 @@ patty-pointcloud-stats {
 }
 
 .logobox {
-    position:absolute;
-    bottom:3%;
-    right:14%;
-    max-width:17%;
-    max-height:7%
+  position: absolute;
+  display: block;
+  top: 1%;
+  right: 15%;
+  width: 10%;
+  max-width: 200px;
 }
 
-.logobox2 {
-  position:absolute;
-  bottom:1%;
-  left:15%;
-  //max-width:15%;
-  max-height:13%
+img.logo {
+  width: 175px;
 }
 
-.logobox-bottom {
-    position:relative;
-}
+// .logobox2 {
+//   position: absolute;
+//   top: 1%;
+//   right: 16%;
+//   max-width: 20%;
+// }
 
-.logo-custom-nlesc {
-  max-width:100%;
-}
+// .logobox-bottom {
+//     position:relative;
+// }
+
+// .logo-custom-nlesc {
+//   max-width:100%;
+// }
 
 .nexus-panel {
   position: absolute;

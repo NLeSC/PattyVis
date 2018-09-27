@@ -30,33 +30,33 @@
     var transparentOverlays = new ol.layer.Group({
       'title': 'Overlay maps',
       layers: [
-        new ol.layer.Tile({
-          title: 'Canina Tavola XXXII',
-          visible: false,
-          opacity: 0.7,
-          source: new ol.source.TileWMS(({
-            url: 'http://54.228.203.57:6080/arcgis/services/VIA_APPIA/Historical_maps_Via_Appia/MapServer/WMSServer',
-            params: {'LAYERS': 0, 'TRANSPARENT' : true, 'TILED': true}
-          }))
-        }),
-        new ol.layer.Tile({
-          title: 'P1050526editCUT3',
-          visible: false,
-          opacity: 0.7,
-          source: new ol.source.TileWMS(({
-            url: 'http://54.228.203.57:6080/arcgis/services/VIA_APPIA/Historical_maps_Via_Appia/MapServer/WMSServer',
-            params: {'LAYERS': 2, 'TRANSPARENT' : true, 'TILED': true}
-          }))
-        }),
-        new ol.layer.Tile({
-          title: 'Pinza',
-          visible: false,
-          opacity: 0.7,
-          source: new ol.source.TileWMS(({
-            url: 'http://54.228.203.57:6080/arcgis/services/VIA_APPIA/Historical_maps_Via_Appia/MapServer/WMSServer',
-            params: {'LAYERS': 3, 'TRANSPARENT' : true, 'TILED': true}
-          }))
-        })
+        // new ol.layer.Tile({
+        //   title: 'Canina Tavola XXXII',
+        //   visible: false,
+        //   opacity: 0.7,
+        //   source: new ol.source.TileWMS(({
+        //     url: 'http://54.228.203.57:6080/arcgis/services/VIA_APPIA/Historical_maps_Via_Appia/MapServer/WMSServer',
+        //     params: {'LAYERS': 0, 'TRANSPARENT' : true, 'TILED': true}
+        //   }))
+        // }),
+        // new ol.layer.Tile({
+        //   title: 'P1050526editCUT3',
+        //   visible: false,
+        //   opacity: 0.7,
+        //   source: new ol.source.TileWMS(({
+        //     url: 'http://54.228.203.57:6080/arcgis/services/VIA_APPIA/Historical_maps_Via_Appia/MapServer/WMSServer',
+        //     params: {'LAYERS': 2, 'TRANSPARENT' : true, 'TILED': true}
+        //   }))
+        // }),
+        // new ol.layer.Tile({
+        //   title: 'Pinza',
+        //   visible: false,
+        //   opacity: 0.7,
+        //   source: new ol.source.TileWMS(({
+        //     url: 'http://54.228.203.57:6080/arcgis/services/VIA_APPIA/Historical_maps_Via_Appia/MapServer/WMSServer',
+        //     params: {'LAYERS': 3, 'TRANSPARENT' : true, 'TILED': true}
+        //   }))
+        // })
       ]
     });
 

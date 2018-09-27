@@ -37,11 +37,14 @@
 	var zoom = 45;
 	var maxZoom = 45;
 	var positionOnRoad = 0.0;
-	var looptime = 30;
-	var THREE;
+	var looptime = 120;
+  var THREE;
 
-	var PathControls = function($window) {
-		THREE = $window.THREE;
+  var messagebus;
+
+	var PathControls = function($window, Messagebus) {
+    THREE = $window.THREE;
+    this.messagebus = Messagebus;
 
 		me = this;
 
@@ -91,8 +94,8 @@
 		element.addEventListener('mousedown', mousedown, false);
 		element.addEventListener('mouseup', mouseup, false);
 
-		element.addEventListener('mousewheel', mousewheel, false);
-		element.addEventListener('DOMMouseScroll', mousewheel, false); // firefox
+		// element.addEventListener('mousewheel', mousewheel, false);
+		// element.addEventListener('DOMMouseScroll', mousewheel, false); // firefox
 	};
 
 	PathControls.prototype.disableListeners = function(element) {
@@ -106,16 +109,16 @@
 		element.removeEventListener('mousedown', mousedown, false);
 		element.removeEventListener('mouseup', mouseup, false);
 
-		element.removeEventListener('mousewheel', mousewheel, false);
-		element.removeEventListener('DOMMouseScroll', mousewheel, false); // firefox
+		// element.removeEventListener('mousewheel', mousewheel, false);
+		// element.removeEventListener('DOMMouseScroll', mousewheel, false); // firefox
 	};
 
 	PathControls.prototype.init = function(cam, cameraPath, lookPath, element) {
 		var defLookPath = new THREE.SplineCurve3(lookPath);
-		lookatPath = defLookPath;//new THREE.SplineCurve3(defLookPath.getSpacedPoints(100));
+		lookatPath = new THREE.SplineCurve3(defLookPath.getSpacedPoints(100));
 
 		var definedPath = new THREE.SplineCurve3(cameraPath);
-		path = definedPath; //new THREE.SplineCurve3(definedPath.getSpacedPoints(100));
+		path = new THREE.SplineCurve3(definedPath.getSpacedPoints(100));
 
         this.initCamera(cam, path.getPointAt(0));
 
@@ -186,7 +189,10 @@
 	//go to a point on the road near the specified point
 	PathControls.prototype.goToPointOnRoad = function(point) {
 		//find position on road
-		positionOnRoad = findPrecisePositionOnPath(path, point);
+    positionOnRoad = findPrecisePositionOnPath(path, point);
+    if (isNaN(positionOnRoad)) {
+      positionOnRoad = 0.0;
+    }
 
 		//move the camera there
 		bodyPosition.copy(path.getPointAt(positionOnRoad / looptime));
@@ -343,6 +349,7 @@
     positionOnRoad += delta;
     if (positionOnRoad > looptime) {
       positionOnRoad = looptime;
+      this.enableFlightMode();
     }
 		// positionOnRoad = positionOnRoad % looptime;
 		//javascript modulus operator allows negative numbers, correct for that
@@ -374,7 +381,7 @@
 		updateCameraRotation();
 
 		if (this.mode === this.modes.DEMO) {
-			this.updateDemoMode(delta);
+      this.updateDemoMode(delta);
 		} else if (this.mode === this.modes.FLY) {
 			updateFlyMode(10 * delta);
 		} else if (this.mode === this.modes.ONRAILS) {
@@ -388,23 +395,30 @@
 	};
 
 	PathControls.prototype.enableFlightMode = function() {
-		this.mode = this.modes.FLY;
+    this.mode = this.modes.FLY;
+    this.messagebus.publish('pathModeChanged', this.mode);
 	};
 
 	PathControls.prototype.transitionFromFlightMode = function() {
 		if (this.mode === this.modes.FLY) {
 			this.goToPointOnRoad(bodyPosition);
-		}
+    }
 	};
 
 	PathControls.prototype.enableRailsMode = function() {
 		this.transitionFromFlightMode();
-		this.mode = this.modes.ONRAILS;
+    this.mode = this.modes.ONRAILS;
+    this.messagebus.publish('pathModeChanged', this.mode);
 	};
 
 	PathControls.prototype.enableDemoMode = function() {
-		this.transitionFromFlightMode();
-		this.mode = this.modes.DEMO;
+    if (this.mode === this.modes.DEMO) {
+      this.enableRailsMode();
+    } else {
+      this.transitionFromFlightMode();
+      this.mode = this.modes.DEMO;
+      this.messagebus.publish('pathModeChanged', this.mode);
+    }
 	};
 
 	function onKeyDown(event) {

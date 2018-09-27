@@ -15,6 +15,15 @@
       }
     }.bind(this));
 
+    Messagebus.subscribe('pathModeChanged', function(event, value) {
+      if (value) {
+        if (!$rootScope.$$phase) {
+          this.cameraMode = value;
+          $rootScope.$apply();
+        }
+      }
+    }.bind(this));
+
     this.exitOrbitMode = function() {
       Messagebus.publish('exitOrbitMode');
     };
