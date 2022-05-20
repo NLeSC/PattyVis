@@ -131,7 +131,7 @@ Open `e2e/reports/report.html` in a web-browser.
 
 ### Run end-to-end tests on [sauce labs](https://saucelabs.com/)
 
-To connnect to Sauce Labs use sauce connect program. [Here](https://docs.saucelabs.com/reference/sauce-connect/) you can find the details on how to install and run it.
+To connect to Sauce Labs use sauce connect program. [Here](https://docs.saucelabs.com/reference/sauce-connect/) you can find the details on how to install and run it.
 
 Before tests can be run the sauce labs credentials must be setup
 
